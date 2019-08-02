@@ -29,8 +29,8 @@ func (server *Server) Update(*Query) error {
 }
 
 // Select handles a OP_QUERY message.
-func (server *Server) Select(*Query) error {
-	return nil
+func (server *Server) Select(*Query) ([]Document, error) {
+	return nil, nil
 }
 
 // Delete handles a OP_DELETE message.

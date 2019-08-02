@@ -21,7 +21,7 @@ type QueryHandler interface {
 	// Update handles a OP_UPDATE message.
 	Update(*Query) error
 	// Select handles a OP_QUERY message.
-	Select(*Query) error
+	Select(*Query) ([]Document, error)
 	// Delete handles a OP_DELETE message.
 	Delete(*Query) error
 }
