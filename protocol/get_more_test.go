@@ -12,28 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongo
+package protocol
 
-// Insert handles a OP_INSERT message.
-func (server *Server) Insert(*Query) error {
-	// ====================== YOUR CODE HERE ======================
-	// 説明 :
-	// ヒント :
-	return nil
-	// ============================================================
-}
+import "testing"
 
-// Update handles a OP_UPDATE message.
-func (server *Server) Update(*Query) error {
-	return nil
-}
-
-// Select handles a OP_QUERY message.
-func (server *Server) Select(*Query) ([]Document, error) {
-	return nil, nil
-}
-
-// Delete handles a OP_DELETE message.
-func (server *Server) Delete(*Query) error {
-	return nil
+func TestGetMore(t *testing.T) {
 }
