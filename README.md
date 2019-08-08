@@ -10,9 +10,10 @@ MongoDBの通信プロトコルは「Wire Protocol」として公式のドキュ
 
 ### MongoDBの通信プロトコルの理解
 
-`wiresharkで` .... MongoDBプロトコルを確認してみましょう。
+`tcpdump` .... MongoDBプロトコルを確認してみましょう。
 
-````
+```
+tcpdump ...
 ```
 
 ## 個別課題
