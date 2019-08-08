@@ -17,8 +17,6 @@ package protocol
 import (
 	"encoding/hex"
 	"fmt"
-
-	"go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage"
 )
 
 const (
@@ -104,7 +102,7 @@ func (header *Header) ParseBytes(msg []byte) error {
 	}
 
 	var ok bool
-	header.MessageLength, header.RequestID, header.ResponseTo, header.OpCode, _, ok = wiremessage.ReadHeader(msg)
+	header.MessageLength, header.RequestID, header.ResponseTo, header.OpCode, _, ok = ReadHeader(msg)
 	if !ok {
 		return fmt.Errorf(errorInvalidMessageHeader, hex.EncodeToString(msg[:4]))
 	}
@@ -120,7 +118,7 @@ func (header *Header) GetBodySize() int32 {
 // Bytes returns the binary description.
 func (header *Header) Bytes() []byte {
 	dst := make([]byte, 0)
-	dst = wiremessage.AppendHeader(dst, header.MessageLength, header.RequestID, header.ResponseTo, header.OpCode)
+	dst = AppendHeader(dst, header.MessageLength, header.RequestID, header.ResponseTo, header.OpCode)
 	return dst
 }
 
@@ -128,4 +126,25 @@ func (header *Header) Bytes() []byte {
 func (header *Header) String() string {
 	return fmt.Sprintf("%d",
 		header.OpCode)
+}
+
+// ReadHeader reads a wire message header from src.
+func ReadHeader(src []byte) (length, requestID, responseTo int32, opcode OpCode, rem []byte, ok bool) {
+	if len(src) < 16 {
+		return 0, 0, 0, 0, src, false
+	}
+	length = (int32(src[0]) | int32(src[1])<<8 | int32(src[2])<<16 | int32(src[3])<<24)
+	requestID = (int32(src[4]) | int32(src[5])<<8 | int32(src[6])<<16 | int32(src[7])<<24)
+	responseTo = (int32(src[8]) | int32(src[9])<<8 | int32(src[10])<<16 | int32(src[11])<<24)
+	opcode = OpCode(int32(src[12]) | int32(src[13])<<8 | int32(src[14])<<16 | int32(src[15])<<24)
+	return length, requestID, responseTo, opcode, src[16:], true
+}
+
+// AppendHeader appends a header to dst.
+func AppendHeader(dst []byte, length, reqid, respto int32, opcode OpCode) []byte {
+	dst = AppendInt32(dst, length)
+	dst = AppendInt32(dst, reqid)
+	dst = AppendInt32(dst, respto)
+	dst = AppendInt32(dst, int32(opcode))
+	return dst
 }

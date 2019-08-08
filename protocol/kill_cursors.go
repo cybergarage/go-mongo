@@ -16,8 +16,6 @@ package protocol
 
 import (
 	"fmt"
-
-	"go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage"
 )
 
 // KillCursors represents a OP_KILL_CURSORS of MongoDB wire protocol.
@@ -42,7 +40,7 @@ func NewKillCursorsWithHeaderAndBody(header *Header, body []byte) (*KillCursors,
 		return nil, newMessageRequestError(OpKillCursors, body)
 	}
 
-	cursorIDs, offsetBody, ok := wiremessage.ReadKillCursorsCursorIDs(offsetBody, numberOfCursorIDs)
+	cursorIDs, offsetBody, ok := ReadCursorIDs(offsetBody, numberOfCursorIDs)
 	if !ok {
 		return nil, newMessageRequestError(OpKillCursors, body)
 	}

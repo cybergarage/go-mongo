@@ -19,7 +19,7 @@ import (
 
 	"github.com/cybergarage/go-mongo/bson"
 
-	"go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage"
+	"go.mongodb.org/mongo-driver/x/network/wiremessage"
 )
 
 const (
@@ -84,20 +84,20 @@ func NewMsgWithHeaderAndBody(header *Header, body []byte) (*Msg, error) {
 	var sectionType SectionType
 	offsetBodyLen := len(offsetBody)
 	for 0 < offsetBodyLen {
-		sectionType, offsetBody, ok = wiremessage.ReadMsgSectionType(offsetBody)
+		sectionType, offsetBody, ok = ReadSectionType(offsetBody)
 		if !ok {
 			break
 		}
 		switch sectionType {
 		case sectionTypeBody:
-			docBody, offsetBody, ok = wiremessage.ReadMsgSectionSingleDocument(offsetBody)
+			docBody, offsetBody, ok = ReadDocument(offsetBody)
 			if !ok {
 				return nil, newMessageRequestError(OpMsg, body)
 			}
 		case sectionTypeDocumentSequence:
 			var docID string
 			var docs []bson.Document
-			docID, docs, offsetBody, ok = wiremessage.ReadMsgSectionDocumentSequence(offsetBody)
+			docID, docs, offsetBody, ok = ReadDocumentSequence(offsetBody)
 			if !ok {
 				return nil, newMessageRequestError(OpMsg, body)
 			}
