@@ -25,6 +25,7 @@ import (
 // MessageListener represents a listener for MongoDB Wire Protocol.
 type MessageListener interface {
 	MessageReceived(Message)
+	MessageRespond(Message)
 }
 
 // Message represents an operation message of MongoDB wire protocol.
