@@ -2,18 +2,53 @@
 
 ## 集合課題
 
+### 目的
+
+- 課題であるMongoDB互換のデータベースの実装に必要な知識の習得
+- グループワークの作業分担による共有し、参加者全員の理解レベルを共通化する
+
+### 提出物
+
+- MongoDB基本クエリーのプロトコルのまとめ
+  - Insert、Update、Find、Update (参加者での分担を想定)
+
 ### MongoDBの通信プロトコルについて
 
-MongoDBの通信プロトコルは「Wire Protocol」として公式のドキュメントが
+MongoDBの通信プロトコルは「Wire Protocol」として、MongoDB Incより公式ドキュメントが公開されています。
 
 - [MongoDB Wire Protocol](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/)
 
+また、この通信プロトコルに流れるデータは、おなじくMongoDB Incが規定したBSON形式にてシリアライズされています。
+
+- [BSON (Binary JSON) Serialization](http://bsonspec.org)
+
+本課題では、上記のMongoDB Incによる公式な仕様を参照しつつ、取り組んでください。
+
 ### MongoDBの通信プロトコルの理解
 
+本課題は、MongoDB Incによる上記の基本的仕様および、以下にあげるデータベースの基本操作の公式な仕様はあるものの、実装レベルまでの詳細な資料は整理されていません。
+
+- [Database Commands — MongoDB Manual](https://docs.mongodb.com/manual/reference/command/)
+
+このような背景から、今回はMongoDBの実際の通信シーケンスおよびパケットを`tcpdump`により確認します。
+
+#### tcpdumpによる実際の通信シーケンスの確認
+
+今回は、MongoDB Inc公式のクライアント(`mongo-go-driver`)を用いたテストプログラムと、公式のサーバー(`mongos`)との通信を確認します。
 
 ![](img/mongoc-mongos.png)
 
+##### 準備
+
+
+- MongoDBのインストール
+- wiresharkのインストール
+
+##### 確認
+
 `tcpdump` .... MongoDBプロトコルを確認してみましょう。
+
+
 
 ```
 tcpdump ...
@@ -54,6 +89,8 @@ go test -run Client
 ## 課題 2
 
 YCSB (Yahoo! Cloud Serving Benchmark))を用いて計測し ...... ボトルネックを .... 改良して下さい
+
+![](img/mongoc-yjmongos-ycsb.png)
 
 - [Yahoo! Cloud Serving Benchmark (YCSB)](https://github.com/brianfrankcooper/YCSB/wiki)
 
