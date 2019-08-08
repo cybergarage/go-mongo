@@ -168,9 +168,11 @@ func (server *Server) nextMessageRequestID() int32 {
 // responseMessage returns a specified message to the request connection.
 func (server *Server) responseMessage(conn net.Conn, msg protocol.Message) error {
 	msgBytes := msg.Bytes()
-	nWrote, err := conn.Write(msgBytes)
+	_, err := conn.Write(msgBytes)
 
-	fmt.Printf("[%d] <- %s\n", nWrote, msg.String())
+	if server.messageListener != nil {
+		server.messageListener.MessageRespond(msg)
+	}
 
 	return err
 }

@@ -48,7 +48,11 @@ func NewMyServer() *MyServer {
 //////////////////////////////////////////////////
 
 func (server *MyServer) MessageReceived(msg OpMessage) {
-	fmt.Printf("%s\n", msg.String())
+	fmt.Printf("-> %s\n", msg.String())
+}
+
+func (server *MyServer) MessageRespond(msg OpMessage) {
+	fmt.Printf("<- %s\n", msg.String())
 }
 
 //////////////////////////////////////////////////
