@@ -1,9 +1,6 @@
 # 【エンジニア/東京】次世代分散データベースコース - プログラミング課題
 
-
-## 課題 1
-
-この課題は、MongoDBの通信プロトコルの理解し、MongoDB互換のサーバー実装を経験してもらいます。
+## 集合課題
 
 ### MongoDBの通信プロトコルについて
 
@@ -11,7 +8,18 @@ MongoDBの通信プロトコルは「Wire Protocol」として公式のドキュ
 
 - [MongoDB Wire Protocol](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/)
 
-### 課題
+### MongoDBの通信プロトコルの理解
+
+`wiresharkで` .... MongoDBプロトコルを確認してみましょう。
+
+````
+```
+
+## 個別課題
+
+この課題は、MongoDBの通信プロトコルの理解し、MongoDB互換のサーバー実装を経験してもらいます。
+
+### 課題 1
 
 この課題は、MongoDB社より提供されている、公式のGo言語のクライアント実装を用いたユニットテストを通過するのを目的とします。
 
