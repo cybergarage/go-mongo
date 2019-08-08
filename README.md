@@ -10,6 +10,9 @@ MongoDBの通信プロトコルは「Wire Protocol」として公式のドキュ
 
 ### MongoDBの通信プロトコルの理解
 
+
+![](img/mongoc-mongos.png)
+
 `tcpdump` .... MongoDBプロトコルを確認してみましょう。
 
 ```
@@ -19,6 +22,8 @@ tcpdump ...
 ## 個別課題
 
 この課題は、MongoDBの通信プロトコルの理解し、MongoDB互換のサーバー実装を経験してもらいます。
+
+![](img/mongoc-yjmongos-mem.png)
 
 ### 課題 1
 
@@ -67,3 +72,4 @@ ycsb .....
 
 この課題では、現在インメモリで動作しているMongoDB互換のサーバーを ...... LevelDBにて永続化する ....
 
+![](img/mongoc-yjmongos-ssd.png)
