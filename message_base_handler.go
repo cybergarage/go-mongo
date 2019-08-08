@@ -1,0 +1,135 @@
+// Copyright (C) 2019 The go-mongo Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package mongo
+
+import (
+	"fmt"
+
+	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/message"
+)
+
+// BaseMessageHandler is a complete hander for MessageHandler.
+type BaseMessageHandler struct {
+	queryExecutor QueryExecutor
+}
+
+func newBaseMessageHandlerNotImplementedError(msg OpMessage) error {
+	return fmt.Errorf(errorMessageHanderNotSupported, msg.GetOpCode())
+}
+
+// NewBaseMessageHandler returns a complete null handler for MessageHandler.
+func NewBaseMessageHandler() *BaseMessageHandler {
+	return &BaseMessageHandler{
+		queryExecutor: nil,
+	}
+}
+
+// SetQueryExecutor sets a query exector for OP_QUERY of MongoDB wire protocol.
+func (handler *BaseMessageHandler) SetQueryExecutor(fn QueryExecutor) {
+	handler.queryExecutor = fn
+}
+
+// OpUpdate handles OP_UPDATE of MongoDB wire protocol.
+func (handler *BaseMessageHandler) OpUpdate(msg *OpUpdate) (bson.Document, error) {
+	return nil, newBaseMessageHandlerNotImplementedError(msg)
+}
+
+// OpInsert handles OP_INSERT of MongoDB wire protocol.
+func (handler *BaseMessageHandler) OpInsert(msg *OpInsert) (bson.Document, error) {
+	return nil, newBaseMessageHandlerNotImplementedError(msg)
+}
+
+// OpQuery handles OP_QUERY of MongoDB wire protocol.
+func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) ([]bson.Document, error) {
+	if handler.queryExecutor == nil {
+		return nil, newBaseMessageHandlerNotImplementedError(msg)
+	}
+
+	elements, err := msg.Query.Elements()
+	if err != nil {
+		return nil, err
+	}
+
+	replyDocs := make([]bson.Document, 0)
+	for _, element := range elements {
+		cmd := message.NewCommandWithElement(element)
+		replyDocument, err := handler.queryExecutor.ExecuteCommand(cmd)
+		if err != nil {
+			return nil, err
+		}
+		if replyDocument == nil {
+			continue
+		}
+		replyDocs = append(replyDocs, replyDocument)
+	}
+
+	return replyDocs, nil
+}
+
+// OpGetMore handles GET_MORE of MongoDB wire protocol.
+func (handler *BaseMessageHandler) OpGetMore(msg *OpGetMore) (bson.Document, error) {
+	return nil, newBaseMessageHandlerNotImplementedError(msg)
+}
+
+// OpDelete handles OP_DELETE of MongoDB wire protocol.
+func (handler *BaseMessageHandler) OpDelete(msg *OpDelete) (bson.Document, error) {
+	return nil, newBaseMessageHandlerNotImplementedError(msg)
+}
+
+// OpKillCursors handles OP_KILL_CURSORS of MongoDB wire protocol.
+func (handler *BaseMessageHandler) OpKillCursors(msg *OpKillCursors) (bson.Document, error) {
+	return nil, newBaseMessageHandlerNotImplementedError(msg)
+}
+
+// OpMsg handles OP_MSG of MongoDB wire protocol.
+func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
+	if handler.queryExecutor == nil {
+		return nil, newBaseMessageHandlerNotImplementedError(msg)
+	}
+
+	q, err := message.NewQueryWithMessage(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	res := message.NewResponse()
+
+	switch q.GetType() {
+	case message.Insert:
+		n, ok := handler.queryExecutor.Insert(q)
+		res.SetStatus(ok)
+		res.SetNumberOfAffectedDocuments(n)
+	case message.Delete:
+		n, ok := handler.queryExecutor.Delete(q)
+		res.SetStatus(ok)
+		res.SetNumberOfAffectedDocuments(n)
+	case message.Update:
+		n, ok := handler.queryExecutor.Update(q)
+		res.SetStatus(ok)
+		res.SetNumberOfAffectedDocuments(n)
+	case message.Find:
+		docs, ok := handler.queryExecutor.Find(q)
+		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
+		res.SetStatus(ok)
+	}
+
+	bsonRes, err := res.BSONBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	return bsonRes, nil
+}

@@ -12,28 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongo
+package message
 
-// Insert handles a OP_INSERT message.
-func (server *Server) Insert(*Query) error {
-	// ====================== YOUR CODE HERE ======================
-	// 説明 :
-	// ヒント :
-	return nil
-	// ============================================================
-}
-
-// Update handles a OP_UPDATE message.
-func (server *Server) Update(*Query) error {
-	return nil
-}
-
-// Select handles a OP_QUERY message.
-func (server *Server) Select(*Query) ([]Document, error) {
-	return nil, nil
-}
-
-// Delete handles a OP_DELETE message.
-func (server *Server) Delete(*Query) error {
-	return nil
+// MessageExecutor represents an interface for MongoDB database commands.
+type MessageExecutor interface {
+	CommandExecutor
+	QueryExecutor
 }

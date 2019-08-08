@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//  http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,20 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongo
+package protocol
 
-import (
-	"github.com/cybergarage/go-mongo/message"
+import "fmt"
+
+const (
+	errorInvalidMessageHeader = "Invalid message header : %s"
+	errorInvalidMessageOpCode = "OpCode (%d) is not supported"
+	errorOpMsgNoSection       = "Section is not found"
 )
 
-// Command represents a query command of MongoDB database command.
-type Command = message.Command
-
-// Query represents a query of MongoDB database command.
-type Query = message.Query
-
-// QueryExecutor represents an interface for MongoDB query commands.
-type QueryExecutor interface {
-	message.CommandExecutor
-	message.QueryExecutor
+func newMessageRequestError(op OpCode, body []byte) error {
+	return fmt.Errorf("")
 }
