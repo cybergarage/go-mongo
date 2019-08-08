@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-mongo/bson"
-	"go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage"
+	"go.mongodb.org/mongo-driver/x/network/wiremessage"
 )
 
 const (

@@ -59,7 +59,7 @@ func (server *MyServer) MessageReceived(msg OpMessage) {
 func (server *MyServer) Insert(q *Query) (int32, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 指定されたドキュメント保持してください
-	// ヒント : 
+	// ヒント :
 	//　　　追加するドキュメントはQuery::GetDocuments()で取得できます。
 	//　　　返り値には追加れたドキュメント数を返します
 	// ============================================================
@@ -69,7 +69,7 @@ func (server *MyServer) Insert(q *Query) (int32, bool) {
 		server.documents = append(server.documents, docs...)
 	}
 
-	return len(docs), true
+	return int32(len(docs)), true
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
@@ -77,8 +77,8 @@ func (server *MyServer) Update(q *Query) (int32, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 更新対象にに指定されたドキュメントを更新してください
 	// ヒント :
-　　 //　　　更新対象の条件はQuery::GetFilter()で取得できます。
-　　 //　　　更新するドキュメントはQuery::GetDocuments()で取得できます。
+	//　　　更新対象の条件はQuery::GetFilter()で取得できます。
+	//　　　更新するドキュメントはQuery::GetDocuments()で取得できます。
 	// ============================================================
 
 	_ = q.GetFilter()
