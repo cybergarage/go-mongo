@@ -32,7 +32,7 @@ type Trainer struct {
 }
 
 func TestNewClient(t *testing.T) {
-	server := newTestServer()
+	server := NewMyServer()
 	err := server.Start()
 	if err != nil {
 		t.Error(err)
