@@ -57,26 +57,11 @@ func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) ([]bson.Document, error
 	if handler.queryExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
-
-	elements, err := msg.Query.Elements()
+	cmd, err := message.NewCommandWithDocument(msg.Query)
 	if err != nil {
 		return nil, err
 	}
-
-	replyDocs := make([]bson.Document, 0)
-	for _, element := range elements {
-		cmd := message.NewCommandWithElement(element)
-		replyDocument, err := handler.queryExecutor.ExecuteCommand(cmd)
-		if err != nil {
-			return nil, err
-		}
-		if replyDocument == nil {
-			continue
-		}
-		replyDocs = append(replyDocs, replyDocument)
-	}
-
-	return replyDocs, nil
+	return handler.queryExecutor.ExecuteCommand(cmd)
 }
 
 // OpGetMore handles GET_MORE of MongoDB wire protocol.
