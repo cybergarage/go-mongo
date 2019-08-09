@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/protocol"
 )
 
 // See : Database Commands
@@ -36,12 +37,17 @@ const (
 	errorUnknownCommand = "Unknown Command : {%s}"
 )
 
+const (
+	adminCommand = "admin.$cmd"
+)
+
 var allSupportedCommands = []string{
 	IsMaster,
 }
 
 // Command represents a query command of MongoDB database command.
 type Command struct {
+	IsAdmin  bool
 	Elements []bson.Element
 }
 
@@ -51,16 +57,29 @@ type CommandExecutor interface {
 	ExecuteCommand(cmd *Command) ([]bson.Document, error)
 }
 
-// NewCommandWithDocument returns a new command instance with the specified BSON document.
-func NewCommandWithDocument(doc bson.Document) (*Command, error) {
-	elements, err := doc.Elements()
-	if err != nil {
-		return nil, err
+// NewCommandWithQuery returns a new command instance with the specified BSON document.
+func NewCommandWithQuery(q *protocol.Query) (*Command, error) {
+	var err error
+	var elements []bson.Element
+
+	doc := q.GetQuery()
+	if 0 <= len(doc) {
+		elements, err = doc.Elements()
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	cmd := &Command{
+		IsAdmin:  q.IsCollection(adminCommand),
 		Elements: elements,
 	}
 	return cmd, nil
+}
+
+// IsAdminCommand returns true when it is a admin command, otherwise false.
+func (cmd *Command) IsAdminCommand() bool {
+	return cmd.IsAdmin
 }
 
 // GetType returns a string type
