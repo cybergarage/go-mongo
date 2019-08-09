@@ -38,28 +38,33 @@ func NewBaseQueryExecutor() *BaseQueryExecutor {
 //////////////////////////////////////////////////
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
-func (handler *BaseQueryExecutor) ExecuteCommand(cmd *Command) (bson.Document, error) {
-	key := cmd.Key()
-	switch key {
+func (handler *BaseQueryExecutor) ExecuteCommand(cmd *Command) ([]bson.Document, error) {
+	cmdType, err := cmd.GetType()
+	if err != nil {
+		return nil, err
+	}
+	switch cmdType {
 	case message.IsMaster:
 		return handler.isMaster(cmd)
-	case "compression", "client":
-		return nil, nil
 	}
-	return nil, fmt.Errorf(errorQueryHanderNotImplemented, key)
+	return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
 }
 
 // Replication Commands
 
 type ReplicationExecutor interface {
 	// isMaster displays information about this member’s role in the replica set, including whether it is the master.
-	isMaster(cmd *Command) (bson.Document, error)
+	isMaster(q *Query) ([]bson.Document, error)
 }
 
 // IsMaster displays information about this member’s role in the replica set, including whether it is the master.
-func (handler *BaseQueryExecutor) isMaster(cmd *Command) (bson.Document, error) {
+func (handler *BaseQueryExecutor) isMaster(cmd *Command) ([]bson.Document, error) {
 	reply := message.NewDefaultIsMasterResponse()
-	return reply.BSONBytes()
+	replyDoc, err := reply.BSONBytes()
+	if err != nil {
+		return nil, err
+	}
+	return []bson.Document{replyDoc}, nil
 }
 
 //////////////////////////////////////////////////

@@ -15,6 +15,8 @@
 package message
 
 import (
+	"fmt"
+
 	"github.com/cybergarage/go-mongo/bson"
 )
 
@@ -26,26 +28,69 @@ const (
 	// Replication Commands
 	//
 	//isMaster displays information about this member’s role in the replica set, including whether it is the master.
-	IsMaster = "isMaster"
+	IsMaster = "ismaster"
 )
+
+const (
+	errorUnknownCommand = "Unknown Command : {%s}"
+)
+
+var allSupportedCommands = []string{
+	IsMaster,
+}
 
 // Command represents a query command of MongoDB database command.
 type Command struct {
-	bson.Element
-}
-
-// NewCommandWithElement returns a new command instance with the specified a BSON element.
-func NewCommandWithElement(element bson.Element) *Command {
-	cmd := &Command{
-		Element: element,
-	}
-	return cmd
+	Elements []bson.Element
 }
 
 // CommandExecutor represents an interface for MongoDB database commands.
 type CommandExecutor interface {
-	// Replication Commands
-
 	// ExecuteCommand handles query commands other than those explicitly specified above.
-	ExecuteCommand(cmd *Command) (bson.Document, error)
+	ExecuteCommand(cmd *Command) ([]bson.Document, error)
+}
+
+// NewCommandWithDocument returns a new command instance with the specified BSON document.
+func NewCommandWithDocument(doc bson.Document) (*Command, error) {
+	elements, err := doc.Elements()
+	if err != nil {
+		return nil, err
+	}
+	cmd := &Command{
+		Elements: elements,
+	}
+	return cmd, nil
+}
+
+// GetType returns a string type
+func (cmd *Command) GetType() (string, error) {
+	for _, typeString := range allSupportedCommands {
+		if cmd.IsType(typeString) {
+			return typeString, nil
+		}
+	}
+	return "", fmt.Errorf(errorUnknownCommand, cmd.String())
+}
+
+// IsType returns true when the command has the specified element, otherwise false.
+func (cmd *Command) IsType(typeString string) bool {
+	for _, element := range cmd.Elements {
+		key := element.Key()
+		if key == typeString {
+			return true
+		}
+	}
+	return false
+}
+
+// String returns the string description.
+func (cmd *Command) String() string {
+	str := ""
+	for n, element := range cmd.Elements {
+		if n != 0 {
+			str += " "
+		}
+		str += element.Key()
+	}
+	return str
 }
