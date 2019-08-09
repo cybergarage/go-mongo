@@ -71,6 +71,24 @@ func NewQueryWithHeaderAndBody(header *Header, body []byte) (*Query, error) {
 	return op, nil
 }
 
+// GetCollectionName returns the query collection name.
+func (op *Query) GetCollectionName() string {
+	return op.FullCollectionName
+}
+
+// IsCollection returns true when the specified name equals the full collection name, otherwise false.
+func (op *Query) IsCollection(name string) bool {
+	if name != op.FullCollectionName {
+		return false
+	}
+	return true
+}
+
+// GetQuery returns the query document.
+func (op *Query) GetQuery() bson.Document {
+	return op.Query
+}
+
 // Size returns the message size including the header.
 func (op *Query) Size() int32 {
 	bodySize := 4 + (len(op.FullCollectionName) + 1) + 4 + 4 + len(op.Query)

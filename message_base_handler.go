@@ -57,10 +57,12 @@ func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) ([]bson.Document, error
 	if handler.queryExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
-	cmd, err := message.NewCommandWithDocument(msg.Query)
+
+	cmd, err := message.NewCommandWithQuery(msg)
 	if err != nil {
 		return nil, err
 	}
+
 	return handler.queryExecutor.ExecuteCommand(cmd)
 }
 
