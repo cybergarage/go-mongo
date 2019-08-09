@@ -16,6 +16,7 @@ package message
 
 import (
 	"fmt"
+
 	"github.com/cybergarage/go-mongo/bson"
 	"github.com/cybergarage/go-mongo/protocol"
 )
