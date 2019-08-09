@@ -16,6 +16,7 @@ package message
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cybergarage/go-mongo/bson"
 )
@@ -76,7 +77,7 @@ func (cmd *Command) GetType() (string, error) {
 func (cmd *Command) IsType(typeString string) bool {
 	for _, element := range cmd.Elements {
 		key := element.Key()
-		if key == typeString {
+		if strings.ToLower(key) == typeString {
 			return true
 		}
 	}
