@@ -14,6 +14,10 @@
 
 package message
 
+const (
+	AdminCommand = "admin.$cmd"
+)
+
 // MessageExecutor represents an interface for MongoDB database commands.
 type MessageExecutor interface {
 	CommandExecutor
