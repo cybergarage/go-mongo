@@ -21,13 +21,6 @@ import (
 )
 
 const (
-	////////////////////////////////////////
-	//Replication Commands
-	////////////////////////////////////////
-
-	// isMaster (All Instances)
-
-	IsMaster                     = "ismaster"
 	maxBsonObjectSize            = "maxBsonObjectSize"
 	maxMessageSizeBytes          = "maxMessageSizeBytes"
 	maxWriteBatchSize            = "maxWriteBatchSize"

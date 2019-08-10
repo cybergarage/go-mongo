@@ -44,6 +44,7 @@ type UserCommandExecutor interface {
 type DatabaseCommandExecutor interface {
 	ReplicationCommandExecutor
 	DiagnosticCommandExecutor
+	WriteOperationExecutor
 }
 
 // ReplicationCommandExecutor represents an executor interface for MongoDB replication commands.
@@ -54,4 +55,9 @@ type ReplicationCommandExecutor interface {
 // DiagnosticCommandExecutor represents an executor interface for MongoDB diagnostic commands.
 type DiagnosticCommandExecutor interface {
 	ExecuteBuildInfo(cmd *Command) ([]bson.Document, error)
+}
+
+// WriteOperationExecutor represents an executor interface for MongoDB write operation commands.
+type WriteOperationExecutor interface {
+	ExecuteGetLastError(cmd *Command) ([]bson.Document, error)
 }
