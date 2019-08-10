@@ -31,6 +31,7 @@ type MessageListener interface {
 
 // Server is an instance for MongoDB protocols.
 type Server struct {
+	*Config
 	Addr                 string
 	Port                 int
 	messageListener      MessageListener
@@ -42,6 +43,7 @@ type Server struct {
 // NewServer returns a new server instance.
 func NewServer() *Server {
 	server := &Server{
+		Config:               NewDefaultConfig(),
 		Addr:                 "",
 		Port:                 DefaultPort,
 		messageListener:      nil,

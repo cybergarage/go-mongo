@@ -21,16 +21,16 @@ import (
 	"github.com/cybergarage/go-mongo/message"
 )
 
-// BaseQueryExecutor is a complete hander for QueryExecutor.
-type BaseQueryExecutor struct{}
+// BaseCommandExecutor is a complete hander for CommandExecutor.
+type BaseCommandExecutor struct{}
 
-func baseQueryExecutorNotImplementedError(q *Query) error {
+func baseCommandExecutorNotImplementedError(q *Query) error {
 	return fmt.Errorf(errorQueryHanderNotImplemented, "")
 }
 
-// NewBaseQueryExecutor returns a complete null handler for QueryExecutor.
-func NewBaseQueryExecutor() *BaseQueryExecutor {
-	return &BaseQueryExecutor{}
+// NewBaseCommandExecutor returns a complete null handler for CommandExecutor.
+func NewBaseCommandExecutor() *BaseCommandExecutor {
+	return &BaseCommandExecutor{}
 }
 
 //////////////////////////////////////////////////
@@ -38,7 +38,7 @@ func NewBaseQueryExecutor() *BaseQueryExecutor {
 //////////////////////////////////////////////////
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
-func (handler *BaseQueryExecutor) ExecuteCommand(cmd *Command) ([]bson.Document, error) {
+func (handler *BaseCommandExecutor) ExecuteCommand(cmd *Command) ([]bson.Document, error) {
 	cmdType, err := cmd.GetType()
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ type ReplicationExecutor interface {
 }
 
 // IsMaster displays information about this member’s role in the replica set, including whether it is the master.
-func (handler *BaseQueryExecutor) isMaster(cmd *Command) ([]bson.Document, error) {
+func (handler *BaseCommandExecutor) isMaster(cmd *Command) ([]bson.Document, error) {
 	reply := message.NewDefaultIsMasterResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
@@ -68,25 +68,25 @@ func (handler *BaseQueryExecutor) isMaster(cmd *Command) ([]bson.Document, error
 }
 
 //////////////////////////////////////////////////
-// QueryExecutor
+// CommandExecutor
 //////////////////////////////////////////////////
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-func (handler *BaseQueryExecutor) Insert(*Query) (int32, bool) {
+func (handler *BaseCommandExecutor) Insert(*Query) (int32, bool) {
 	return 0, false
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
-func (handler *BaseQueryExecutor) Update(*Query) (int32, bool) {
+func (handler *BaseCommandExecutor) Update(*Query) (int32, bool) {
 	return 0, false
 }
 
 // Find hadles 'find' query of OP_MSG.
-func (handler *BaseQueryExecutor) Find(*Query) ([]bson.Document, bool) {
+func (handler *BaseCommandExecutor) Find(*Query) ([]bson.Document, bool) {
 	return nil, false
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-func (handler *BaseQueryExecutor) Delete(*Query) (int32, bool) {
+func (handler *BaseCommandExecutor) Delete(*Query) (int32, bool) {
 	return 0, false
 }

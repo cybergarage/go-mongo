@@ -24,8 +24,8 @@ type Command = message.Command
 // Query represents a query of MongoDB database command.
 type Query = message.Query
 
-// QueryExecutor represents an interface for MongoDB query commands.
-type QueryExecutor interface {
+// CommandExecutor represents an interface for MongoDB query commands.
+type CommandExecutor interface {
 	message.CommandExecutor
-	message.QueryExecutor
+	message.QueryCommandExecutor
 }

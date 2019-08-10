@@ -45,8 +45,8 @@ type Query struct {
 	Documents  []bson.Document
 }
 
-// QueryExecutor represents an interface for MongoDB queries.
-type QueryExecutor interface {
+// QueryCommandExecutor represents an interface for MongoDB queries.
+type QueryCommandExecutor interface {
 	// Insert hadles OP_INSERT and 'insert' query of OP_MSG.
 	Insert(*Query) (int32, bool)
 	// Update hadles OP_UPDATE and 'update' query of OP_MSG.
