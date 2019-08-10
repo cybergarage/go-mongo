@@ -27,6 +27,7 @@ type Config struct {
 	maxWireVersion               int32
 	readOnly                     bool
 	compressions                 []string
+	version                      string
 }
 
 // NewDefaultConfig returns a default configuration instance.
@@ -39,6 +40,7 @@ func NewDefaultConfig() *Config {
 		minWireVersion:               message.DefaultMinWireVersion,
 		maxWireVersion:               message.DefaultMaxWireVersion,
 		readOnly:                     false,
+		version:                      message.DefaultCompatibleVersion,
 	}
 	return config
 }
@@ -86,4 +88,9 @@ func (config *Config) GetReadOnly() bool {
 // GetCompressions should return supported compress strings.
 func (config *Config) GetCompressions() []string {
 	return config.compressions
+}
+
+// GetVersion should return supported MongoDB version string.
+func (config *Config) GetVersion() string {
+	return config.version
 }

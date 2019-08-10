@@ -50,7 +50,7 @@ func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseComma
 }
 
 //////////////////////////////////////////////////
-// DatabaseCommandExecutor
+// CommandExecutor
 //////////////////////////////////////////////////
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
@@ -67,14 +67,30 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) ([]bson.Docume
 	switch cmdType {
 	case message.IsMaster:
 		return executor.DatabaseCommandExecutor.ExecuteIsMaster(cmd)
+	case message.BuildInfo:
+		return executor.DatabaseCommandExecutor.ExecuteBuildInfo(cmd)
 	}
 
 	return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
 }
 
-// IsMaster displays information about this member’s role in the replica set, including whether it is the master.
+//////////////////////////////////////////////////
+// DatabaseCommandExecutor
+//////////////////////////////////////////////////
+
+// ExecuteIsMaster returns information about this member’s role in the replica set, including whether it is the master.
 func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) ([]bson.Document, error) {
 	reply := message.NewDefaultIsMasterResponse()
+	replyDoc, err := reply.BSONBytes()
+	if err != nil {
+		return nil, err
+	}
+	return []bson.Document{replyDoc}, nil
+}
+
+// ExecuteBuildInfo returns statistics about the MongoDB build.
+func (executor *BaseCommandExecutor) ExecuteBuildInfo(cmd *Command) ([]bson.Document, error) {
+	reply := message.NewDefaultBuildInfoResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err

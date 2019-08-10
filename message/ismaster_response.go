@@ -28,16 +28,16 @@ const (
 	// isMaster (All Instances)
 
 	IsMaster                     = "ismaster"
-	MaxBsonObjectSize            = "maxBsonObjectSize"
-	MaxMessageSizeBytes          = "maxMessageSizeBytes"
-	MaxWriteBatchSize            = "maxWriteBatchSize"
-	LocalTime                    = "localTime"
-	LogicalSessionTimeoutMinutes = "logicalSessionTimeoutMinutes"
-	MinWireVersion               = "minWireVersion"
-	MaxWireVersion               = "maxWireVersion"
-	ReadOnly                     = "readOnly"
-	Compression                  = "compression"
-	SASLSupportedMechs           = "saslSupportedMechs"
+	maxBsonObjectSize            = "maxBsonObjectSize"
+	maxMessageSizeBytes          = "maxMessageSizeBytes"
+	maxWriteBatchSize            = "maxWriteBatchSize"
+	localTime                    = "localTime"
+	logicalSessionTimeoutMinutes = "logicalSessionTimeoutMinutes"
+	minWireVersion               = "minWireVersion"
+	maxWireVersion               = "maxWireVersion"
+	readOnly                     = "readOnly"
+	compression                  = "compression"
+	saslSupportedMechs           = "saslSupportedMechs"
 
 	DefaultMaxBsonObjectSize            = 16 * 1024 * 1024
 	DefaultMaxMessageSizeBytes          = 48000000
@@ -51,14 +51,14 @@ const (
 func NewDefaultIsMasterResponse() *Response {
 	defaultElements := map[string]interface{}{
 		IsMaster:                     true,
-		MaxBsonObjectSize:            int32(DefaultMaxBsonObjectSize),
-		MaxMessageSizeBytes:          int32(DefaultMaxMessageSizeBytes),
-		MaxWriteBatchSize:            int32(DefaultMaxWriteBatchSize),
-		LocalTime:                    bson.Datetime(time.Now().Unix()),
-		LogicalSessionTimeoutMinutes: int32(DefaultLogicalSessionTimeoutMinutes),
-		MinWireVersion:               int32(DefaultMinWireVersion),
-		MaxWireVersion:               int32(DefaultMaxWireVersion),
-		ReadOnly:                     false,
+		maxBsonObjectSize:            int32(DefaultMaxBsonObjectSize),
+		maxMessageSizeBytes:          int32(DefaultMaxMessageSizeBytes),
+		maxWriteBatchSize:            int32(DefaultMaxWriteBatchSize),
+		localTime:                    bson.Datetime(time.Now().Unix()),
+		logicalSessionTimeoutMinutes: int32(DefaultLogicalSessionTimeoutMinutes),
+		minWireVersion:               int32(DefaultMinWireVersion),
+		maxWireVersion:               int32(DefaultMaxWireVersion),
+		readOnly:                     false,
 	}
 
 	res := NewResponseWithElements(defaultElements)
@@ -71,14 +71,14 @@ func NewDefaultIsMasterResponse() *Response {
 func NewIsMasterResponseWithConfig(config ServerConfig) *Response {
 	defaultElements := map[string]interface{}{
 		IsMaster:                     config.IsMaster(),
-		MaxBsonObjectSize:            config.GetMaxBsonObjectSize(),
-		MaxMessageSizeBytes:          config.GetMaxMessageSizeBytes(),
-		MaxWriteBatchSize:            config.GetMaxWriteBatchSize(),
-		LocalTime:                    bson.Datetime(time.Now().Unix()),
-		LogicalSessionTimeoutMinutes: config.GetLogicalSessionTimeoutMinutes(),
-		MinWireVersion:               config.GetMinWireVersion(),
-		MaxWireVersion:               config.GetMaxWireVersion(),
-		ReadOnly:                     config.GetReadOnly(),
+		maxBsonObjectSize:            config.GetMaxBsonObjectSize(),
+		maxMessageSizeBytes:          config.GetMaxMessageSizeBytes(),
+		maxWriteBatchSize:            config.GetMaxWriteBatchSize(),
+		localTime:                    bson.Datetime(time.Now().Unix()),
+		logicalSessionTimeoutMinutes: config.GetLogicalSessionTimeoutMinutes(),
+		minWireVersion:               config.GetMinWireVersion(),
+		maxWireVersion:               config.GetMaxWireVersion(),
+		readOnly:                     config.GetReadOnly(),
 	}
 
 	res := NewResponseWithElements(defaultElements)

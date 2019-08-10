@@ -35,6 +35,7 @@ const (
 
 var allSupportedCommands = []string{
 	IsMaster,
+	BuildInfo,
 }
 
 // Command represents a query command of MongoDB database command.
