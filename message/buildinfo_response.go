@@ -15,8 +15,6 @@
 package message
 
 const (
-	BuildInfo = "buildinfo"
-
 	version                  = "version"
 	DefaultCompatibleVersion = "3.6.4"
 )

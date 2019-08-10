@@ -69,6 +69,8 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) ([]bson.Docume
 		return executor.DatabaseCommandExecutor.ExecuteIsMaster(cmd)
 	case message.BuildInfo:
 		return executor.DatabaseCommandExecutor.ExecuteBuildInfo(cmd)
+	case message.GetLastError:
+		return executor.DatabaseCommandExecutor.ExecuteGetLastError(cmd)
 	}
 
 	return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
@@ -91,6 +93,16 @@ func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) ([]bson.Docum
 // ExecuteBuildInfo returns statistics about the MongoDB build.
 func (executor *BaseCommandExecutor) ExecuteBuildInfo(cmd *Command) ([]bson.Document, error) {
 	reply := message.NewDefaultBuildInfoResponse()
+	replyDoc, err := reply.BSONBytes()
+	if err != nil {
+		return nil, err
+	}
+	return []bson.Document{replyDoc}, nil
+}
+
+// ExecuteGetLastError returns statistics about the MongoDB build.
+func (executor *BaseCommandExecutor) ExecuteGetLastError(cmd *Command) ([]bson.Document, error) {
+	reply := message.NewDefaultLastErrorResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err

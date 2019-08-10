@@ -33,9 +33,16 @@ const (
 	adminCommand = "admin.$cmd"
 )
 
+const (
+	IsMaster     = "ismaster"
+	BuildInfo    = "buildinfo"
+	GetLastError = "getlasterror"
+)
+
 var allSupportedCommands = []string{
 	IsMaster,
 	BuildInfo,
+	GetLastError,
 }
 
 // Command represents a query command of MongoDB database command.
