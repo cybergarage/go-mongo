@@ -22,22 +22,17 @@ import (
 
 type MyServer struct {
 	*Server
-	*BaseMessageHandler
-	*BaseCommandExecutor
 	documents []bson.Document
 }
 
 // NewMyServer returns a test server instance.
 func NewMyServer() *MyServer {
 	server := &MyServer{
-		Server:             NewServer(),
-		BaseMessageHandler: NewBaseMessageHandler(),
-		BaseCommandExecutor:  NewBaseCommandExecutor(),
-		documents:          make([]bson.Document, 0),
+		Server:    NewServer(),
+		documents: make([]bson.Document, 0),
 	}
 
 	server.SetMessageListener(server)
-	server.SetMessageHandler(server)
 	server.SetCommandExecutor(server)
 
 	return server

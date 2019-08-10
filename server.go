@@ -38,6 +38,8 @@ type Server struct {
 	tcpListener          net.Listener
 	MessageHandler       OpMessageHandler
 	lastMessageRequestID int32
+	*BaseMessageHandler
+	*BaseCommandExecutor
 }
 
 // NewServer returns a new server instance.
@@ -50,7 +52,14 @@ func NewServer() *Server {
 		MessageHandler:       nil,
 		tcpListener:          nil,
 		lastMessageRequestID: 0,
+		BaseMessageHandler:   NewBaseMessageHandler(),
+		BaseCommandExecutor:  NewBaseCommandExecutor(),
 	}
+
+	server.SetMessageHandler(server)
+	server.SetCommandExecutor(server)
+	server.SetDatabaseCommandExecutor(server)
+
 	return server
 }
 
