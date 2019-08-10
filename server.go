@@ -58,7 +58,9 @@ func NewServer() *Server {
 
 	server.SetMessageHandler(server)
 	server.SetCommandExecutor(server)
+	server.SetMessageExecutor(server)
 	server.SetDatabaseCommandExecutor(server)
+	server.SetUserCommandExecutor(server)
 
 	return server
 }

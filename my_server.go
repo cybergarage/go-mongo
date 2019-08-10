@@ -33,7 +33,7 @@ func NewMyServer() *MyServer {
 	}
 
 	server.SetMessageListener(server)
-	server.SetCommandExecutor(server)
+	server.SetUserCommandExecutor(server)
 
 	return server
 }

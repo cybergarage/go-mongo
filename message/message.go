@@ -14,8 +14,21 @@
 
 package message
 
-// MessageExecutor represents an interface for MongoDB database commands.
+import "github.com/cybergarage/go-mongo/bson"
+
+// MessageExecutor represents an executor interface for MongoDB message commands.
 type MessageExecutor interface {
-	CommandExecutor
 	QueryCommandExecutor
+}
+
+// QueryCommandExecutor represents an executor interface for MongoDB queries.
+type QueryCommandExecutor interface {
+	// Insert hadles OP_INSERT and 'insert' query of OP_MSG.
+	Insert(*Query) (int32, bool)
+	// Update hadles OP_UPDATE and 'update' query of OP_MSG.
+	Update(*Query) (int32, bool)
+	// Find hadles 'find' query of OP_MSG.
+	Find(*Query) ([]bson.Document, bool)
+	// Delete hadles OP_DELETE and 'delete' query of OP_MSG.
+	Delete(*Query) (int32, bool)
 }
