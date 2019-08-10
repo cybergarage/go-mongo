@@ -67,6 +67,11 @@ func (dict *Dictionary) SetDocumentElement(key string, element Document) {
 	dict.elements[key] = element
 }
 
+// SetNullElement sets a null element.
+func (dict *Dictionary) SetNullElement(key string) {
+	dict.elements[key] = nil
+}
+
 // SetElements sets elements.
 func (dict *Dictionary) SetElements(elements map[string]interface{}) error {
 	for key, element := range elements {
@@ -85,6 +90,8 @@ func (dict *Dictionary) SetElements(elements map[string]interface{}) error {
 			dict.SetDatetimeElement(key, val)
 		case Document:
 			dict.SetDocumentElement(key, val)
+		case nil:
+			dict.SetNullElement(key)
 		default:
 			return fmt.Errorf(errorDictionaryNotSupportedType, key, element)
 		}
@@ -113,6 +120,8 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 			elementBytes = AppendDateTimeElement(elementBytes, key, int64(val))
 		case Document:
 			elementBytes = AppendDocumentElement(elementBytes, key, Document(val))
+		case nil:
+			elementBytes = AppendNullElement(elementBytes, key)
 		default:
 			return nil, fmt.Errorf(errorDictionaryNotSupportedType, key, val)
 		}
