@@ -27,7 +27,7 @@ const (
 
 	// isMaster (All Instances)
 
-	Ismaster                     = "ismaster"
+	IsMaster                     = "ismaster"
 	MaxBsonObjectSize            = "maxBsonObjectSize"
 	MaxMessageSizeBytes          = "maxMessageSizeBytes"
 	MaxWriteBatchSize            = "maxWriteBatchSize"
@@ -50,7 +50,7 @@ const (
 // NewDefaultIsMasterResponse returns a default response instance.
 func NewDefaultIsMasterResponse() *Response {
 	defaultElements := map[string]interface{}{
-		Ismaster:                     true,
+		IsMaster:                     true,
 		MaxBsonObjectSize:            int32(DefaultMaxBsonObjectSize),
 		MaxMessageSizeBytes:          int32(DefaultMaxMessageSizeBytes),
 		MaxWriteBatchSize:            int32(DefaultMaxWriteBatchSize),
@@ -59,6 +59,26 @@ func NewDefaultIsMasterResponse() *Response {
 		MinWireVersion:               int32(DefaultMinWireVersion),
 		MaxWireVersion:               int32(DefaultMaxWireVersion),
 		ReadOnly:                     false,
+	}
+
+	res := NewResponseWithElements(defaultElements)
+	res.SetStatus(true)
+
+	return res
+}
+
+// NewIsMasterResponseWithConfig returns a response instance with the specified configuration.
+func NewIsMasterResponseWithConfig(config ServerConfig) *Response {
+	defaultElements := map[string]interface{}{
+		IsMaster:                     config.IsMaster(),
+		MaxBsonObjectSize:            config.GetMaxBsonObjectSize(),
+		MaxMessageSizeBytes:          config.GetMaxMessageSizeBytes(),
+		MaxWriteBatchSize:            config.GetMaxWriteBatchSize(),
+		LocalTime:                    bson.Datetime(time.Now().Unix()),
+		LogicalSessionTimeoutMinutes: config.GetLogicalSessionTimeoutMinutes(),
+		MinWireVersion:               config.GetMinWireVersion(),
+		MaxWireVersion:               config.GetMaxWireVersion(),
+		ReadOnly:                     config.GetReadOnly(),
 	}
 
 	res := NewResponseWithElements(defaultElements)

@@ -26,14 +26,6 @@ import (
 // https://docs.mongodb.com/manual/reference/command/
 
 const (
-	//
-	// Replication Commands
-	//
-	//isMaster displays information about this member’s role in the replica set, including whether it is the master.
-	IsMaster = "ismaster"
-)
-
-const (
 	errorUnknownCommand = "Unknown Command : {%s}"
 )
 

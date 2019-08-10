@@ -17,5 +17,5 @@ package message
 // MessageExecutor represents an interface for MongoDB database commands.
 type MessageExecutor interface {
 	CommandExecutor
-	QueryExecutor
+	QueryCommandExecutor
 }

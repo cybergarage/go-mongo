@@ -23,7 +23,7 @@ import (
 
 // BaseMessageHandler is a complete hander for MessageHandler.
 type BaseMessageHandler struct {
-	queryExecutor QueryExecutor
+	CommandExecutor CommandExecutor
 }
 
 func newBaseMessageHandlerNotImplementedError(msg OpMessage) error {
@@ -33,13 +33,13 @@ func newBaseMessageHandlerNotImplementedError(msg OpMessage) error {
 // NewBaseMessageHandler returns a complete null handler for MessageHandler.
 func NewBaseMessageHandler() *BaseMessageHandler {
 	return &BaseMessageHandler{
-		queryExecutor: nil,
+		CommandExecutor: nil,
 	}
 }
 
-// SetQueryExecutor sets a query exector for OP_QUERY of MongoDB wire protocol.
-func (handler *BaseMessageHandler) SetQueryExecutor(fn QueryExecutor) {
-	handler.queryExecutor = fn
+// SetCommandExecutor sets a query exector for OP_QUERY of MongoDB wire protocol.
+func (handler *BaseMessageHandler) SetCommandExecutor(fn CommandExecutor) {
+	handler.CommandExecutor = fn
 }
 
 // OpUpdate handles OP_UPDATE of MongoDB wire protocol.
@@ -54,7 +54,7 @@ func (handler *BaseMessageHandler) OpInsert(msg *OpInsert) (bson.Document, error
 
 // OpQuery handles OP_QUERY of MongoDB wire protocol.
 func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) ([]bson.Document, error) {
-	if handler.queryExecutor == nil {
+	if handler.CommandExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
 
@@ -63,7 +63,7 @@ func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) ([]bson.Document, error
 		return nil, err
 	}
 
-	return handler.queryExecutor.ExecuteCommand(cmd)
+	return handler.CommandExecutor.ExecuteCommand(cmd)
 }
 
 // OpGetMore handles GET_MORE of MongoDB wire protocol.
@@ -83,7 +83,7 @@ func (handler *BaseMessageHandler) OpKillCursors(msg *OpKillCursors) (bson.Docum
 
 // OpMsg handles OP_MSG of MongoDB wire protocol.
 func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
-	if handler.queryExecutor == nil {
+	if handler.CommandExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
 
@@ -96,19 +96,19 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 
 	switch q.GetType() {
 	case message.Insert:
-		n, ok := handler.queryExecutor.Insert(q)
+		n, ok := handler.CommandExecutor.Insert(q)
 		res.SetStatus(ok)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Delete:
-		n, ok := handler.queryExecutor.Delete(q)
+		n, ok := handler.CommandExecutor.Delete(q)
 		res.SetStatus(ok)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Update:
-		n, ok := handler.queryExecutor.Update(q)
+		n, ok := handler.CommandExecutor.Update(q)
 		res.SetStatus(ok)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Find:
-		docs, ok := handler.queryExecutor.Find(q)
+		docs, ok := handler.CommandExecutor.Find(q)
 		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
 		res.SetStatus(ok)
 	}

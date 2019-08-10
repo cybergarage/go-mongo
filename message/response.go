@@ -16,15 +16,16 @@ package message
 
 import (
 	"strconv"
+
 	"github.com/cybergarage/go-mongo/bson"
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 )
 
 const (
-	Ok = "ok"
-	Cursor = "cursor"
-	FirstBatch = "firstBatch"
-	NameSpace = "ns"
+	ok         = "ok"
+	cursor     = "cursor"
+	firstBatch = "firstBatch"
+	nameSpace  = "ns"
 )
 
 // Response represents response elements
@@ -50,27 +51,25 @@ func NewResponseWithElements(elements map[string]interface{}) *Response {
 // SetStatus sets an int32 response result.
 func (res *Response) SetStatus(flag bool) {
 	if flag {
-		res.SetDoubleElement(Ok, 1.0)
+		res.SetDoubleElement(ok, 1.0)
 		return
 	}
-	res.SetDoubleElement(Ok, 0.0)
+	res.SetDoubleElement(ok, 0.0)
 }
 
 // SetCursorDocuments sets a resultset.
 func (res *Response) SetCursorDocuments(fullCollectionName string, docs []bson.Document) {
 	var arrIdx int32
 	cursorIdx, cursorDoc := bsoncore.AppendDocumentStart(nil)
-	arrIdx, cursorDoc = bsoncore.AppendArrayElementStart(cursorDoc, FirstBatch)
+	arrIdx, cursorDoc = bsoncore.AppendArrayElementStart(cursorDoc, firstBatch)
 	for n, doc := range docs {
 		cursorDoc = bsoncore.AppendDocumentElement(cursorDoc, strconv.Itoa(n), doc)
 	}
 	cursorDoc, _ = bsoncore.AppendArrayEnd(cursorDoc, arrIdx)
 
 	cursorDoc = bsoncore.AppendInt64Element(cursorDoc, "id", 0)
-	cursorDoc = bsoncore.AppendStringElement(cursorDoc, NameSpace, fullCollectionName)
+	cursorDoc = bsoncore.AppendStringElement(cursorDoc, nameSpace, fullCollectionName)
 	cursorDoc, _ = bsoncore.AppendDocumentEnd(cursorDoc, cursorIdx)
 
-	res.SetDocumentElement(Cursor, cursorDoc)
+	res.SetDocumentElement(cursor, cursorDoc)
 }
-
-

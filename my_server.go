@@ -23,7 +23,7 @@ import (
 type MyServer struct {
 	*Server
 	*BaseMessageHandler
-	*BaseQueryExecutor
+	*BaseCommandExecutor
 	documents []bson.Document
 }
 
@@ -32,13 +32,13 @@ func NewMyServer() *MyServer {
 	server := &MyServer{
 		Server:             NewServer(),
 		BaseMessageHandler: NewBaseMessageHandler(),
-		BaseQueryExecutor:  NewBaseQueryExecutor(),
+		BaseCommandExecutor:  NewBaseCommandExecutor(),
 		documents:          make([]bson.Document, 0),
 	}
 
 	server.SetMessageListener(server)
 	server.SetMessageHandler(server)
-	server.SetQueryExecutor(server)
+	server.SetCommandExecutor(server)
 
 	return server
 }
@@ -56,7 +56,7 @@ func (server *MyServer) MessageRespond(msg OpMessage) {
 }
 
 //////////////////////////////////////////////////
-// QueryExecutor
+// CommandExecutor
 //////////////////////////////////////////////////
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG.
