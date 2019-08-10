@@ -62,3 +62,8 @@ func AppendDateTimeElement(dst []byte, key string, value int64) []byte {
 func AppendDocumentElement(dst []byte, key string, value Document) []byte {
 	return bsoncore.AppendDocumentElement(dst, key, value)
 }
+
+// AppendNullElement will append a BSON null element using key to dst and return the extended buffer.
+func AppendNullElement(dst []byte, key string) []byte {
+	return bsoncore.AppendNullElement(dst, key)
+}
