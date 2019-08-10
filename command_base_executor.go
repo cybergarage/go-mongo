@@ -23,6 +23,7 @@ import (
 
 // BaseCommandExecutor is a complete hander for CommandExecutor.
 type BaseCommandExecutor struct {
+	UserCommandExecutor
 	DatabaseCommandExecutor
 }
 
@@ -33,17 +34,23 @@ func baseCommandExecutorNotImplementedError(q *Query) error {
 // NewBaseCommandExecutor returns a complete null executor for CommandExecutor.
 func NewBaseCommandExecutor() *BaseCommandExecutor {
 	executor := &BaseCommandExecutor{}
+	executor.UserCommandExecutor = executor
 	executor.DatabaseCommandExecutor = executor
 	return executor
 }
 
-// SetDatabaseCommandExecutor sets a query exector for database operation commands.
+// SetUserCommandExecutor sets a command exector for database operation commands.
+func (executor *BaseCommandExecutor) SetUserCommandExecutor(fn UserCommandExecutor) {
+	executor.UserCommandExecutor = fn
+}
+
+// SetDatabaseCommandExecutor sets a command exector for database operation commands.
 func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseCommandExecutor) {
 	executor.DatabaseCommandExecutor = fn
 }
 
 //////////////////////////////////////////////////
-// CommandExecutor
+// DatabaseCommandExecutor
 //////////////////////////////////////////////////
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
@@ -76,25 +83,37 @@ func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) ([]bson.Docum
 }
 
 //////////////////////////////////////////////////
-// CommandExecutor
+// UserCommandExecutor
 //////////////////////////////////////////////////
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-func (executor *BaseCommandExecutor) Insert(*Query) (int32, bool) {
+func (executor *BaseCommandExecutor) Insert(q *Query) (int32, bool) {
+	if executor.UserCommandExecutor != nil {
+		return executor.UserCommandExecutor.Insert(q)
+	}
 	return 0, false
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
-func (executor *BaseCommandExecutor) Update(*Query) (int32, bool) {
+func (executor *BaseCommandExecutor) Update(q *Query) (int32, bool) {
+	if executor.UserCommandExecutor != nil {
+		return executor.UserCommandExecutor.Update(q)
+	}
 	return 0, false
 }
 
 // Find hadles 'find' query of OP_MSG.
-func (executor *BaseCommandExecutor) Find(*Query) ([]bson.Document, bool) {
+func (executor *BaseCommandExecutor) Find(q *Query) ([]bson.Document, bool) {
+	if executor.UserCommandExecutor != nil {
+		return executor.UserCommandExecutor.Find(q)
+	}
 	return nil, false
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-func (executor *BaseCommandExecutor) Delete(*Query) (int32, bool) {
+func (executor *BaseCommandExecutor) Delete(q *Query) (int32, bool) {
+	if executor.UserCommandExecutor != nil {
+		return executor.UserCommandExecutor.Delete(q)
+	}
 	return 0, false
 }

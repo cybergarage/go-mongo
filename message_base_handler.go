@@ -23,7 +23,8 @@ import (
 
 // BaseMessageHandler is a complete hander for MessageHandler.
 type BaseMessageHandler struct {
-	CommandExecutor CommandExecutor
+	CommandExecutor
+	MessageExecutor
 }
 
 func newBaseMessageHandlerNotImplementedError(msg OpMessage) error {
@@ -37,9 +38,14 @@ func NewBaseMessageHandler() *BaseMessageHandler {
 	}
 }
 
-// SetCommandExecutor sets a query exector for OP_QUERY of MongoDB wire protocol.
+// SetCommandExecutor sets a exector for OP_QUERY of MongoDB wire protocol.
 func (handler *BaseMessageHandler) SetCommandExecutor(fn CommandExecutor) {
 	handler.CommandExecutor = fn
+}
+
+// SetMessageExecutor sets a exector for OP_MSG of MongoDB wire protocol.
+func (handler *BaseMessageHandler) SetMessageExecutor(fn MessageExecutor) {
+	handler.MessageExecutor = fn
 }
 
 // OpUpdate handles OP_UPDATE of MongoDB wire protocol.
@@ -83,7 +89,7 @@ func (handler *BaseMessageHandler) OpKillCursors(msg *OpKillCursors) (bson.Docum
 
 // OpMsg handles OP_MSG of MongoDB wire protocol.
 func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
-	if handler.CommandExecutor == nil {
+	if handler.MessageExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
 
@@ -96,19 +102,19 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 
 	switch q.GetType() {
 	case message.Insert:
-		n, ok := handler.CommandExecutor.Insert(q)
+		n, ok := handler.MessageExecutor.Insert(q)
 		res.SetStatus(ok)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Delete:
-		n, ok := handler.CommandExecutor.Delete(q)
+		n, ok := handler.MessageExecutor.Delete(q)
 		res.SetStatus(ok)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Update:
-		n, ok := handler.CommandExecutor.Update(q)
+		n, ok := handler.MessageExecutor.Update(q)
 		res.SetStatus(ok)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Find:
-		docs, ok := handler.CommandExecutor.Find(q)
+		docs, ok := handler.MessageExecutor.Find(q)
 		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
 		res.SetStatus(ok)
 	}

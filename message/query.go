@@ -45,18 +45,6 @@ type Query struct {
 	Documents  []bson.Document
 }
 
-// QueryCommandExecutor represents an interface for MongoDB queries.
-type QueryCommandExecutor interface {
-	// Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-	Insert(*Query) (int32, bool)
-	// Update hadles OP_UPDATE and 'update' query of OP_MSG.
-	Update(*Query) (int32, bool)
-	// Find hadles 'find' query of OP_MSG.
-	Find(*Query) ([]bson.Document, bool)
-	// Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-	Delete(*Query) (int32, bool)
-}
-
 // NewQuery returns a new query.
 func NewQuery() *Query {
 	q := &Query{

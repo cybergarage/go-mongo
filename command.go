@@ -25,19 +25,27 @@ type Command = message.Command
 // Query represents a query of MongoDB database command.
 type Query = message.Query
 
-// CommandExecutor represents an interface for MongoDB query commands.
+// CommandExecutor represents an executor interface for MongoDB commands.
 type CommandExecutor interface {
 	message.CommandExecutor
-	message.QueryCommandExecutor
-	//ReplicationCommandExecutor
 }
 
-// DatabaseCommandExecutor represents an interface for MongoDB operation commands.
+// MessageExecutor represents an executor interface for MongoDB message
+type MessageExecutor interface {
+	message.MessageExecutor
+}
+
+// UserCommandExecutor represents an executor interface for MongoDB query commands.
+type UserCommandExecutor interface {
+	message.QueryCommandExecutor
+}
+
+// DatabaseCommandExecutor represents an executor interface for MongoDB operation commands.
 type DatabaseCommandExecutor interface {
 	ReplicationCommandExecutor
 }
 
-// ReplicationCommandExecutor represents an interface for MongoDB replication commands.
+// ReplicationCommandExecutor represents an executor interface for MongoDB replication commands.
 type ReplicationCommandExecutor interface {
 	ExecuteIsMaster(cmd *Command) ([]bson.Document, error)
 }
