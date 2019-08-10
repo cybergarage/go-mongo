@@ -85,7 +85,7 @@ func (server *Server) SetMessageHandler(h OpMessageHandler) {
 	server.MessageHandler = h
 }
 
-// Start starts the server server.
+// Start starts the server.
 func (server *Server) Start() error {
 	err := server.Stop()
 	if err != nil {
@@ -102,7 +102,7 @@ func (server *Server) Start() error {
 	return nil
 }
 
-// Stop stops the server server.
+// Stop stops the server.
 func (server *Server) Stop() error {
 	err := server.close()
 	if err != nil {
@@ -110,6 +110,16 @@ func (server *Server) Stop() error {
 	}
 
 	return nil
+}
+
+// Restart restarts the server.
+func (server *Server) Restart() error {
+	err := server.Stop()
+	if err != nil {
+		return err
+	}
+
+	return server.Start()
 }
 
 // open opens a listen socket.
