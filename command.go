@@ -15,6 +15,7 @@
 package mongo
 
 import (
+	"github.com/cybergarage/go-mongo/bson"
 	"github.com/cybergarage/go-mongo/message"
 )
 
@@ -28,4 +29,15 @@ type Query = message.Query
 type CommandExecutor interface {
 	message.CommandExecutor
 	message.QueryCommandExecutor
+	//ReplicationCommandExecutor
+}
+
+// DatabaseCommandExecutor represents an interface for MongoDB operation commands.
+type DatabaseCommandExecutor interface {
+	ReplicationCommandExecutor
+}
+
+// ReplicationCommandExecutor represents an interface for MongoDB replication commands.
+type ReplicationCommandExecutor interface {
+	ExecuteIsMaster(cmd *Command) ([]bson.Document, error)
 }

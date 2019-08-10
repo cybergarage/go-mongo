@@ -22,15 +22,24 @@ import (
 )
 
 // BaseCommandExecutor is a complete hander for CommandExecutor.
-type BaseCommandExecutor struct{}
+type BaseCommandExecutor struct {
+	DatabaseCommandExecutor
+}
 
 func baseCommandExecutorNotImplementedError(q *Query) error {
 	return fmt.Errorf(errorQueryHanderNotImplemented, "")
 }
 
-// NewBaseCommandExecutor returns a complete null handler for CommandExecutor.
+// NewBaseCommandExecutor returns a complete null executor for CommandExecutor.
 func NewBaseCommandExecutor() *BaseCommandExecutor {
-	return &BaseCommandExecutor{}
+	executor := &BaseCommandExecutor{}
+	executor.DatabaseCommandExecutor = executor
+	return executor
+}
+
+// SetDatabaseCommandExecutor sets a query exector for database operation commands.
+func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseCommandExecutor) {
+	executor.DatabaseCommandExecutor = fn
 }
 
 //////////////////////////////////////////////////
@@ -38,27 +47,26 @@ func NewBaseCommandExecutor() *BaseCommandExecutor {
 //////////////////////////////////////////////////
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
-func (handler *BaseCommandExecutor) ExecuteCommand(cmd *Command) ([]bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) ([]bson.Document, error) {
+	if executor.DatabaseCommandExecutor == nil {
+		return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
+	}
+
 	cmdType, err := cmd.GetType()
 	if err != nil {
 		return nil, err
 	}
+
 	switch cmdType {
 	case message.IsMaster:
-		return handler.isMaster(cmd)
+		return executor.DatabaseCommandExecutor.ExecuteIsMaster(cmd)
 	}
+
 	return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
 }
 
-// Replication Commands
-
-type ReplicationExecutor interface {
-	// isMaster displays information about this member’s role in the replica set, including whether it is the master.
-	isMaster(q *Query) ([]bson.Document, error)
-}
-
 // IsMaster displays information about this member’s role in the replica set, including whether it is the master.
-func (handler *BaseCommandExecutor) isMaster(cmd *Command) ([]bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) ([]bson.Document, error) {
 	reply := message.NewDefaultIsMasterResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
@@ -72,21 +80,21 @@ func (handler *BaseCommandExecutor) isMaster(cmd *Command) ([]bson.Document, err
 //////////////////////////////////////////////////
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-func (handler *BaseCommandExecutor) Insert(*Query) (int32, bool) {
+func (executor *BaseCommandExecutor) Insert(*Query) (int32, bool) {
 	return 0, false
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
-func (handler *BaseCommandExecutor) Update(*Query) (int32, bool) {
+func (executor *BaseCommandExecutor) Update(*Query) (int32, bool) {
 	return 0, false
 }
 
 // Find hadles 'find' query of OP_MSG.
-func (handler *BaseCommandExecutor) Find(*Query) ([]bson.Document, bool) {
+func (executor *BaseCommandExecutor) Find(*Query) ([]bson.Document, bool) {
 	return nil, false
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-func (handler *BaseCommandExecutor) Delete(*Query) (int32, bool) {
+func (executor *BaseCommandExecutor) Delete(*Query) (int32, bool) {
 	return 0, false
 }
