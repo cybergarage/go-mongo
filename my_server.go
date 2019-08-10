@@ -63,12 +63,39 @@ func (server *MyServer) Insert(q *Query) (int32, bool) {
 	//　　　返り値には追加れたドキュメント数を返します
 	// ============================================================
 
+	nInserted := int32(0)
+
 	docs := q.GetDocuments()
-	if 0 < len(docs) {
-		server.documents = append(server.documents, docs...)
+	for _, doc := range docs {
+		// MongoDBドキュメントは主キーとなる_idフィールドが存在
+		// 参考 : The _id Field - Documents (https://docs.mongodb.com/manual/core/document/)
+		docElem, err := doc.LookupErr("_id")
+		if err != nil {
+			continue
+		}
+		docID, ok := docElem.ObjectIDOK()
+		if !ok {
+			continue
+		}
+
+		// _idの重複を確認
+		for _, dbDoc := range server.documents {
+			dbDocID := dbDoc.Lookup("_id").ObjectID()
+			if docID == dbDocID {
+				continue
+			}
+		}
+
+		// 新規ドキュメントを追加
+		server.documents = append(server.documents, doc)
+		nInserted++
 	}
 
-	return int32(len(docs)), true
+	if len(docs) != int(nInserted) {
+		return nInserted, false
+	}
+
+	return nInserted, true
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
