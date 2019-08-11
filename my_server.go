@@ -68,7 +68,7 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 
 	docs := q.GetDocuments()
 	for _, doc := range docs {
-		// MongoDBドキュメントは主キーとなる_idフィールドが存在
+		// MongoDBドキュメントは主キーとなる_idフィールドが存在します
 		// 参考 : The _id Field - Documents (https://docs.mongodb.com/manual/core/document/)
 		docElem, err := doc.LookupErr("_id")
 		if err != nil {
@@ -79,7 +79,7 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 			continue
 		}
 
-		// _idの重複を確認
+		// _idの重複により、既に追加されたドキュメントか確認します
 		for _, dbDoc := range server.documents {
 			dbDocID := dbDoc.Lookup("_id").ObjectID()
 			if docID == dbDocID {
@@ -87,7 +87,7 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 			}
 		}
 
-		// 新規ドキュメントを追加
+		// 新規ドキュメントを追加します
 		server.documents = append(server.documents, doc)
 		nInserted++
 	}
@@ -108,7 +108,11 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 	//　　　更新するドキュメントはQuery::GetDocuments()で取得できます。
 	// ============================================================
 
-	_ = q.GetFilter()
+	filter := q.GetFilter()
+	docs := q.GetDocuments()
+
+	fmt.Printf("filter = %v\n", filter)
+	fmt.Printf("docs = %v\n", docs)
 
 	return 1, true
 }
@@ -119,7 +123,34 @@ func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 	// 説明 : 検索条件に指定されたドキュメントを返してください
 	// ヒント : 検索条件はQuery::GetFilter()で取得できます。
 	// ============================================================
-	_ = q.GetFilter()
+	filter := q.GetFilter()
+
+	findDoc := make([]bson.Document, 0)
+
+	findElems, err := filter.Elements()
+	if err != nil {
+		return nil, false
+	}
+
+	for _, doc := range server.documents {
+		isMatched := true
+		for _, findElem := range findElems {
+			docElem, err := doc.LookupErr(findElem.Key())
+			if err != nil {
+				isMatched = false
+				break
+			}
+			if !findElem.Value().Equal(docElem) {
+				isMatched = false
+				break
+			}
+		}
+		if !isMatched {
+			continue
+		}
+
+		findDoc = append(findDoc, doc)
+	}
 
 	return server.documents, true
 }
