@@ -14,19 +14,10 @@
 
 package message
 
-const (
-	NumberOfAffectedDocuments = "n"
-)
-
 // NewMessageReplyWithParameters returns a message response instance.
 func NewMessageReplyWithParameters(ok bool, n int32) *Response {
 	res := NewResponse()
 	res.SetNumberOfAffectedDocuments(n)
 	res.SetStatus(ok)
 	return res
-}
-
-// SetNumberOfAffectedDocuments sets a number of affected documents.
-func (res *Response) SetNumberOfAffectedDocuments(n int32) {
-	res.SetInt32Element(NumberOfAffectedDocuments, n)
 }
