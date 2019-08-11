@@ -22,10 +22,12 @@ import (
 )
 
 const (
-	ok         = "ok"
-	cursor     = "cursor"
-	firstBatch = "firstBatch"
-	nameSpace  = "ns"
+	ok                        = "ok"
+	cursor                    = "cursor"
+	firstBatch                = "firstBatch"
+	nameSpace                 = "ns"
+	numberOfAffectedDocuments = "n"
+	numberOfModifiedDocuments = "nModified"
 )
 
 // Response represents response elements
@@ -55,6 +57,16 @@ func (res *Response) SetStatus(flag bool) {
 		return
 	}
 	res.SetDoubleElement(ok, 0.0)
+}
+
+// SetNumberOfAffectedDocuments sets a number of affected documents.
+func (res *Response) SetNumberOfAffectedDocuments(n int32) {
+	res.SetInt32Element(numberOfAffectedDocuments, n)
+}
+
+// SetNumberOfModifiedDocuments sets a number of modified documents.
+func (res *Response) SetNumberOfModifiedDocuments(n int32) {
+	res.SetInt32Element(numberOfModifiedDocuments, n)
 }
 
 // SetCursorDocuments sets a resultset.

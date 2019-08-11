@@ -113,6 +113,7 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 		n, ok := handler.MessageExecutor.Update(q)
 		res.SetStatus(ok)
 		res.SetNumberOfAffectedDocuments(n)
+		res.SetNumberOfModifiedDocuments(n)
 	case message.Find:
 		docs, ok := handler.MessageExecutor.Find(q)
 		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
