@@ -15,8 +15,8 @@
 package mongo
 
 import (
-	"github.com/cybergarage/go-mongo/bson"
-	"github.com/cybergarage/go-mongo/message"
+	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/message"
 )
 
 //////////////////////////////////////////////////

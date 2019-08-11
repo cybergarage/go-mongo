@@ -14,7 +14,7 @@
 
 package mongo
 
-import "github.com/cybergarage/go-mongo/message"
+import "github.com/cybergarage/go-mongo/mongo/message"
 
 // Config stores server configuration parammeters.
 type Config struct {

@@ -21,7 +21,7 @@
 package protocol
 
 import (
-	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/bson"
 
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 )

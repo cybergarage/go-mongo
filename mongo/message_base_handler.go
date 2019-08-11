@@ -17,8 +17,8 @@ package mongo
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-mongo/bson"
-	"github.com/cybergarage/go-mongo/message"
+	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/message"
 )
 
 // BaseMessageHandler is a complete hander for MessageHandler.

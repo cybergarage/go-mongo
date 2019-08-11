@@ -14,7 +14,7 @@
 
 package message
 
-import "github.com/cybergarage/go-mongo/bson"
+import "github.com/cybergarage/go-mongo/mongo/bson"
 
 // MessageExecutor represents an executor interface for MongoDB message commands.
 type MessageExecutor interface {

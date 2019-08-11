@@ -17,65 +17,58 @@ package protocol
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
-// Delete represents a OP_DELETE of MongoDB wire protocol.
+// Insert represents a OP_INSERT of MongoDB wire protocol.
 // See : MongoDB Wire Protocol
 // https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/
-type Delete struct {
+type Insert struct {
 	*Header                          // A standard wire protocol header
-	ZERO               int32         // 0 - reserved for future use
-	FullCollectionName string        // "dbname.collectionname"
 	Flags              Flag          // bit vector. see below
-	Selector           bson.Document // the query to select the document
+	FullCollectionName string        // "dbname.collectionname"
+	Document           bson.Document // one or more documents to insert into the collection
 }
 
-// NewDeleteWithHeaderAndBody returns a new update instance with the specified bytes.
-func NewDeleteWithHeaderAndBody(header *Header, body []byte) (*Delete, error) {
-	zero, offsetBody, ok := ReadInt32(body)
+// NewInsertWithHeaderAndBody returns a new insert instance with the specified bytes.
+func NewInsertWithHeaderAndBody(header *Header, body []byte) (*Insert, error) {
+	flags, offsetBody, ok := ReadUint32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newMessageRequestError(OpInsert, body)
 	}
 
 	collectionName, offsetBody, ok := ReadCString(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newMessageRequestError(OpInsert, body)
 	}
 
-	flags, offsetBody, ok := ReadUint32(offsetBody)
+	document, offsetBody, ok := ReadDocument(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newMessageRequestError(OpInsert, body)
 	}
 
-	selector, offsetBody, ok := ReadDocument(offsetBody)
-	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
-	}
-
-	op := &Delete{
+	op := &Insert{
 		Header:             header,
-		ZERO:               zero,
-		FullCollectionName: collectionName,
-		Selector:           selector,
 		Flags:              Flag(flags),
+		FullCollectionName: collectionName,
+		Document:           document,
 	}
 
 	return op, nil
 }
 
 // Size returns the message size including the header.
-func (op *Delete) Size() int32 {
-	bodySize := 4 + (len(op.FullCollectionName) + 1) + 4 + len(op.Selector)
+func (op *Insert) Size() int32 {
+	bodySize := 4 + (len(op.FullCollectionName) + 1) + len(op.Document)
 	return int32(HeaderSize + bodySize)
 }
 
 // String returns the string description.
-func (op *Delete) String() string {
-	return fmt.Sprintf("%s %s %X %s",
+func (op *Insert) String() string {
+	return fmt.Sprintf("%s %X %s %s",
 		op.Header.String(),
-		op.FullCollectionName,
 		op.Flags,
-		op.Selector.String(),
+		op.FullCollectionName,
+		op.Document.String(),
 	)
 }

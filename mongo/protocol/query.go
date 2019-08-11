@@ -17,7 +17,7 @@ package protocol
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 // Query represents a OP_QUERY of MongoDB wire protocol.
