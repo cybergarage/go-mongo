@@ -20,8 +20,8 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/cybergarage/go-mongo/bson"
-	"github.com/cybergarage/go-mongo/protocol"
+	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/protocol"
 )
 
 // MessageListener represents a listener for MongoDB messages.

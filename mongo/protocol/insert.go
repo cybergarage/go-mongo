@@ -17,7 +17,7 @@ package protocol
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 // Insert represents a OP_INSERT of MongoDB wire protocol.

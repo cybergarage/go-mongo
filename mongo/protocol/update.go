@@ -17,7 +17,7 @@ package protocol
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 // Update represents a OP_UPDATE of MongoDB wire protocol.

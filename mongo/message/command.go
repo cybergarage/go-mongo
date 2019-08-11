@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cybergarage/go-mongo/bson"
-	"github.com/cybergarage/go-mongo/protocol"
+	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/protocol"
 )
 
 // See : Database Commands

@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongo
+package main
 
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo"
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 type MyServer struct {
-	*Server
+	*mongo.Server
 	documents []bson.Document
 }
 
 // NewMyServer returns a test server instance.
 func NewMyServer() *MyServer {
 	server := &MyServer{
-		Server:    NewServer(),
+		Server:    mongo.NewServer(),
 		documents: make([]bson.Document, 0),
 	}
 
@@ -42,11 +43,11 @@ func NewMyServer() *MyServer {
 // MessageListener
 //////////////////////////////////////////////////
 
-func (server *MyServer) MessageReceived(msg OpMessage) {
+func (server *MyServer) MessageReceived(msg mongo.OpMessage) {
 	fmt.Printf("-> %s\n", msg.String())
 }
 
-func (server *MyServer) MessageRespond(msg OpMessage) {
+func (server *MyServer) MessageRespond(msg mongo.OpMessage) {
 	fmt.Printf("<- %s\n", msg.String())
 }
 
@@ -55,7 +56,7 @@ func (server *MyServer) MessageRespond(msg OpMessage) {
 //////////////////////////////////////////////////
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-func (server *MyServer) Insert(q *Query) (int32, bool) {
+func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 指定されたドキュメント保持してください
 	// ヒント :
@@ -99,7 +100,7 @@ func (server *MyServer) Insert(q *Query) (int32, bool) {
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
-func (server *MyServer) Update(q *Query) (int32, bool) {
+func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 更新対象にに指定されたドキュメントを更新してください
 	// ヒント :
@@ -113,7 +114,7 @@ func (server *MyServer) Update(q *Query) (int32, bool) {
 }
 
 // Find hadles 'find' query of OP_MSG.
-func (server *MyServer) Find(q *Query) ([]bson.Document, bool) {
+func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 検索条件に指定されたドキュメントを返してください
 	// ヒント : 検索条件はQuery::GetFilter()で取得できます。
@@ -124,7 +125,7 @@ func (server *MyServer) Find(q *Query) ([]bson.Document, bool) {
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-func (server *MyServer) Delete(q *Query) (int32, bool) {
+func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 検索条件に指定されたドキュメントを返してください
 	// ヒント : 検索条件はQuery::GetFilter()で取得できます。

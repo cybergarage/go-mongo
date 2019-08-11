@@ -17,7 +17,7 @@ package message
 import (
 	"time"
 
-	"github.com/cybergarage/go-mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 const (
