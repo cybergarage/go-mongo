@@ -160,7 +160,7 @@ func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 
 	}
 
-	return server.documents, true
+	return foundDoc, true
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG.

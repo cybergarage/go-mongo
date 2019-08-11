@@ -43,6 +43,7 @@ type Query struct {
 	Type       string
 	Conditions []bson.Document
 	Documents  []bson.Document
+	Operator   string
 }
 
 // NewQuery returns a new query.
@@ -53,6 +54,7 @@ func NewQuery() *Query {
 		Type:       "",
 		Conditions: make([]bson.Document, 0),
 		Documents:  make([]bson.Document, 0),
+		Operator:   "",
 	}
 	return q
 }
@@ -60,12 +62,7 @@ func NewQuery() *Query {
 // NewQueryWithMessage returns a new query with the specified OP_MSG.
 func NewQueryWithMessage(msg *protocol.Msg) (*Query, error) {
 	q := NewQuery()
-	err := q.parseDocument(msg.GetBody())
-	if err != nil {
-		return nil, err
-	}
-	q.Documents = msg.GetDocuments()
-	return q, nil
+	return q, q.ParseMsg(msg)
 }
 
 // GetType returns the section type.
@@ -88,19 +85,26 @@ func (q *Query) GetDocuments() []bson.Document {
 	return q.Documents
 }
 
-// parseDocuments parses the specified BSON documents.
-func (q *Query) parseDocuments(docs []bson.Document) error {
-	for _, doc := range docs {
-		err := q.parseDocument(doc)
-		if err != nil {
-			return err
-		}
+// GetOperator returns the operator string.
+func (q *Query) GetOperator() string {
+	return q.Operator
+}
+
+// ParseMsg parses the specified OP_MSG.
+func (q *Query) ParseMsg(msg *protocol.Msg) error {
+	err := q.parseBodyDocument(msg.GetBody())
+	if err != nil {
+		return err
+	}
+	err = q.parseDocuments(msg.GetDocuments())
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-// parseDocument parses the specified BSON document.
-func (q *Query) parseDocument(doc bson.Document) error {
+// parseBodyDocument parses the specified BSON document.
+func (q *Query) parseBodyDocument(doc bson.Document) error {
 	elements, err := doc.Elements()
 	if err != nil {
 		return err
@@ -127,5 +131,48 @@ func (q *Query) parseDocument(doc bson.Document) error {
 		}
 	}
 
+	return nil
+}
+
+// parseDocuments parses the specified BSON document.
+func (q *Query) parseDocuments(docs []bson.Document) error {
+	switch q.Type {
+	case Insert:
+		q.Documents = docs
+	case Update:
+		for _, doc := range docs {
+			updateCondElem, err := doc.LookupErr("q")
+			if err != nil {
+				return err
+			}
+			updateCond, ok := updateCondElem.DocumentOK()
+			if !ok {
+				continue
+			}
+			updateDocElem, err := doc.LookupErr("u")
+			if err != nil {
+				return err
+			}
+			updateDoc, ok := updateDocElem.DocumentOK()
+			if !ok {
+				continue
+			}
+			updateElems, err := updateDoc.Elements()
+			if err != nil {
+				return err
+			}
+			if len(updateElems) <= 0 {
+				continue
+			}
+			ope := updateElems[0]
+			opeDoc, ok := ope.Value().DocumentOK()
+			if !ok {
+				continue
+			}
+			q.Operator = ope.Key()
+			q.Conditions = append(q.Conditions, updateCond)
+			q.Documents = append(q.Documents, opeDoc)
+		}
+	}
 	return nil
 }
