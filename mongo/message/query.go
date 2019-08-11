@@ -41,7 +41,7 @@ type Query struct {
 	Database   string
 	Collection string
 	Type       string
-	Filter     bson.Document
+	Conditions []bson.Document
 	Documents  []bson.Document
 }
 
@@ -51,7 +51,7 @@ func NewQuery() *Query {
 		Database:   "",
 		Collection: "",
 		Type:       "",
-		Filter:     make(bson.Document, 0),
+		Conditions: make([]bson.Document, 0),
 		Documents:  make([]bson.Document, 0),
 	}
 	return q
@@ -78,12 +78,12 @@ func (q *Query) GetFullCollectionName() string {
 	return fmt.Sprintf("%s.%s", q.Database, q.Collection)
 }
 
-// GetFilter returns the search filter.
-func (q *Query) GetFilter() bson.Document {
-	return q.Filter
+// GetConditions returns the search conditions.
+func (q *Query) GetConditions() []bson.Document {
+	return q.Conditions
 }
 
-// GetDocuments returns the search filter.
+// GetDocuments returns the search conditions.
 func (q *Query) GetDocuments() []bson.Document {
 	return q.Documents
 }
@@ -122,7 +122,7 @@ func (q *Query) parseDocument(doc bson.Document) error {
 		case Filter:
 			doc, ok := element.Value().DocumentOK()
 			if ok {
-				q.Filter = doc
+				q.Conditions = append(q.Conditions, doc)
 			}
 		}
 	}

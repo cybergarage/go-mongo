@@ -62,6 +62,8 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 	// ヒント :
 	//　　　追加するドキュメントはQuery::GetDocuments()で取得できます。
 	//　　　返り値には追加れたドキュメント数を返します
+	// 参考 : insert - Database Commands > Query and Write Operation Commands
+	//        https://docs.mongodb.com/manual/reference/command/insert/#dbcmd.insert
 	// ============================================================
 
 	nInserted := int32(0)
@@ -104,14 +106,16 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 更新対象にに指定されたドキュメントを更新してください
 	// ヒント :
-	//　　　更新対象の条件はQuery::GetFilter()で取得できます。
+	//　　　更新対象の条件はQuery::GetConditions()で取得できます。
 	//　　　更新するドキュメントはQuery::GetDocuments()で取得できます。
+	// 参考 : update - Database Commands > Query and Write Operation Commands
+	//       https://docs.mongodb.com/manual/reference/command/update/#dbcmd.update
 	// ============================================================
 
-	filter := q.GetFilter()
+	conds := q.GetConditions()
 	docs := q.GetDocuments()
 
-	fmt.Printf("filter = %v\n", filter)
+	fmt.Printf("conds = %v\n", conds)
 	fmt.Printf("docs = %v\n", docs)
 
 	return 1, true
@@ -121,35 +125,39 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 検索条件に指定されたドキュメントを返してください
-	// ヒント : 検索条件はQuery::GetFilter()で取得できます。
+	// ヒント : 検索条件はQuery::GetConditions()で取得できます。
+	// 参考 : find - Database Commands > Query and Write Operation Commands
+	//       https://docs.mongodb.com/manual/reference/command/find/#dbcmd.find
 	// ============================================================
-	filter := q.GetFilter()
 
-	findDoc := make([]bson.Document, 0)
+	foundDoc := make([]bson.Document, 0)
 
-	findElems, err := filter.Elements()
-	if err != nil {
-		return nil, false
-	}
-
-	for _, doc := range server.documents {
-		isMatched := true
-		for _, findElem := range findElems {
-			docElem, err := doc.LookupErr(findElem.Key())
-			if err != nil {
-				isMatched = false
-				break
-			}
-			if !findElem.Value().Equal(docElem) {
-				isMatched = false
-				break
-			}
-		}
-		if !isMatched {
-			continue
+	for _, cond := range q.GetConditions() {
+		findElems, err := cond.Elements()
+		if err != nil {
+			return nil, false
 		}
 
-		findDoc = append(findDoc, doc)
+		for _, doc := range server.documents {
+			isMatched := true
+			for _, findElem := range findElems {
+				docElem, err := doc.LookupErr(findElem.Key())
+				if err != nil {
+					isMatched = false
+					break
+				}
+				if !findElem.Value().Equal(docElem) {
+					isMatched = false
+					break
+				}
+			}
+			if !isMatched {
+				continue
+			}
+
+			foundDoc = append(foundDoc, doc)
+		}
+
 	}
 
 	return server.documents, true
@@ -159,10 +167,12 @@ func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 	// ====================== YOUR CODE HERE ======================
 	// 説明 : 検索条件に指定されたドキュメントを返してください
-	// ヒント : 検索条件はQuery::GetFilter()で取得できます。
+	// ヒント : 検索条件はQuery::GetConditions()で取得できます。
+	// 参考 : delete - Database Commands > Query and Write Operation Commands
+	//       https://docs.mongodb.com/manual/reference/command/delete/#dbcmd.delete
 	// ============================================================
 
-	_ = q.GetFilter()
+	_ = q.GetConditions()
 
 	return 1, true
 }
