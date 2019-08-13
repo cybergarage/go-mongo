@@ -17,6 +17,7 @@ package bson
 import (
 	"fmt"
 
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 )
 
@@ -100,4 +101,27 @@ func AppendInterfaceElement(dst []byte, key string, ivalue interface{}) ([]byte,
 		return bsoncore.AppendNullElement(dst, key), nil
 	}
 	return dst, fmt.Errorf("Unkown elment type : %v", ivalue)
+}
+
+// AppendValueElement will append a value using key to dst and return the extended buffer.
+func AppendValueElement(dst []byte, key string, value Value) ([]byte, error) {
+	switch value.Type {
+	case bsontype.Boolean:
+		return bsoncore.AppendBooleanElement(dst, key, value.Boolean()), nil
+	case bsontype.Int32:
+		return bsoncore.AppendInt32Element(dst, key, value.Int32()), nil
+	case bsontype.Int64:
+		return bsoncore.AppendInt64Element(dst, key, value.Int64()), nil
+	case bsontype.Double:
+		return bsoncore.AppendDoubleElement(dst, key, value.Double()), nil
+	case bsontype.String:
+		return bsoncore.AppendStringElement(dst, key, value.String()), nil
+	case bsontype.EmbeddedDocument:
+		return bsoncore.AppendDocumentElement(dst, key, value.Document()), nil
+	case bsontype.ObjectID:
+		return bsoncore.AppendObjectIDElement(dst, key, value.ObjectID()), nil
+	case bsontype.Null:
+		return bsoncore.AppendNullElement(dst, key), nil
+	}
+	return dst, fmt.Errorf("Unkown elment type : %v", value)
 }
