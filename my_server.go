@@ -112,19 +112,19 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 	//       https://docs.mongodb.com/manual/reference/command/update/#dbcmd.update
 	// ============================================================
 
-	docs := q.GetDocuments()
-	conds := q.GetConditions()
-	if len(conds) <= 0 {
+	queryDocs := q.GetDocuments()
+	queryConds := q.GetConditions()
+	if len(queryConds) <= 0 {
 		return 0, true
 	}
 
-	fmt.Printf("conds = %v\n", conds)
-	fmt.Printf("docs = %v\n", docs)
+	fmt.Printf("queryConds = %v\n", queryConds)
+	fmt.Printf("docs = %v\n", queryDocs)
 
 	nUpdated := 0
 
 	for n := (len(server.documents) - 1); 0 <= n; n-- {
-		doc := server.documents[n]
+		serverDoc := server.documents[n]
 		isMatched := true
 		for _, cond := range q.GetConditions() {
 			condElems, err := cond.Elements()
@@ -132,7 +132,7 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 				return 0, false
 			}
 			for _, condElem := range condElems {
-				docElem, err := doc.LookupErr(condElem.Key())
+				docElem, err := serverDoc.LookupErr(condElem.Key())
 				if err != nil {
 					isMatched = false
 					break
@@ -147,10 +147,37 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 		if !isMatched {
 			continue
 		}
-
 		server.documents = append(server.documents[:n], server.documents[n+1:]...)
 
-		updateDoc := doc
+		updateDoc := serverDoc
+		/* FIXME
+		docElems, err := serverDoc.Elements()
+		if err != nil {
+			return int32(nUpdated), false
+		}
+
+		updateDoc := bson.StartDocument()
+		for _, docElem := range docElems {
+			elemKey := docElem.Key()
+			elemValue := docElem.Value()
+			for _, queryDoc := range queryDocs {
+				queryValue, err := queryDoc.LookupErr(elemKey)
+				if err == nil {
+					elemValue = queryValue
+					break
+				}
+			}
+			updateDoc, err = bson.AppendValueElement(updateDoc, elemKey, elemValue)
+			if err != nil {
+				return int32(nUpdated), false
+			}
+		}
+		updateDoc, err = bson.EndDocument(updateDoc)
+		if err != nil {
+			return int32(nUpdated), false
+		}
+		*/
+
 		server.documents = append(server.documents, updateDoc)
 
 		nUpdated++
@@ -209,8 +236,8 @@ func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 	//       https://docs.mongodb.com/manual/reference/command/delete/#dbcmd.delete
 	// ============================================================
 
-	conds := q.GetConditions()
-	if len(conds) <= 0 {
+	queryConds := q.GetConditions()
+	if len(queryConds) <= 0 {
 		nDeleted := len(server.documents)
 		server.documents = make([]bson.Document, 0)
 		return int32(nDeleted), true
@@ -219,7 +246,7 @@ func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 	nDeleted := 0
 
 	for n := (len(server.documents) - 1); 0 <= n; n-- {
-		doc := server.documents[n]
+		serverDoc := server.documents[n]
 		isMatched := true
 		for _, cond := range q.GetConditions() {
 			condElems, err := cond.Elements()
@@ -227,7 +254,7 @@ func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 				return 0, false
 			}
 			for _, condElem := range condElems {
-				docElem, err := doc.LookupErr(condElem.Key())
+				docElem, err := serverDoc.LookupErr(condElem.Key())
 				if err != nil {
 					isMatched = false
 					break
