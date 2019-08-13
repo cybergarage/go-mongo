@@ -45,6 +45,7 @@ type Query struct {
 	Conditions []bson.Document
 	Documents  []bson.Document
 	Operator   string
+	Limit      int
 }
 
 // NewQuery returns a new query.
@@ -56,6 +57,7 @@ func NewQuery() *Query {
 		Conditions: make([]bson.Document, 0),
 		Documents:  make([]bson.Document, 0),
 		Operator:   "",
+		Limit:      0,
 	}
 	return q
 }
@@ -89,6 +91,11 @@ func (q *Query) GetDocuments() []bson.Document {
 // GetOperator returns the operator string.
 func (q *Query) GetOperator() string {
 	return q.Operator
+}
+
+// GetLimit returns the limit value.
+func (q *Query) GetLimit() int {
+	return q.Limit
 }
 
 // ParseMsg parses the specified OP_MSG.
@@ -140,38 +147,56 @@ func (q *Query) parseDocuments(docs []bson.Document) error {
 	switch q.Type {
 	case Insert:
 		q.Documents = docs
+	case Delete:
+		for _, doc := range docs {
+			condElem, err := doc.LookupErr("q")
+			if err == nil {
+				cond, ok := condElem.DocumentOK()
+				if ok {
+					q.Conditions = append(q.Conditions, cond)
+				}
+			}
+
+			limitElem, err := doc.LookupErr("limit")
+			if err == nil {
+				limit, ok := limitElem.Int32OK()
+				if ok {
+					q.Limit = int(limit)
+				}
+			}
+		}
 	case Update:
 		for _, doc := range docs {
-			updateCondElem, err := doc.LookupErr("q")
+			condElem, err := doc.LookupErr("q")
 			if err != nil {
 				return err
 			}
-			updateCond, ok := updateCondElem.DocumentOK()
+			cond, ok := condElem.DocumentOK()
 			if !ok {
 				continue
 			}
-			updateDocElem, err := doc.LookupErr("u")
+			docElem, err := doc.LookupErr("u")
 			if err != nil {
 				return err
 			}
-			updateDoc, ok := updateDocElem.DocumentOK()
+			doc, ok := docElem.DocumentOK()
 			if !ok {
 				continue
 			}
-			updateElems, err := updateDoc.Elements()
+			docElems, err := doc.Elements()
 			if err != nil {
 				return err
 			}
-			if len(updateElems) <= 0 {
+			if len(docElems) <= 0 {
 				continue
 			}
-			ope := updateElems[0]
+			ope := docElems[0]
 			opeDoc, ok := ope.Value().DocumentOK()
 			if !ok {
 				continue
 			}
 			q.Operator = ope.Key()
-			q.Conditions = append(q.Conditions, updateCond)
+			q.Conditions = append(q.Conditions, cond)
 			q.Documents = append(q.Documents, opeDoc)
 		}
 	}
