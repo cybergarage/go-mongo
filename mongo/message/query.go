@@ -22,18 +22,19 @@ import (
 )
 
 const (
-	Delete    = "delete"
-	Insert    = "insert"
-	Find      = "find"
-	Update    = "update"
-	LsID      = "lsid"
-	ID        = "id"
-	Binary    = "$binary"
-	Base64    = "base64"
-	SubType   = "subType"
-	Db        = "$db"
-	Filter    = "filter"
-	Documents = "documents"
+	Delete      = "delete"
+	Insert      = "insert"
+	Find        = "find"
+	Update      = "update"
+	LsID        = "lsid"
+	ID          = "id"
+	Binary      = "$binary"
+	Base64      = "base64"
+	SubType     = "subType"
+	Db          = "$db"
+	Filter      = "filter"
+	Documents   = "documents"
+	KillCursors = "killCursors"
 )
 
 // Query represents a message query.
@@ -112,7 +113,7 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 	for _, element := range elements {
 		key := element.Key()
 		switch key {
-		case Insert, Delete, Update, Find:
+		case Insert, Delete, Update, Find, KillCursors:
 			q.Type = key
 			col, ok := element.Value().StringValueOK()
 			if ok {

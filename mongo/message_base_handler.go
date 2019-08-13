@@ -84,7 +84,14 @@ func (handler *BaseMessageHandler) OpDelete(msg *OpDelete) (bson.Document, error
 
 // OpKillCursors handles OP_KILL_CURSORS of MongoDB wire protocol.
 func (handler *BaseMessageHandler) OpKillCursors(msg *OpKillCursors) (bson.Document, error) {
-	return nil, newBaseMessageHandlerNotImplementedError(msg)
+	// TODO : Kill the specified cursors internally
+	res := message.NewResponse()
+	res.SetStatus(true)
+	bsonRes, err := res.BSONBytes()
+	if err != nil {
+		return nil, err
+	}
+	return bsonRes, nil
 }
 
 // OpMsg handles OP_MSG of MongoDB wire protocol.
@@ -118,6 +125,9 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 		docs, ok := handler.MessageExecutor.Find(q)
 		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
 		res.SetStatus(ok)
+	case message.KillCursors:
+		// TODO : Kill the specified cursors internally
+		res.SetStatus(true)
 	}
 
 	bsonRes, err := res.BSONBytes()
