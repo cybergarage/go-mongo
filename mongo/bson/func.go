@@ -20,6 +20,17 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 )
 
+// StartDocument returns a new document which has only the reserved length header.
+func StartDocument() []byte {
+	_, bytes := bsoncore.AppendDocumentStart(nil)
+	return bytes
+}
+
+// EndDocument writes the null byte for a document and updates the length of the document.
+func EndDocument(dst []byte) ([]byte, error) {
+	return bsoncore.AppendDocumentEnd(dst, 0)
+}
+
 // AppendInt32 appends an i32 value to dst and return the extended buffer.
 func AppendInt32(dst []byte, value int32) []byte {
 	return bsoncore.AppendInt32(dst, value)
