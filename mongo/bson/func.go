@@ -15,6 +15,8 @@
 package bson
 
 import (
+	"fmt"
+
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 )
 
@@ -66,4 +68,25 @@ func AppendDocumentElement(dst []byte, key string, value Document) []byte {
 // AppendNullElement will append a BSON null element using key to dst and return the extended buffer.
 func AppendNullElement(dst []byte, key string) []byte {
 	return bsoncore.AppendNullElement(dst, key)
+}
+
+// AppendInterfaceElement will append an interface element using key to dst and return the extended buffer.
+func AppendInterfaceElement(dst []byte, key string, ivalue interface{}) ([]byte, error) {
+	switch value := ivalue.(type) {
+	case bool:
+		return bsoncore.AppendBooleanElement(dst, key, value), nil
+	case int32:
+		return bsoncore.AppendInt32Element(dst, key, value), nil
+	case int64:
+		return bsoncore.AppendInt64Element(dst, key, value), nil
+	case float64:
+		return bsoncore.AppendDoubleElement(dst, key, value), nil
+	case string:
+		return bsoncore.AppendStringElement(dst, key, value), nil
+	case Document:
+		return bsoncore.AppendDocumentElement(dst, key, value), nil
+	case nil:
+		return bsoncore.AppendNullElement(dst, key), nil
+	}
+	return dst, fmt.Errorf("Unkown elment type : %v", ivalue)
 }
