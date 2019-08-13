@@ -132,14 +132,13 @@ func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 
 	foundDoc := make([]bson.Document, 0)
 
-	for _, cond := range q.GetConditions() {
-		findElems, err := cond.Elements()
-		if err != nil {
-			return nil, false
-		}
-
-		for _, doc := range server.documents {
-			isMatched := true
+	for _, doc := range server.documents {
+		isMatched := true
+		for _, cond := range q.GetConditions() {
+			findElems, err := cond.Elements()
+			if err != nil {
+				return nil, false
+			}
 			for _, findElem := range findElems {
 				docElem, err := doc.LookupErr(findElem.Key())
 				if err != nil {
@@ -151,13 +150,13 @@ func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 					break
 				}
 			}
-			if !isMatched {
-				continue
-			}
-
-			foundDoc = append(foundDoc, doc)
 		}
 
+		if !isMatched {
+			continue
+		}
+
+		foundDoc = append(foundDoc, doc)
 	}
 
 	return foundDoc, true
