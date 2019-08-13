@@ -112,13 +112,51 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 	//       https://docs.mongodb.com/manual/reference/command/update/#dbcmd.update
 	// ============================================================
 
-	conds := q.GetConditions()
 	docs := q.GetDocuments()
+	conds := q.GetConditions()
+	if len(conds) <= 0 {
+		return 0, true
+	}
 
 	fmt.Printf("conds = %v\n", conds)
 	fmt.Printf("docs = %v\n", docs)
 
-	return 1, true
+	nUpdated := 0
+
+	for n := (len(server.documents) - 1); 0 <= n; n-- {
+		doc := server.documents[n]
+		isMatched := true
+		for _, cond := range q.GetConditions() {
+			condElems, err := cond.Elements()
+			if err != nil {
+				return 0, false
+			}
+			for _, condElem := range condElems {
+				docElem, err := doc.LookupErr(condElem.Key())
+				if err != nil {
+					isMatched = false
+					break
+				}
+				if !condElem.Value().Equal(docElem) {
+					isMatched = false
+					break
+				}
+			}
+		}
+
+		if !isMatched {
+			continue
+		}
+
+		server.documents = append(server.documents[:n], server.documents[n+1:]...)
+
+		updateDoc := doc
+		server.documents = append(server.documents, updateDoc)
+
+		nUpdated++
+	}
+
+	return int32(nUpdated), true
 }
 
 // Find hadles 'find' query of OP_MSG.
@@ -178,7 +216,6 @@ func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 		return int32(nDeleted), true
 	}
 
-	deletedDocs := append(make([]bson.Document, 0), server.documents...)
 	nDeleted := 0
 
 	for n := (len(server.documents) - 1); 0 <= n; n-- {
@@ -206,7 +243,7 @@ func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 			continue
 		}
 
-		deletedDocs = append(deletedDocs[:n], deletedDocs[n+1:]...)
+		server.documents = append(server.documents[:n], server.documents[n+1:]...)
 		nDeleted++
 	}
 
