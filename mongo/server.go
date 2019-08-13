@@ -277,6 +277,8 @@ func (server *Server) readMessage(conn net.Conn) error {
 		reply := protocol.NewReplyWithDocuments(resDocs)
 		reply.SetResponseFlags(protocol.AwaitCapable)
 		resMsg = reply
+	case protocol.OpKillCursors:
+		resMsg = protocol.NewReplyWithDocuments(resDocs)
 	case protocol.OpMsg:
 		msg := protocol.NewMsgWithBody(resDoc)
 		resMsg = msg
