@@ -149,17 +149,15 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 		}
 		server.documents = append(server.documents[:n], server.documents[n+1:]...)
 
-		updateDoc := serverDoc
-		/* FIXME
-		docElems, err := serverDoc.Elements()
+		serverDocElems, err := serverDoc.Elements()
 		if err != nil {
 			return int32(nUpdated), false
 		}
 
 		updateDoc := bson.StartDocument()
-		for _, docElem := range docElems {
-			elemKey := docElem.Key()
-			elemValue := docElem.Value()
+		for _, serverDocElem := range serverDocElems {
+			elemKey := serverDocElem.Key()
+			elemValue := serverDocElem.Value()
 			for _, queryDoc := range queryDocs {
 				queryValue, err := queryDoc.LookupErr(elemKey)
 				if err == nil {
@@ -176,7 +174,6 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 		if err != nil {
 			return int32(nUpdated), false
 		}
-		*/
 
 		server.documents = append(server.documents, updateDoc)
 
