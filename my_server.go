@@ -135,17 +135,17 @@ func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 	for _, doc := range server.documents {
 		isMatched := true
 		for _, cond := range q.GetConditions() {
-			findElems, err := cond.Elements()
+			condElems, err := cond.Elements()
 			if err != nil {
 				return nil, false
 			}
-			for _, findElem := range findElems {
-				docElem, err := doc.LookupErr(findElem.Key())
+			for _, condElem := range condElems {
+				docElem, err := doc.LookupErr(condElem.Key())
 				if err != nil {
 					isMatched = false
 					break
 				}
-				if !findElem.Value().Equal(docElem) {
+				if !condElem.Value().Equal(docElem) {
 					isMatched = false
 					break
 				}
@@ -171,7 +171,44 @@ func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 	//       https://docs.mongodb.com/manual/reference/command/delete/#dbcmd.delete
 	// ============================================================
 
-	_ = q.GetConditions()
+	conds := q.GetConditions()
+	if len(conds) <= 0 {
+		nDeleted := len(server.documents)
+		server.documents = make([]bson.Document, 0)
+		return int32(nDeleted), true
+	}
 
-	return 1, true
+	deletedDocs := append(make([]bson.Document, 0), server.documents...)
+	nDeleted := 0
+
+	for n := (len(server.documents) - 1); 0 <= n; n-- {
+		doc := server.documents[n]
+		isMatched := true
+		for _, cond := range q.GetConditions() {
+			condElems, err := cond.Elements()
+			if err != nil {
+				return 0, false
+			}
+			for _, condElem := range condElems {
+				docElem, err := doc.LookupErr(condElem.Key())
+				if err != nil {
+					isMatched = false
+					break
+				}
+				if !condElem.Value().Equal(docElem) {
+					isMatched = false
+					break
+				}
+			}
+		}
+
+		if !isMatched {
+			continue
+		}
+
+		deletedDocs = append(deletedDocs[:n], deletedDocs[n+1:]...)
+		nDeleted++
+	}
+
+	return int32(nDeleted), true
 }
