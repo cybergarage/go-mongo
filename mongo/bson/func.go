@@ -22,7 +22,7 @@ import (
 )
 
 // StartDocument returns a new document which has only the reserved length header.
-func StartDocument() []byte {
+func StartDocument() Document {
 	_, bytes := bsoncore.AppendDocumentStart(nil)
 	return bytes
 }
