@@ -55,13 +55,13 @@ func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseComma
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
 func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document, error) {
-	if executor.DatabaseCommandExecutor == nil {
-		return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
-	}
-
 	cmdType, err := cmd.GetType()
-	if err != nil {
-		return nil, err
+	if err != nil || executor.DatabaseCommandExecutor == nil {
+		resDoc, err := message.NewDefaultResponseOK().BSONBytes()
+		if err != nil {
+			return nil, err
+		}
+		return resDoc, nil
 	}
 
 	switch cmdType {
