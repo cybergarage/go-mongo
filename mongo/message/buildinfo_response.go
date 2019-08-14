@@ -20,9 +20,10 @@ import (
 )
 
 const (
-	version                  = "version"
-	versionArray             = "versionArray"
-	DefaultCompatibleVersion = "3.6.4"
+	version      = "version"
+	versionArray = "versionArray"
+	//DefaultCompatibleVersion = "3.6.4"
+	DefaultCompatibleVersion = "3.4.22"
 )
 
 // NewDefaultBuildInfoResponse returns a default response instance.

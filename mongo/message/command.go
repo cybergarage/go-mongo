@@ -43,6 +43,10 @@ var allSupportedCommands = []string{
 	IsMaster,
 	BuildInfo,
 	GetLastError,
+	Insert,
+	Delete,
+	Update,
+	Find,
 }
 
 // Command represents a query command of MongoDB database command.

@@ -41,7 +41,7 @@ import (
 )
 
 const (
-	ProgramName = "mongod"
+	programName = "mongod"
 )
 
 func main() {
