@@ -19,6 +19,7 @@ import (
 
 	"github.com/cybergarage/go-mongo/mongo"
 	"github.com/cybergarage/go-mongo/mongo/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 type MyServer struct {
@@ -76,15 +77,34 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 		if err != nil {
 			continue
 		}
-		docID, ok := docElem.ObjectIDOK()
-		if !ok {
+
+		var docID string
+		switch docElem.Type {
+		case bsontype.ObjectID:
+			docID = docElem.ObjectID().String()
+		case bsontype.String:
+			docID = docElem.StringValue()
+		default:
 			continue
 		}
 
 		// _idの重複により、既に追加されたドキュメントか確認します
-		for _, dbDoc := range server.documents {
-			dbDocID := dbDoc.Lookup("_id").ObjectID()
-			if docID == dbDocID {
+		for _, serverDoc := range server.documents {
+			serverElem, err := serverDoc.LookupErr("_id")
+			if err != nil {
+				continue
+			}
+			var serverDocID string
+			switch serverElem.Type {
+			case bsontype.ObjectID:
+				serverDocID = docElem.ObjectID().String()
+			case bsontype.String:
+				serverDocID = docElem.StringValue()
+			default:
+				continue
+			}
+
+			if serverDocID == docID {
 				continue
 			}
 		}
