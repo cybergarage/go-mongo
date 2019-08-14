@@ -56,6 +56,7 @@ func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseComma
 // ExecuteCommand handles query commands other than those explicitly specified above.
 func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document, error) {
 	if executor.DatabaseCommandExecutor == nil {
+		// Returns only a 'ok' response as default
 		resDoc, err := message.NewDefaultResponseOK().BSONBytes()
 		if err != nil {
 			return nil, err
@@ -72,6 +73,7 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document
 		return executor.DatabaseCommandExecutor.ExecuteGetLastError(cmd)
 	}
 
+	// Returns only a 'ok' response as default
 	resDoc, err := message.NewDefaultResponseOK().BSONBytes()
 	if err != nil {
 		return nil, err
