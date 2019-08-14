@@ -14,7 +14,12 @@
 
 package bson
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+
+	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
+)
 
 // Datetime is UTC milliseconds since the Unix epoch.
 type Datetime int64
@@ -72,6 +77,11 @@ func (dict *Dictionary) SetNullElement(key string) {
 	dict.elements[key] = nil
 }
 
+// SetInt32ArrayElements sets an interger array element.
+func (dict *Dictionary) SetInt32ArrayElements(key string, elements []int32) {
+	dict.elements[key] = elements
+}
+
 // SetElements sets elements.
 func (dict *Dictionary) SetElements(elements map[string]interface{}) error {
 	for key, element := range elements {
@@ -92,6 +102,8 @@ func (dict *Dictionary) SetElements(elements map[string]interface{}) error {
 			dict.SetDocumentElement(key, val)
 		case nil:
 			dict.SetNullElement(key)
+		case []int32:
+			dict.SetInt32ArrayElements(key, val)
 		default:
 			return fmt.Errorf(errorDictionaryNotSupportedType, key, element)
 		}
@@ -103,6 +115,7 @@ func (dict *Dictionary) SetElements(elements map[string]interface{}) error {
 // http://bsonspec.org/spec.html
 // BSONBytes returns a BSON document of the dictionary.
 func (dict *Dictionary) BSONBytes() (Document, error) {
+	var err error
 	elementBytes := make([]byte, 0)
 	for key, element := range dict.elements {
 		switch val := element.(type) {
@@ -122,6 +135,16 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 			elementBytes = AppendDocumentElement(elementBytes, key, Document(val))
 		case nil:
 			elementBytes = AppendNullElement(elementBytes, key)
+		case []int32:
+			var index int32
+			index, elementBytes = bsoncore.AppendArrayElementStart(elementBytes, key)
+			for n, v := range val {
+				elementBytes = AppendInt32Element(elementBytes, strconv.Itoa(n), v)
+			}
+			elementBytes, err = bsoncore.AppendArrayEnd(elementBytes, index)
+			if err != nil {
+				return nil, err
+			}
 		default:
 			return nil, fmt.Errorf(errorDictionaryNotSupportedType, key, val)
 		}
