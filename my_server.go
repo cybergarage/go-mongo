@@ -132,12 +132,12 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 				return 0, false
 			}
 			for _, condElem := range condElems {
-				docElem, err := serverDoc.LookupErr(condElem.Key())
+				serverFoundElem, err := serverDoc.LookupErr(condElem.Key())
 				if err != nil {
 					isMatched = false
 					break
 				}
-				if !condElem.Value().Equal(docElem) {
+				if !condElem.Value().Equal(serverFoundElem) {
 					isMatched = false
 					break
 				}
@@ -171,6 +171,11 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 			}
 		}
 		updateDoc, err = bson.EndDocument(updateDoc)
+		if err != nil {
+			return int32(nUpdated), false
+		}
+
+		err = updateDoc.Validate()
 		if err != nil {
 			return int32(nUpdated), false
 		}
