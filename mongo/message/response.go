@@ -50,6 +50,13 @@ func NewResponseWithElements(elements map[string]interface{}) *Response {
 	return res
 }
 
+// NewDefaultResponseOK returns a dummy status instance.
+func NewDefaultResponseOK() *Response {
+	res := NewResponse()
+	res.SetStatus(true)
+	return res
+}
+
 // SetStatus sets an int32 response result.
 func (res *Response) SetStatus(flag bool) {
 	if flag {
