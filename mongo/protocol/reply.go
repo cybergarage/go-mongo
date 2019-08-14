@@ -62,13 +62,18 @@ func NewReply() *Reply {
 	return op
 }
 
-// NewReplyWithDocuments returns a new reply instance with ths specified document.
-func NewReplyWithDocuments(documents []bson.Document) *Reply {
+// NewReplyWithDocuments returns a new reply instance with ths specified documents.
+func NewReplyWithDocuments(docs []bson.Document) *Reply {
 	op := NewReply()
-	op.NumberReturned = int32(len(documents))
-	op.Documents = documents
+	op.NumberReturned = int32(len(docs))
+	op.Documents = docs
 	op.SetMessageLength(op.Size())
 	return op
+}
+
+// NewReplyWithDocument returns a new reply instance with ths specified document.
+func NewReplyWithDocument(doc bson.Document) *Reply {
+	return NewReplyWithDocuments([]bson.Document{doc})
 }
 
 // NewReplyWithHeaderAndBody returns a new reply instance with the specified bytes.
