@@ -14,19 +14,25 @@
 
 package message
 
+import (
+	"strconv"
+	"strings"
+)
+
 const (
 	version                  = "version"
+	versionArray             = "versionArray"
 	DefaultCompatibleVersion = "3.6.4"
 )
 
 // NewDefaultBuildInfoResponse returns a default response instance.
 func NewDefaultBuildInfoResponse() *Response {
 	defaultElements := map[string]interface{}{
-		version:           DefaultCompatibleVersion,
 		maxBsonObjectSize: int32(DefaultMaxBsonObjectSize),
 	}
 
 	res := NewResponseWithElements(defaultElements)
+	res.SetVersion(DefaultCompatibleVersion)
 	res.SetStatus(true)
 
 	return res
@@ -35,12 +41,29 @@ func NewDefaultBuildInfoResponse() *Response {
 // NewBuildInfoResponseWithConfig returns a response instance with the specified configuration.
 func NewBuildInfoResponseWithConfig(config Config) *Response {
 	defaultElements := map[string]interface{}{
-		version:           config.GetVersion(),
 		maxBsonObjectSize: config.GetMaxBsonObjectSize(),
 	}
 
 	res := NewResponseWithElements(defaultElements)
+	res.SetVersion(config.GetVersion())
 	res.SetStatus(true)
 
 	return res
+}
+
+// SetVersion sets a version string and array of the specified version string.
+func (res *Response) SetVersion(ver string) {
+	// version
+	res.SetStringElement(version, ver)
+	// versionArray
+	verInts := make([]int32, 0)
+	verStrs := strings.Split(ver, ".")
+	for _, verStr := range verStrs {
+		verInt, err := strconv.Atoi(verStr)
+		if err != nil {
+			continue
+		}
+		verInts = append(verInts, int32(verInt))
+	}
+	res.SetInt32ArrayElements(versionArray, verInts)
 }

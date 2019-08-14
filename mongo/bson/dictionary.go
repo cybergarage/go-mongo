@@ -136,12 +136,12 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 		case nil:
 			elementBytes = AppendNullElement(elementBytes, key)
 		case []int32:
-			var index int32
-			index, elementBytes = bsoncore.AppendArrayElementStart(elementBytes, key)
+			var arrayIndex int32
+			arrayIndex, elementBytes = bsoncore.AppendArrayElementStart(elementBytes, key)
 			for n, v := range val {
 				elementBytes = AppendInt32Element(elementBytes, strconv.Itoa(n), v)
 			}
-			elementBytes, err = bsoncore.AppendArrayEnd(elementBytes, index)
+			elementBytes, err = bsoncore.AppendArrayEnd(elementBytes, arrayIndex)
 			if err != nil {
 				return nil, err
 			}
