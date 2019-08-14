@@ -72,7 +72,11 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document
 		return executor.DatabaseCommandExecutor.ExecuteGetLastError(cmd)
 	}
 
-	return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
+	resDoc, err := message.NewDefaultResponseOK().BSONBytes()
+	if err != nil {
+		return nil, err
+	}
+	return resDoc, nil
 }
 
 //////////////////////////////////////////////////
