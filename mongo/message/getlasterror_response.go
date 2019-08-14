@@ -14,11 +14,20 @@
 
 package message
 
+const (
+	syncMillis   = "syncMillis"
+	writtenTo    = "writtenTo"
+	connectionID = "connectionId"
+)
+
 // NewDefaultLastErrorResponse returns a default response instance.
 func NewDefaultLastErrorResponse() *Response {
 	defaultElements := map[string]interface{}{
-		"err": nil,
-		"n":   int32(0),
+		"err":        nil,
+		"n":          int32(0),
+		syncMillis:   int32(0),
+		connectionID: int32(0),
+		writtenTo:    nil,
 	}
 
 	res := NewResponseWithElements(defaultElements)
