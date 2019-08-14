@@ -77,6 +77,33 @@ func NewCommandWithQuery(q *protocol.Query) (*Command, error) {
 	return cmd, nil
 }
 
+// NewCommandWithMsg returns a new command instance with the specified BSON document.
+func NewCommandWithMsg(msg *protocol.Msg) (*Command, error) {
+	isAdmin := false
+
+	bodyDoc := msg.GetBody()
+	dbVal, err := bodyDoc.LookupErr("$db")
+	if err == nil {
+		dbStr, ok := dbVal.StringValueOK()
+		if ok {
+			if dbStr == "admin" {
+				isAdmin = true
+			}
+		}
+	}
+
+	bodyElems, err := bodyDoc.Elements()
+	if err != nil {
+		return nil, err
+	}
+
+	cmd := &Command{
+		IsAdmin:  isAdmin,
+		Elements: bodyElems,
+	}
+	return cmd, nil
+}
+
 // IsAdminCommand returns true when it is a admin command, otherwise false.
 func (cmd *Command) IsAdminCommand() bool {
 	return cmd.IsAdmin
