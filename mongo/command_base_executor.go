@@ -54,7 +54,7 @@ func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseComma
 //////////////////////////////////////////////////
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
-func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) ([]bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document, error) {
 	if executor.DatabaseCommandExecutor == nil {
 		return nil, fmt.Errorf(errorQueryHanderNotImplemented, cmd.String())
 	}
@@ -81,33 +81,33 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) ([]bson.Docume
 //////////////////////////////////////////////////
 
 // ExecuteIsMaster returns information about this member’s role in the replica set, including whether it is the master.
-func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) ([]bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) (bson.Document, error) {
 	reply := message.NewDefaultIsMasterResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err
 	}
-	return []bson.Document{replyDoc}, nil
+	return replyDoc, nil
 }
 
 // ExecuteBuildInfo returns statistics about the MongoDB build.
-func (executor *BaseCommandExecutor) ExecuteBuildInfo(cmd *Command) ([]bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteBuildInfo(cmd *Command) (bson.Document, error) {
 	reply := message.NewDefaultBuildInfoResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err
 	}
-	return []bson.Document{replyDoc}, nil
+	return replyDoc, nil
 }
 
 // ExecuteGetLastError returns statistics about the MongoDB build.
-func (executor *BaseCommandExecutor) ExecuteGetLastError(cmd *Command) ([]bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteGetLastError(cmd *Command) (bson.Document, error) {
 	reply := message.NewDefaultLastErrorResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err
 	}
-	return []bson.Document{replyDoc}, nil
+	return replyDoc, nil
 }
 
 //////////////////////////////////////////////////
