@@ -15,9 +15,7 @@
 package message
 
 import (
-	"fmt"
 	"strings"
-
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
 )
@@ -39,20 +37,11 @@ const (
 	GetLastError = "getlasterror"
 )
 
-var allSupportedCommands = []string{
-	IsMaster,
-	BuildInfo,
-	GetLastError,
-	Insert,
-	Delete,
-	Update,
-	Find,
-}
-
 // Command represents a query command of MongoDB database command.
 type Command struct {
 	IsAdmin  bool
 	Elements []bson.Element
+	Type     string
 }
 
 // CommandExecutor represents an interface for MongoDB database commands.
@@ -61,28 +50,46 @@ type CommandExecutor interface {
 	ExecuteCommand(cmd *Command) (bson.Document, error)
 }
 
-// NewCommandWithQuery returns a new command instance with the specified BSON document.
-func NewCommandWithQuery(q *protocol.Query) (*Command, error) {
-	var err error
-	var elements []bson.Element
+// NewCommandWithDocument returns a new command instance with the specified BSON document.
+func NewCommandWithDocument(doc bson.Document) (*Command, error) {
+	elements, err := doc.Elements()
+	if err != nil {
+		return nil, err
+	}
 
-	doc := q.GetQuery()
-	if 0 <= len(doc) {
-		elements, err = doc.Elements()
-		if err != nil {
-			return nil, err
-		}
+	var cmdType string
+	if 0 < len(elements) {
+		// Example : "isMaster" or "ismaster"
+		cmdType = strings.ToLower(elements[0].Key())
 	}
 
 	cmd := &Command{
-		IsAdmin:  q.IsCollection(adminCommand),
+		IsAdmin:  false,
 		Elements: elements,
+		Type:     cmdType,
 	}
+	return cmd, nil
+}
+
+// NewCommandWithQuery returns a new command instance with the specified BSON document.
+func NewCommandWithQuery(q *protocol.Query) (*Command, error) {
+	cmd, err := NewCommandWithDocument(q.GetQuery())
+	if err != nil {
+		return nil, err
+	}
+
+	cmd.IsAdmin = q.IsCollection(adminCommand)
+
 	return cmd, nil
 }
 
 // NewCommandWithMsg returns a new command instance with the specified BSON document.
 func NewCommandWithMsg(msg *protocol.Msg) (*Command, error) {
+	cmd, err := NewCommandWithDocument(msg.GetBody())
+	if err != nil {
+		return nil, err
+	}
+
 	isAdmin := false
 
 	bodyDoc := msg.GetBody()
@@ -96,15 +103,8 @@ func NewCommandWithMsg(msg *protocol.Msg) (*Command, error) {
 		}
 	}
 
-	bodyElems, err := bodyDoc.Elements()
-	if err != nil {
-		return nil, err
-	}
+	cmd.IsAdmin = isAdmin
 
-	cmd := &Command{
-		IsAdmin:  isAdmin,
-		Elements: bodyElems,
-	}
 	return cmd, nil
 }
 
@@ -114,24 +114,16 @@ func (cmd *Command) IsAdminCommand() bool {
 }
 
 // GetType returns a string type
-func (cmd *Command) GetType() (string, error) {
-	for _, typeString := range allSupportedCommands {
-		if cmd.IsType(typeString) {
-			return typeString, nil
-		}
-	}
-	return "", fmt.Errorf(errorUnknownCommand, cmd.String())
+func (cmd *Command) GetType() string {
+	return cmd.Type
 }
 
 // IsType returns true when the command has the specified element, otherwise false.
 func (cmd *Command) IsType(typeString string) bool {
-	for _, element := range cmd.Elements {
-		key := element.Key()
-		if strings.ToLower(key) == typeString {
-			return true
-		}
+	if cmd.Type != typeString {
+		return false
 	}
-	return false
+	return true
 }
 
 // String returns the string description.
