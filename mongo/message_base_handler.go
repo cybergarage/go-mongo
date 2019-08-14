@@ -108,6 +108,8 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 	res := message.NewResponse()
 
 	switch q.GetType() {
+	case message.BuildInfo:
+		res = message.NewDefaultBuildInfoResponse()
 	case message.Insert:
 		n, ok := handler.MessageExecutor.Insert(q)
 		res.SetStatus(ok)

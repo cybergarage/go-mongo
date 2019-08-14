@@ -120,6 +120,8 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 	for _, element := range elements {
 		key := element.Key()
 		switch key {
+		case BuildInfo:
+			q.Type = key
 		case Insert, Delete, Update, Find, KillCursors:
 			q.Type = key
 			col, ok := element.Value().StringValueOK()
