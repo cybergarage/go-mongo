@@ -40,11 +40,7 @@ func NewDefaultBuildInfoResponse() *Response {
 
 // NewBuildInfoResponseWithConfig returns a response instance with the specified configuration.
 func NewBuildInfoResponseWithConfig(config Config) *Response {
-	defaultElements := map[string]interface{}{
-		maxBsonObjectSize: config.GetMaxBsonObjectSize(),
-	}
-
-	res := NewResponseWithElements(defaultElements)
+	res := NewDefaultBuildInfoResponse()
 	res.SetVersion(config.GetVersion())
 	res.SetStatus(true)
 
