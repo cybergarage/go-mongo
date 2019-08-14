@@ -115,7 +115,7 @@ func AppendValueElement(dst []byte, key string, value Value) ([]byte, error) {
 	case bsontype.Double:
 		return bsoncore.AppendDoubleElement(dst, key, value.Double()), nil
 	case bsontype.String:
-		return bsoncore.AppendStringElement(dst, key, value.String()), nil
+		return bsoncore.AppendStringElement(dst, key, value.StringValue()), nil
 	case bsontype.EmbeddedDocument:
 		return bsoncore.AppendDocumentElement(dst, key, value.Document()), nil
 	case bsontype.ObjectID:
