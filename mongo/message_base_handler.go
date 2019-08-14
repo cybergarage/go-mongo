@@ -59,7 +59,7 @@ func (handler *BaseMessageHandler) OpInsert(msg *OpInsert) (bson.Document, error
 }
 
 // OpQuery handles OP_QUERY of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) ([]bson.Document, error) {
+func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) (bson.Document, error) {
 	if handler.CommandExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
@@ -105,11 +105,22 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 		return nil, err
 	}
 
+	switch q.GetType() {
+	case message.BuildInfo, message.IsMaster:
+		cmd, err := message.NewCommandWithMsg(msg)
+		if err != nil {
+			return nil, err
+		}
+		resDoc, err := handler.CommandExecutor.ExecuteCommand(cmd)
+		if err != nil {
+			return nil, err
+		}
+		return resDoc, nil
+	}
+
 	res := message.NewResponse()
 
 	switch q.GetType() {
-	case message.BuildInfo:
-		res = message.NewDefaultBuildInfoResponse()
 	case message.Insert:
 		n, ok := handler.MessageExecutor.Insert(q)
 		res.SetStatus(ok)

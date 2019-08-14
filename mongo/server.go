@@ -249,7 +249,7 @@ func (server *Server) readMessage(conn net.Conn) error {
 		resDoc, err = server.MessageHandler.OpInsert(msg)
 	case protocol.OpQuery:
 		msg, _ := opMsg.(*OpQuery)
-		resDocs, err = server.MessageHandler.OpQuery(msg)
+		resDoc, err = server.MessageHandler.OpQuery(msg)
 	case protocol.OpGetMore:
 		msg, _ := opMsg.(*OpGetMore)
 		resDoc, err = server.MessageHandler.OpGetMore(msg)
@@ -274,7 +274,7 @@ func (server *Server) readMessage(conn net.Conn) error {
 
 	switch opMsg.GetOpCode() {
 	case protocol.OpQuery:
-		reply := protocol.NewReplyWithDocuments(resDocs)
+		reply := protocol.NewReplyWithDocument(resDoc)
 		reply.SetResponseFlags(protocol.AwaitCapable)
 		resMsg = reply
 	case protocol.OpKillCursors:

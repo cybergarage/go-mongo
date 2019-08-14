@@ -60,7 +60,7 @@ type OpMessageHandler interface {
 	// Insert handles OP_INSERT of MongoDB wire protocol.
 	OpInsert(q *OpInsert) (bson.Document, error)
 	// Query handles OP_QUERY of MongoDB wire protocol.
-	OpQuery(q *OpQuery) ([]bson.Document, error)
+	OpQuery(q *OpQuery) (bson.Document, error)
 	// GetMore handles GET_MORE of MongoDB wire protocol.
 	OpGetMore(q *OpGetMore) (bson.Document, error)
 	// Delete handles OP_DELETE of MongoDB wire protocol.
