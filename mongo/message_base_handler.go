@@ -105,19 +105,6 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 		return nil, err
 	}
 
-	switch q.GetType() {
-	case message.BuildInfo, message.IsMaster:
-		cmd, err := message.NewCommandWithMsg(msg)
-		if err != nil {
-			return nil, err
-		}
-		resDoc, err := handler.CommandExecutor.ExecuteCommand(cmd)
-		if err != nil {
-			return nil, err
-		}
-		return resDoc, nil
-	}
-
 	res := message.NewResponse()
 
 	switch q.GetType() {
@@ -141,6 +128,16 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 	case message.KillCursors:
 		// TODO : Kill the specified cursors internally
 		res.SetStatus(true)
+	default: // Execute other messages as a database command
+		cmd, err := message.NewCommandWithMsg(msg)
+		if err != nil {
+			return nil, err
+		}
+		resDoc, err := handler.CommandExecutor.ExecuteCommand(cmd)
+		if err != nil {
+			return nil, err
+		}
+		return resDoc, nil
 	}
 
 	bsonRes, err := res.BSONBytes()
