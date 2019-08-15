@@ -172,8 +172,12 @@ func (server *Server) receive(conn net.Conn) error {
 	defer conn.Close()
 
 	var err error
+	var resMsg protocol.Message
 	for err == nil {
-		err = server.readMessage(conn)
+		resMsg, err = server.readMessage(conn)
+		if err == nil {
+			err = server.responseMessage(conn, resMsg)
+		}
 	}
 
 	return err
@@ -201,28 +205,28 @@ func (server *Server) responseMessage(conn net.Conn, msg protocol.Message) error
 }
 
 // readMessage handles client messages.
-func (server *Server) readMessage(conn net.Conn) error {
+func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 
 	headerBytes := make([]byte, protocol.HeaderSize)
 	_, err := conn.Read(headerBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	header, err := protocol.NewHeaderWithBytes(headerBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	bodyBytes := make([]byte, header.GetBodySize())
 	_, err = conn.Read(bodyBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	opMsg, err := protocol.NewMessageWithHeaderAndBytes(header, bodyBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// MessageListener
@@ -237,7 +241,7 @@ func (server *Server) readMessage(conn net.Conn) error {
 	var resDocs []bson.Document
 
 	if server.MessageHandler == nil {
-		return fmt.Errorf(errorMessageHanderNotImplemented)
+		return nil, fmt.Errorf(errorMessageHanderNotImplemented)
 	}
 
 	switch opMsg.GetOpCode() {
@@ -267,7 +271,7 @@ func (server *Server) readMessage(conn net.Conn) error {
 	}
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var resMsg protocol.Message
@@ -287,14 +291,11 @@ func (server *Server) readMessage(conn net.Conn) error {
 	}
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if resMsg != nil {
-		resMsg.SetRequestID(server.nextMessageRequestID())
-		resMsg.SetResponseTo(opMsg.GetRequestID())
-		err = server.responseMessage(conn, resMsg)
-	}
+	resMsg.SetRequestID(server.nextMessageRequestID())
+	resMsg.SetResponseTo(opMsg.GetRequestID())
 
-	return err
+	return resMsg, nil
 }
