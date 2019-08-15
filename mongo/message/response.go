@@ -57,8 +57,8 @@ func NewResponseWithStatus(status bool) *Response {
 	return res
 }
 
-// NewDefaultResponseOK returns a dummy status instance.
-func NewDefaultResponseOK() *Response {
+// NewOkResponse returns a dummy status instance.
+func NewOkResponse() *Response {
 	return NewResponseWithStatus(true)
 }
 

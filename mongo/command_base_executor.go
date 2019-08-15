@@ -57,7 +57,7 @@ func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseComma
 func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document, error) {
 	if executor.DatabaseCommandExecutor == nil {
 		// Returns only a 'ok' response as default
-		resDoc, err := message.NewDefaultResponseOK().BSONBytes()
+		resDoc, err := message.NewOkResponse().BSONBytes()
 		if err != nil {
 			return nil, err
 		}
@@ -74,7 +74,7 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document
 	}
 
 	// Returns only a 'ok' response as default
-	resDoc, err := message.NewDefaultResponseOK().BSONBytes()
+	resDoc, err := message.NewOkResponse().BSONBytes()
 	if err != nil {
 		return nil, err
 	}
