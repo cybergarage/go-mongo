@@ -21,6 +21,7 @@ import (
 	"strconv"
 
 	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
 )
 
@@ -176,6 +177,10 @@ func (server *Server) receive(conn net.Conn) error {
 	for err == nil {
 		resMsg, err = server.readMessage(conn)
 		if err != nil {
+			// FIXME : Check MongoDB implementation, and update to return a more standard error response
+			badDoc, _ := message.NewBadResponse().BSONBytes()
+			badReply := protocol.NewReplyWithDocument(badDoc)
+			err = server.responseMessage(conn, badReply)
 			continue
 		}
 		err = server.responseMessage(conn, resMsg)
