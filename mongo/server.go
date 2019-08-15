@@ -183,7 +183,12 @@ func (server *Server) receive(conn net.Conn) error {
 		if err != nil {
 			// FIXME : Check MongoDB implementation, and update to return a more standard error response
 			badReply, _ := message.NewBadResponse().BSONBytes()
-			resMsg = protocol.NewReplyWithDocument(badReply)
+			switch reqMsg.GetOpCode() {
+			case protocol.OpMsg:
+				resMsg = protocol.NewMsgWithBody(badReply)
+			default:
+				resMsg = protocol.NewReplyWithDocument(badReply)
+			}
 		}
 
 		resMsg.SetRequestID(server.nextMessageRequestID())
@@ -297,21 +302,14 @@ func (server *Server) handleMessage(reqMsg protocol.Message) (protocol.Message, 
 	var resMsg protocol.Message
 
 	switch reqMsg.GetOpCode() {
-	case protocol.OpQuery:
-		reply := protocol.NewReplyWithDocument(resDoc)
-		reply.SetResponseFlags(protocol.AwaitCapable)
-		resMsg = reply
-	case protocol.OpKillCursors:
-		resMsg = protocol.NewReplyWithDocuments(resDocs)
 	case protocol.OpMsg:
-		msg := protocol.NewMsgWithBody(resDoc)
-		resMsg = msg
+		resMsg = protocol.NewMsgWithBody(resDoc)
+	case protocol.OpQuery:
+		replyMsg := protocol.NewReplyWithDocument(resDoc)
+		replyMsg.SetResponseFlags(protocol.AwaitCapable)
+		resMsg = replyMsg
 	default:
-		err = fmt.Errorf(errorMessageHandeUnknownOpCode, reqMsg.GetOpCode())
-	}
-
-	if err != nil {
-		return nil, err
+		resMsg = protocol.NewReplyWithDocuments(resDocs)
 	}
 
 	return resMsg, nil
