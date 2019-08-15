@@ -15,11 +15,8 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/cybergarage/go-mongo/mongo"
 	"github.com/cybergarage/go-mongo/mongo/bson"
-	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 type MyServer struct {
@@ -45,11 +42,13 @@ func NewMyServer() *MyServer {
 //////////////////////////////////////////////////
 
 func (server *MyServer) MessageReceived(msg mongo.OpMessage) {
-	fmt.Printf("-> %s\n", msg.String())
+	// ヒント : 通信を確認するにはコメントを外してください
+	// fmt.Printf("-> %s\n", msg.String())
 }
 
 func (server *MyServer) MessageRespond(msg mongo.OpMessage) {
-	fmt.Printf("<- %s\n", msg.String())
+	// ヒント : 通信を確認するにはコメントを外してください
+	// fmt.Printf("<- %s\n", msg.String())
 }
 
 //////////////////////////////////////////////////
@@ -73,18 +72,8 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 	for _, doc := range docs {
 		// MongoDBドキュメントは主キーとなる_idフィールドが存在します
 		// 参考 : The _id Field - Documents (https://docs.mongodb.com/manual/core/document/)
-		docElem, err := doc.LookupErr("_id")
+		docValue, err := doc.LookupErr("_id")
 		if err != nil {
-			continue
-		}
-
-		var docID string
-		switch docElem.Type {
-		case bsontype.ObjectID:
-			docID = docElem.ObjectID().String()
-		case bsontype.String:
-			docID = docElem.StringValue()
-		default:
 			continue
 		}
 
@@ -92,21 +81,11 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 
 		// _idの重複により、既に追加されたドキュメントか確認します
 		for _, serverDoc := range server.documents {
-			serverElem, err := serverDoc.LookupErr("_id")
+			serverValue, err := serverDoc.LookupErr("_id")
 			if err != nil {
 				continue
 			}
-			var serverDocID string
-			switch serverElem.Type {
-			case bsontype.ObjectID:
-				serverDocID = docElem.ObjectID().String()
-			case bsontype.String:
-				serverDocID = docElem.StringValue()
-			default:
-				continue
-			}
-
-			if serverDocID == docID {
+			if serverValue.Equal(docValue) {
 				isInserted = true
 				break
 			}
@@ -229,12 +208,13 @@ func (server *MyServer) Find(q *mongo.Query) ([]bson.Document, bool) {
 				return nil, false
 			}
 			for _, condElem := range condElems {
-				docElem, err := doc.LookupErr(condElem.Key())
+				docValue, err := doc.LookupErr(condElem.Key())
 				if err != nil {
 					isMatched = false
 					break
 				}
-				if !condElem.Value().Equal(docElem) {
+				condValue := condElem.Value()
+				if !condValue.Equal(docValue) {
 					isMatched = false
 					break
 				}
@@ -278,12 +258,13 @@ func (server *MyServer) Delete(q *mongo.Query) (int32, bool) {
 				return 0, false
 			}
 			for _, condElem := range condElems {
-				docElem, err := serverDoc.LookupErr(condElem.Key())
+				docValue, err := serverDoc.LookupErr(condElem.Key())
 				if err != nil {
 					isMatched = false
 					break
 				}
-				if !condElem.Value().Equal(docElem) {
+				condValue := condElem.Value()
+				if !condValue.Equal(docValue) {
 					isMatched = false
 					break
 				}
