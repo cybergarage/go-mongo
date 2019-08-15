@@ -50,11 +50,16 @@ func NewResponseWithElements(elements map[string]interface{}) *Response {
 	return res
 }
 
+// NewResponseWithStatus returns a simple response which has only a status element.
+func NewResponseWithStatus(status bool) *Response {
+	res := NewResponse()
+	res.SetStatus(status)
+	return res
+}
+
 // NewDefaultResponseOK returns a dummy status instance.
 func NewDefaultResponseOK() *Response {
-	res := NewResponse()
-	res.SetStatus(true)
-	return res
+	return NewResponseWithStatus(true)
 }
 
 // SetStatus sets an int32 response result.
