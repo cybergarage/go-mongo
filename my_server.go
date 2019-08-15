@@ -88,6 +88,8 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 			continue
 		}
 
+		isInserted := false
+
 		// _idの重複により、既に追加されたドキュメントか確認します
 		for _, serverDoc := range server.documents {
 			serverElem, err := serverDoc.LookupErr("_id")
@@ -105,12 +107,15 @@ func (server *MyServer) Insert(q *mongo.Query) (int32, bool) {
 			}
 
 			if serverDocID == docID {
-				continue
+				isInserted = true
+				break
 			}
 		}
 
-		// 新規ドキュメントを追加します
-		server.documents = append(server.documents, doc)
+		if !isInserted {
+			server.documents = append(server.documents, doc)
+		}
+
 		nInserted++
 	}
 
@@ -137,9 +142,6 @@ func (server *MyServer) Update(q *mongo.Query) (int32, bool) {
 	if len(queryConds) <= 0 {
 		return 0, true
 	}
-
-	fmt.Printf("queryConds = %v\n", queryConds)
-	fmt.Printf("docs = %v\n", queryDocs)
 
 	nUpdated := 0
 
