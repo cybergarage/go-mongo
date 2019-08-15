@@ -11,6 +11,11 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+
+# Visual Code
+__debug_bin
+
 # MacOSX
 .DS_Store
+
 jstests
