@@ -57,9 +57,14 @@ func NewResponseWithStatus(status bool) *Response {
 	return res
 }
 
-// NewOkResponse returns a dummy status instance.
+// NewOkResponse returns a good status response.
 func NewOkResponse() *Response {
 	return NewResponseWithStatus(true)
+}
+
+// NewBadResponse returns a bad status response.
+func NewBadResponse() *Response {
+	return NewResponseWithStatus(false)
 }
 
 // SetStatus sets an int32 response result.
