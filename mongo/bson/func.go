@@ -120,6 +120,9 @@ func AppendValueElement(dst []byte, key string, value Value) ([]byte, error) {
 		return bsoncore.AppendDocumentElement(dst, key, value.Document()), nil
 	case bsontype.ObjectID:
 		return bsoncore.AppendObjectIDElement(dst, key, value.ObjectID()), nil
+	case bsontype.Binary:
+		subType, binData := value.Binary()
+		return bsoncore.AppendBinaryElement(dst, key, subType, binData), nil
 	case bsontype.Null:
 		return bsoncore.AppendNullElement(dst, key), nil
 	}
