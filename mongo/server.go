@@ -175,9 +175,10 @@ func (server *Server) receive(conn net.Conn) error {
 	var resMsg protocol.Message
 	for err == nil {
 		resMsg, err = server.readMessage(conn)
-		if err == nil {
-			err = server.responseMessage(conn, resMsg)
+		if err != nil {
+			continue
 		}
+		err = server.responseMessage(conn, resMsg)
 	}
 
 	return err
