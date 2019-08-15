@@ -38,6 +38,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/cybergarage/go-mongo/mongo/log"
 )
 
 const (
@@ -45,6 +47,8 @@ const (
 )
 
 func main() {
+	log.SetStdoutDebugEnbled(true)
+
 	server := NewMyServer()
 
 	err := server.Start()

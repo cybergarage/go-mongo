@@ -21,6 +21,7 @@ import (
 	"strconv"
 
 	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/log"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
 )
@@ -228,26 +229,31 @@ func (server *Server) responseMessage(conn net.Conn, msg protocol.Message) error
 func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 
 	headerBytes := make([]byte, protocol.HeaderSize)
-	_, err := conn.Read(headerBytes)
+	nRead, err := conn.Read(headerBytes)
 	if err != nil {
+		if nRead <= 0 {
+			return nil, err
+		}
+		log.Fatal(err.Error())
 		return nil, err
 	}
 
 	header, err := protocol.NewHeaderWithBytes(headerBytes)
 	if err != nil {
+		log.Fatal(err.Error())
 		return nil, err
 	}
-
-	fmt.Printf("HEADER : %d %d\n", header.GetOpCode(), header.GetBodySize())
 
 	bodyBytes := make([]byte, header.GetBodySize())
 	_, err = conn.Read(bodyBytes)
 	if err != nil {
+		log.Fatal(err.Error())
 		return nil, err
 	}
 
 	msg, err := protocol.NewMessageWithHeaderAndBytes(header, bodyBytes)
 	if err != nil {
+		log.Fatal(err.Error())
 		return nil, err
 	}
 
