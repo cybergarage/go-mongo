@@ -42,10 +42,6 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/log"
 )
 
-const (
-	programName = "mongod"
-)
-
 func main() {
 	log.SetStdoutDebugEnbled(true)
 
