@@ -195,6 +195,9 @@ func (server *Server) receive(conn net.Conn) error {
 		resMsg.SetResponseTo(reqMsg.GetRequestID())
 
 		err = server.responseMessage(conn, resMsg)
+		if err != nil {
+			break
+		}
 	}
 
 	return err
@@ -234,6 +237,8 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Printf("HEADER : %d %d\n", header.GetOpCode(), header.GetBodySize())
 
 	bodyBytes := make([]byte, header.GetBodySize())
 	_, err = conn.Read(bodyBytes)

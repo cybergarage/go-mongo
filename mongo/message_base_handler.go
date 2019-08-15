@@ -69,6 +69,25 @@ func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) (bson.Document, error) 
 		return nil, err
 	}
 
+	switch cmd.GetType() {
+	// For user database commands over OP_QUERY under MongoDB v3.6
+	case message.Insert, message.Delete, message.Update, message.Find:
+		q, err := message.NewQueryWithQuery(msg)
+		if err != nil {
+			return nil, err
+		}
+		res := message.NewResponse()
+		err = handler.executeQuery(q, res)
+		if err != nil {
+			return nil, err
+		}
+		bsonRes, err := res.BSONBytes()
+		if err != nil {
+			return nil, err
+		}
+		return bsonRes, nil
+	}
+
 	return handler.CommandExecutor.ExecuteCommand(cmd)
 }
 
@@ -108,23 +127,12 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 	res := message.NewResponse()
 
 	switch q.GetType() {
-	case message.Insert:
-		n, ok := handler.MessageExecutor.Insert(q)
-		res.SetStatus(ok)
-		res.SetNumberOfAffectedDocuments(n)
-	case message.Delete:
-		n, ok := handler.MessageExecutor.Delete(q)
-		res.SetStatus(ok)
-		res.SetNumberOfAffectedDocuments(n)
-	case message.Update:
-		n, ok := handler.MessageExecutor.Update(q)
-		res.SetStatus(ok)
-		res.SetNumberOfAffectedDocuments(n)
-		res.SetNumberOfModifiedDocuments(n)
-	case message.Find:
-		docs, ok := handler.MessageExecutor.Find(q)
-		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
-		res.SetStatus(ok)
+	// For user database commands over OP_MSG from MongoDB v3.6
+	case message.Insert, message.Delete, message.Update, message.Find:
+		err = handler.executeQuery(q, res)
+		if err != nil {
+			return nil, err
+		}
 	case message.KillCursors:
 		// TODO : Kill the specified cursors internally
 		res.SetStatus(true)
@@ -146,4 +154,30 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 	}
 
 	return bsonRes, nil
+}
+
+// executeQuery executes user database commands (insert, update, find and delete) over OP_MSG and OP_QUERY
+func (handler *BaseMessageHandler) executeQuery(q *message.Query, res *message.Response) error {
+	switch q.GetType() {
+	case message.Insert:
+		n, ok := handler.MessageExecutor.Insert(q)
+		res.SetStatus(ok)
+		res.SetNumberOfAffectedDocuments(n)
+	case message.Delete:
+		n, ok := handler.MessageExecutor.Delete(q)
+		res.SetStatus(ok)
+		res.SetNumberOfAffectedDocuments(n)
+	case message.Update:
+		n, ok := handler.MessageExecutor.Update(q)
+		res.SetStatus(ok)
+		res.SetNumberOfAffectedDocuments(n)
+		res.SetNumberOfModifiedDocuments(n)
+	case message.Find:
+		docs, ok := handler.MessageExecutor.Find(q)
+		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
+		res.SetStatus(ok)
+	default:
+		res.SetStatus(false)
+	}
+	return nil
 }

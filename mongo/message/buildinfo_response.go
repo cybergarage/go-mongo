@@ -25,9 +25,9 @@ const (
 )
 
 const (
-	DefaultCompatibleVersion = "4.0.12"
+	//DefaultCompatibleVersion = "4.0.12"
 	//DefaultCompatibleVersion = "3.6.4"
-	//DefaultCompatibleVersion = "3.4.22"
+	DefaultCompatibleVersion = "3.4.22"
 )
 
 // NewDefaultBuildInfoResponse returns a default response instance.
