@@ -143,7 +143,7 @@ func (op *Reply) Bytes() []byte {
 
 // String returns the string description.
 func (op *Reply) String() string {
-	str := fmt.Sprintf("%s %d %d %d %d",
+	str := fmt.Sprintf("%s %d %d %d %d ",
 		op.Header.String(),
 		op.ReplyFlags,
 		op.CursorID,
