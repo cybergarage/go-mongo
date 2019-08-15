@@ -173,16 +173,22 @@ func (server *Server) receive(conn net.Conn) error {
 	defer conn.Close()
 
 	var err error
-	var resMsg protocol.Message
+	var reqMsg, resMsg protocol.Message
 	for err == nil {
-		resMsg, err = server.readMessage(conn)
+		reqMsg, err = server.readMessage(conn)
+		if err != nil {
+			break
+		}
+		resMsg, err = server.handleMessage(reqMsg)
 		if err != nil {
 			// FIXME : Check MongoDB implementation, and update to return a more standard error response
-			badDoc, _ := message.NewBadResponse().BSONBytes()
-			badReply := protocol.NewReplyWithDocument(badDoc)
-			err = server.responseMessage(conn, badReply)
-			continue
+			badReply, _ := message.NewBadResponse().BSONBytes()
+			resMsg = protocol.NewReplyWithDocument(badReply)
 		}
+
+		resMsg.SetRequestID(server.nextMessageRequestID())
+		resMsg.SetResponseTo(reqMsg.GetRequestID())
+
 		err = server.responseMessage(conn, resMsg)
 	}
 
@@ -230,15 +236,21 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 		return nil, err
 	}
 
-	opMsg, err := protocol.NewMessageWithHeaderAndBytes(header, bodyBytes)
+	msg, err := protocol.NewMessageWithHeaderAndBytes(header, bodyBytes)
 	if err != nil {
 		return nil, err
 	}
 
+	return msg, nil
+}
+
+// handleMessage handles client messages.
+func (server *Server) handleMessage(reqMsg protocol.Message) (protocol.Message, error) {
+
 	// MessageListener
 
 	if server.messageListener != nil {
-		server.messageListener.MessageReceived(opMsg)
+		server.messageListener.MessageReceived(reqMsg)
 	}
 
 	// MessageHandler
@@ -250,30 +262,32 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 		return nil, fmt.Errorf(errorMessageHanderNotImplemented)
 	}
 
-	switch opMsg.GetOpCode() {
+	var err error
+
+	switch reqMsg.GetOpCode() {
 	case protocol.OpUpdate:
-		msg, _ := opMsg.(*OpUpdate)
+		msg, _ := reqMsg.(*OpUpdate)
 		resDoc, err = server.MessageHandler.OpUpdate(msg)
 	case protocol.OpInsert:
-		msg, _ := opMsg.(*OpInsert)
+		msg, _ := reqMsg.(*OpInsert)
 		resDoc, err = server.MessageHandler.OpInsert(msg)
 	case protocol.OpQuery:
-		msg, _ := opMsg.(*OpQuery)
+		msg, _ := reqMsg.(*OpQuery)
 		resDoc, err = server.MessageHandler.OpQuery(msg)
 	case protocol.OpGetMore:
-		msg, _ := opMsg.(*OpGetMore)
+		msg, _ := reqMsg.(*OpGetMore)
 		resDoc, err = server.MessageHandler.OpGetMore(msg)
 	case protocol.OpDelete:
-		msg, _ := opMsg.(*OpDelete)
+		msg, _ := reqMsg.(*OpDelete)
 		resDoc, err = server.MessageHandler.OpDelete(msg)
 	case protocol.OpKillCursors:
-		msg, _ := opMsg.(*OpKillCursors)
+		msg, _ := reqMsg.(*OpKillCursors)
 		resDoc, err = server.MessageHandler.OpKillCursors(msg)
 	case protocol.OpMsg:
-		msg, _ := opMsg.(*OpMsg)
+		msg, _ := reqMsg.(*OpMsg)
 		resDoc, err = server.MessageHandler.OpMsg(msg)
 	default:
-		err = fmt.Errorf(errorMessageHandeUnknownOpCode, opMsg.GetOpCode())
+		err = fmt.Errorf(errorMessageHandeUnknownOpCode, reqMsg.GetOpCode())
 	}
 
 	if err != nil {
@@ -282,7 +296,7 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 
 	var resMsg protocol.Message
 
-	switch opMsg.GetOpCode() {
+	switch reqMsg.GetOpCode() {
 	case protocol.OpQuery:
 		reply := protocol.NewReplyWithDocument(resDoc)
 		reply.SetResponseFlags(protocol.AwaitCapable)
@@ -293,15 +307,12 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 		msg := protocol.NewMsgWithBody(resDoc)
 		resMsg = msg
 	default:
-		err = fmt.Errorf(errorMessageHandeUnknownOpCode, opMsg.GetOpCode())
+		err = fmt.Errorf(errorMessageHandeUnknownOpCode, reqMsg.GetOpCode())
 	}
 
 	if err != nil {
 		return nil, err
 	}
-
-	resMsg.SetRequestID(server.nextMessageRequestID())
-	resMsg.SetResponseTo(opMsg.GetRequestID())
 
 	return resMsg, nil
 }
