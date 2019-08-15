@@ -16,6 +16,7 @@ package message
 
 import (
 	"github.com/cybergarage/go-mongo/mongo/protocol"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 // NewQueryWithQuery returns a new query with the specified OP_QUERY.
@@ -36,22 +37,55 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 	}
 	for _, element := range elements {
 		key := element.Key()
+		val := element.Value()
 		switch key {
 		case Insert, Delete, Update, Find:
 			q.Type = key
-			col, ok := element.Value().StringValueOK()
+			col, ok := val.StringValueOK()
 			if ok {
 				q.Collection = col
 			}
 		case Documents:
-			doc, ok := element.Value().DocumentOK()
-			if ok {
-				q.Documents = append(q.Documents, doc)
+			switch val.Type {
+			case bsontype.Array:
+				docs, ok := val.ArrayOK()
+				if ok {
+					docsElems, err := docs.Elements()
+					if err == nil {
+						for _, docElem := range docsElems {
+							doc, ok := docElem.Value().DocumentOK()
+							if ok {
+								q.Documents = append(q.Documents, doc)
+							}
+						}
+					}
+				}
+			case bsontype.EmbeddedDocument:
+				doc, ok := val.DocumentOK()
+				if ok {
+					q.Documents = append(q.Documents, doc)
+				}
 			}
 		case Filter:
-			doc, ok := element.Value().DocumentOK()
-			if ok {
-				q.Conditions = append(q.Conditions, doc)
+			switch val.Type {
+			case bsontype.Array:
+				conds, ok := val.ArrayOK()
+				if ok {
+					condsElems, err := conds.Elements()
+					if err == nil {
+						for _, condElem := range condsElems {
+							cond, ok := condElem.Value().DocumentOK()
+							if ok {
+								q.Conditions = append(q.Conditions, cond)
+							}
+						}
+					}
+				}
+			case bsontype.EmbeddedDocument:
+				cond, ok := val.DocumentOK()
+				if ok {
+					q.Conditions = append(q.Conditions, cond)
+				}
 			}
 		}
 	}
