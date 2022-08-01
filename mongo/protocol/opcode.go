@@ -15,7 +15,7 @@
 package protocol
 
 import (
-	"go.mongodb.org/mongo-driver/x/network/wiremessage"
+	"go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage"
 )
 
 // OpCode represents a MongoDB wire protocol opcode.

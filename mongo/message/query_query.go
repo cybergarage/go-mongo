@@ -50,10 +50,10 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 			case bsontype.Array:
 				docs, ok := val.ArrayOK()
 				if ok {
-					docsElems, err := docs.Elements()
+					docsElems, err := docs.Values()
 					if err == nil {
 						for _, docElem := range docsElems {
-							doc, ok := docElem.Value().DocumentOK()
+							doc, ok := docElem.DocumentOK()
 							if ok {
 								q.Documents = append(q.Documents, doc)
 							}
@@ -71,10 +71,10 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 			case bsontype.Array:
 				conds, ok := val.ArrayOK()
 				if ok {
-					condsElems, err := conds.Elements()
+					condsElems, err := conds.Values()
 					if err == nil {
 						for _, condElem := range condsElems {
-							cond, ok := condElem.Value().DocumentOK()
+							cond, ok := condElem.DocumentOK()
 							if ok {
 								q.Conditions = append(q.Conditions, cond)
 							}
