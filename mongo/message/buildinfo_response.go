@@ -60,7 +60,7 @@ func (res *Response) SetVersion(ver string) {
 	verInts := make([]int32, 0)
 	verStrs := strings.Split(ver, ".")
 	for _, verStr := range verStrs {
-		verInt, err := strconv.Atoi(verStr)
+		verInt, err := strconv.ParseInt(verStr, 10, 32)
 		if err != nil {
 			continue
 		}
