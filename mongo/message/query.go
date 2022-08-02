@@ -30,7 +30,7 @@ const (
 	Binary      = "$binary"
 	Base64      = "base64"
 	SubType     = "subType"
-	Db          = "$db"
+	DB          = "$db"
 	Filter      = "filter"
 	Documents   = "documents"
 	KillCursors = "killCursors"

@@ -5,11 +5,11 @@
 package mongo
 
 const (
-	errorLostConnection                    = "Lost connection to %s:%d"
-	errorCollectionNotFound                = "Collection (%s:%s) not found"
+	errorLostConnection                    = "lost connection to %s:%d"
+	errorCollectionNotFound                = "collection (%s:%s) not found"
 	errorMessageHanderNotImplemented       = "MessageHandler does not implemented"
 	errorMessageHandeUnknownOpCode         = "MessageHandler does not support OpCode (%d)"
 	errorMessageHanderNotSupported         = "MessageHandler does not support (%d)"
 	errorQueryHanderNotImplemented         = "QueryHandler does not support (%s)"
-	errorOpMsgDocumentSequenceNotSupported = "Document Sequence does not supported"
+	errorOpMsgDocumentSequenceNotSupported = "document Sequence does not supported"
 )
