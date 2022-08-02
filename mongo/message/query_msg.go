@@ -55,7 +55,7 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 			if ok {
 				q.Collection = col
 			}
-		case Db:
+		case DB:
 			db, ok := element.Value().StringValueOK()
 			if ok {
 				q.Database = db

@@ -100,7 +100,7 @@ func AppendInterfaceElement(dst []byte, key string, ivalue interface{}) ([]byte,
 	case nil:
 		return bsoncore.AppendNullElement(dst, key), nil
 	}
-	return dst, fmt.Errorf("Unknown elment type : %v", ivalue)
+	return dst, fmt.Errorf("unknown elment type : %v", ivalue)
 }
 
 // AppendValueElement will append a value using key to dst and return the extended buffer.
@@ -126,5 +126,5 @@ func AppendValueElement(dst []byte, key string, value Value) ([]byte, error) {
 	case bsontype.Null:
 		return bsoncore.AppendNullElement(dst, key), nil
 	}
-	return dst, fmt.Errorf("Unknown elment type : %v", value)
+	return dst, fmt.Errorf("unknown elment type : %v", value)
 }

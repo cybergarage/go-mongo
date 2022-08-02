@@ -17,9 +17,9 @@ package protocol
 import "fmt"
 
 const (
-	errorInvalidMessageHeader = "Invalid message header : %s"
+	errorInvalidMessageHeader = "invalid message header : %s"
 	errorInvalidMessageOpCode = "OpCode (%d) is not supported"
-	errorOpMsgNoSection       = "Section is not found"
+	errorOpMsgNoSection       = "section is not found"
 )
 
 func newMessageRequestError(op OpCode, body []byte) error {
