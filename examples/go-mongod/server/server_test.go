@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"testing"
 
-	gomongo_log "github.com/cybergarage/go-mongo/mongo/log"
+	"github.com/cybergarage/go-logger/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -32,7 +32,7 @@ type Trainer struct {
 }
 
 func TestServer(t *testing.T) {
-	gomongo_log.SetStdoutDebugEnbled(true)
+	log.SetStdoutDebugEnbled(true)
 
 	server := NewServer()
 	err := server.Start()
