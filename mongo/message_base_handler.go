@@ -156,7 +156,7 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 	return bsonRes, nil
 }
 
-// executeQuery executes user database commands (insert, update, find and delete) over OP_MSG and OP_QUERY
+// executeQuery executes user database commands (insert, update, find and delete) over OP_MSG and OP_QUERY.
 func (handler *BaseMessageHandler) executeQuery(q *message.Query, res *message.Response) error {
 	switch q.GetType() {
 	case message.Insert:

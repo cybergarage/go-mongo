@@ -114,7 +114,7 @@ func (cmd *Command) IsAdminCommand() bool {
 	return cmd.IsAdmin
 }
 
-// GetType returns a string type
+// GetType returns a string type.
 func (cmd *Command) GetType() string {
 	return cmd.Type
 }

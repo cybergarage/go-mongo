@@ -15,10 +15,10 @@
 package mongo
 
 const (
-	// DefaultHost is the default host for MongoDB servers
+	// DefaultHost is the default host for MongoDB servers.
 	DefaultHost string = "localhost"
-	// DefaultPort is the default port for mongod and mongos
+	// DefaultPort is the default port for mongod and mongos.
 	DefaultPort int = 27017
-	// DefaultTimeoutSecond is the default request timeout for MongoDB servers
+	// DefaultTimeoutSecond is the default request timeout for MongoDB servers.
 	DefaultTimeoutSecond = 5
 )

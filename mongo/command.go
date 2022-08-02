@@ -30,7 +30,7 @@ type CommandExecutor interface {
 	message.CommandExecutor
 }
 
-// MessageExecutor represents an executor interface for MongoDB message
+// MessageExecutor represents an executor interface for MongoDB message.
 type MessageExecutor interface {
 	message.MessageExecutor
 }

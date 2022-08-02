@@ -45,7 +45,7 @@ func NewDefaultConfig() *Config {
 	return config
 }
 
-// IsMaster should return true when the instance is running as master, otherwise false
+// IsMaster should return true when the instance is running as master, otherwise false.
 func (config *Config) IsMaster() bool {
 	return config.isMaster
 }
