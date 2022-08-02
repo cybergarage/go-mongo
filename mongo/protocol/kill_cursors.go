@@ -40,7 +40,7 @@ func NewKillCursorsWithHeaderAndBody(header *Header, body []byte) (*KillCursors,
 		return nil, newMessageRequestError(OpKillCursors, body)
 	}
 
-	cursorIDs, offsetBody, ok := ReadCursorIDs(offsetBody, numberOfCursorIDs)
+	cursorIDs, _, ok := ReadCursorIDs(offsetBody, numberOfCursorIDs)
 	if !ok {
 		return nil, newMessageRequestError(OpKillCursors, body)
 	}

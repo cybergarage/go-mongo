@@ -46,7 +46,7 @@ func NewGetMoreWithHeaderAndBody(header *Header, body []byte) (*GetMore, error) 
 		return nil, newMessageRequestError(OpGetMore, body)
 	}
 
-	cursorID, offsetBody, ok := ReadInt64(offsetBody)
+	cursorID, _, ok := ReadInt64(offsetBody)
 	if !ok {
 		return nil, newMessageRequestError(OpGetMore, body)
 	}
