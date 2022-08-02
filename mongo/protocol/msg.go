@@ -183,9 +183,9 @@ func (op *Msg) Bytes() []byte {
 		dst = AppendCString(dst, op.DocumentIDs[n])
 		dst = AppendDocument(dst, doc)
 	}
-	if (op.FlagBits & checksumPresent) != 0 {
-		// TODO : Add a CRC-32C checksum
-	}
+	// if (op.FlagBits & checksumPresent) != 0 {
+	// 	// TODO : Add a CRC-32C checksum.
+	// }
 	return dst
 }
 

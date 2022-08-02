@@ -203,7 +203,7 @@ func (server *Server) receive(conn net.Conn) error {
 // nextMessageRequestID returns a next message request identifier.
 func (server *Server) nextMessageRequestID() int32 {
 	server.lastMessageRequestID++
-	if math.MaxInt32 <= server.lastMessageRequestID {
+	if math.MaxInt32 == server.lastMessageRequestID {
 		server.lastMessageRequestID = 0
 	}
 	return server.lastMessageRequestID
