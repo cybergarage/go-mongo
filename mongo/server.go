@@ -20,8 +20,8 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/cybergarage/go-logger/log"
 	"github.com/cybergarage/go-mongo/mongo/bson"
-	"github.com/cybergarage/go-mongo/mongo/log"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
 )

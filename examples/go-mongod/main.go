@@ -19,8 +19,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/cybergarage/go-logger/log"
 	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
-	"github.com/cybergarage/go-mongo/mongo/log"
 )
 
 //////////////////////////////////////////////////
