@@ -15,9 +15,10 @@
 package message
 
 import (
+	"strings"
+
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
-	"strings"
 )
 
 // See : Database Commands
