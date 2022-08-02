@@ -41,6 +41,8 @@ func NewDefaultConfig() *Config {
 		maxWireVersion:               message.DefaultMaxWireVersion,
 		readOnly:                     false,
 		version:                      message.DefaultCompatibleVersion,
+		isMaster:                     true,
+		compressions:                 nil,
 	}
 	return config
 }

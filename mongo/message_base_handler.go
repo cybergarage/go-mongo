@@ -35,6 +35,7 @@ func newBaseMessageHandlerNotImplementedError(msg OpMessage) error {
 func NewBaseMessageHandler() *BaseMessageHandler {
 	return &BaseMessageHandler{
 		CommandExecutor: nil,
+		MessageExecutor: nil,
 	}
 }
 
