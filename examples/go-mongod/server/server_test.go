@@ -20,11 +20,10 @@ import (
 	"log"
 	"testing"
 
+	gomongo_log "github.com/cybergarage/go-mongo/mongo/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	gomongo_log "github.com/cybergarage/go-mongo/mongo/log"
 )
 
 type Trainer struct {
