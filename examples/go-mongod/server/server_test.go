@@ -92,9 +92,9 @@ func TestServer(t *testing.T) {
 	// Find all inserted documents
 
 	filters := []bson.D{
-		bson.D{{Key: "name", Value: "Ash"}},
-		bson.D{{Key: "name", Value: "Misty"}},
-		bson.D{{Key: "name", Value: "Brock"}},
+		{{Key: "name", Value: "Ash"}},
+		{{Key: "name", Value: "Misty"}},
+		{{Key: "name", Value: "Brock"}},
 	}
 
 	trainers = []Trainer{
@@ -141,9 +141,9 @@ func TestServer(t *testing.T) {
 	ash.Age = 11
 
 	filters = []bson.D{
-		bson.D{{Key: "name", Value: "Brock"}},
-		bson.D{{Key: "name", Value: "Misty"}},
-		bson.D{{Key: "name", Value: "Ash"}},
+		{{Key: "name", Value: "Brock"}},
+		{{Key: "name", Value: "Misty"}},
+		{{Key: "name", Value: "Ash"}},
 	}
 
 	trainers = []Trainer{
@@ -171,9 +171,9 @@ func TestServer(t *testing.T) {
 	// Delete all documents
 
 	filters = []bson.D{
-		bson.D{{Key: "name", Value: "Ash"}},
-		bson.D{{Key: "name", Value: "Misty"}},
-		bson.D{{Key: "name", Value: "Brock"}},
+		{{Key: "name", Value: "Ash"}},
+		{{Key: "name", Value: "Misty"}},
+		{{Key: "name", Value: "Brock"}},
 	}
 
 	trainers = []Trainer{
