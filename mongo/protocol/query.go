@@ -78,10 +78,7 @@ func (op *Query) GetCollectionName() string {
 
 // IsCollection returns true when the specified name equals the full collection name, otherwise false.
 func (op *Query) IsCollection(name string) bool {
-	if name != op.FullCollectionName {
-		return false
-	}
-	return true
+	return name == op.FullCollectionName
 }
 
 // GetQuery returns the query document.

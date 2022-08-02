@@ -121,10 +121,7 @@ func (cmd *Command) GetType() string {
 
 // IsType returns true when the command has the specified element, otherwise false.
 func (cmd *Command) IsType(typeString string) bool {
-	if cmd.Type != typeString {
-		return false
-	}
-	return true
+	return cmd.Type == typeString
 }
 
 // String returns the string description.
