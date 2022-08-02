@@ -48,7 +48,7 @@ func NewDeleteWithHeaderAndBody(header *Header, body []byte) (*Delete, error) {
 		return nil, newMessageRequestError(OpDelete, body)
 	}
 
-	selector, offsetBody, ok := ReadDocument(offsetBody)
+	selector, _, ok := ReadDocument(offsetBody)
 	if !ok {
 		return nil, newMessageRequestError(OpDelete, body)
 	}

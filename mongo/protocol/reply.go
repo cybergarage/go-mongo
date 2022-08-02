@@ -98,7 +98,7 @@ func NewReplyWithHeaderAndBody(header *Header, body []byte) (*Reply, error) {
 		return nil, newMessageRequestError(OpReply, body)
 	}
 
-	documents, offsetBody, ok := ReadDocuments(offsetBody)
+	documents, _, ok := ReadDocuments(offsetBody)
 	if !ok {
 		return nil, newMessageRequestError(OpReply, body)
 	}

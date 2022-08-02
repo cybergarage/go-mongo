@@ -54,7 +54,7 @@ func NewQueryWithHeaderAndBody(header *Header, body []byte) (*Query, error) {
 		return nil, newMessageRequestError(OpQuery, body)
 	}
 
-	query, offsetBody, ok := ReadDocument(offsetBody)
+	query, _, ok := ReadDocument(offsetBody)
 	if !ok {
 		return nil, newMessageRequestError(OpInsert, body)
 	}

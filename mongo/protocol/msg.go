@@ -108,7 +108,7 @@ func NewMsgWithHeaderAndBody(header *Header, body []byte) (*Msg, error) {
 
 	checksum := uint32(0)
 	if (MsgFlag(flagBits) & checksumPresent) != 0 {
-		checksum, offsetBody, ok = ReadUint32(offsetBody)
+		checksum, _, ok = ReadUint32(offsetBody)
 		if !ok {
 			return nil, newMessageRequestError(OpMsg, body)
 		}

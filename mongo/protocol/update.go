@@ -54,7 +54,7 @@ func NewUpdateWithHeaderAndBody(header *Header, body []byte) (*Update, error) {
 		return nil, newMessageRequestError(OpUpdate, body)
 	}
 
-	update, offsetBody, ok := ReadDocument(offsetBody)
+	update, _, ok := ReadDocument(offsetBody)
 	if !ok {
 		return nil, newMessageRequestError(OpUpdate, body)
 	}

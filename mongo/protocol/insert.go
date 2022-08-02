@@ -42,7 +42,7 @@ func NewInsertWithHeaderAndBody(header *Header, body []byte) (*Insert, error) {
 		return nil, newMessageRequestError(OpInsert, body)
 	}
 
-	document, offsetBody, ok := ReadDocument(offsetBody)
+	document, _, ok := ReadDocument(offsetBody)
 	if !ok {
 		return nil, newMessageRequestError(OpInsert, body)
 	}
