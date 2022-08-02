@@ -223,7 +223,6 @@ func (server *Server) responseMessage(conn net.Conn, msg protocol.Message) error
 
 // readMessage handles client messages.
 func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
-
 	headerBytes := make([]byte, protocol.HeaderSize)
 	nRead, err := conn.Read(headerBytes)
 	if err != nil {
@@ -258,7 +257,6 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 
 // handleMessage handles client messages.
 func (server *Server) handleMessage(reqMsg protocol.Message) (protocol.Message, error) {
-
 	// MessageListener
 
 	if server.messageListener != nil {

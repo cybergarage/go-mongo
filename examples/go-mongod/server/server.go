@@ -137,7 +137,6 @@ func (server *Server) Find(q *mongo.Query) ([]bson.Document, bool) {
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG or OP_QUERY.
 func (server *Server) Update(q *mongo.Query) (int32, bool) {
-
 	nUpdated := 0
 
 	queryDocs := q.GetDocuments()

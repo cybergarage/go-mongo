@@ -215,8 +215,6 @@ func TestServer(t *testing.T) {
 				t.Errorf("Found result is not matched : (%v != %v)", result, trainers[j])
 				return
 			}
-
 		}
 	}
-
 }
