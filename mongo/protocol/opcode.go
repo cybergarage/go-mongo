@@ -22,7 +22,7 @@ import (
 type OpCode = wiremessage.OpCode
 
 const (
-	//OpReply (OP_REPLY) replies to a client request. responseTo is set.
+	// OpReply (OP_REPLY) replies to a client request. responseTo is set.
 	OpReply OpCode = wiremessage.OpReply
 	// OpUpdate (OP_UPDATE:2001) updates document.
 	OpUpdate OpCode = wiremessage.OpUpdate

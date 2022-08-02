@@ -17,7 +17,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
 	"testing"
 
 	gomongo_log "github.com/cybergarage/go-mongo/mongo/log"
@@ -63,7 +62,8 @@ func TestServer(t *testing.T) {
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		t.Error(err)
+		return
 	}
 
 	fmt.Println("Connected to MongoDB!")
@@ -83,7 +83,7 @@ func TestServer(t *testing.T) {
 	for _, trainer := range trainers {
 		insertResult, err := collection.InsertOne(context.TODO(), trainer)
 		if err != nil {
-			log.Fatal(err)
+			t.Error(err)
 		}
 		fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 	}
@@ -107,7 +107,7 @@ func TestServer(t *testing.T) {
 
 		err = collection.FindOne(context.TODO(), filter).Decode(&result)
 		if err != nil {
-			log.Fatal(err)
+			t.Error(err)
 		}
 
 		fmt.Printf("Found a single document: %+v\n", result)
@@ -130,7 +130,7 @@ func TestServer(t *testing.T) {
 
 	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		t.Error(err)
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
@@ -156,7 +156,7 @@ func TestServer(t *testing.T) {
 
 		err = collection.FindOne(context.TODO(), filter).Decode(&result)
 		if err != nil {
-			log.Fatal(err)
+			t.Error(err)
 		}
 
 		fmt.Printf("Found a single document: %+v\n", result)
@@ -186,7 +186,7 @@ func TestServer(t *testing.T) {
 
 		deleteResult, err := collection.DeleteMany(context.TODO(), filter)
 		if err != nil {
-			log.Fatal(err)
+			t.Error(err)
 		}
 
 		fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
@@ -205,7 +205,7 @@ func TestServer(t *testing.T) {
 			var result Trainer
 			err = collection.FindOne(context.TODO(), filters[j]).Decode(&result)
 			if err != nil {
-				log.Fatal(err)
+				t.Error(err)
 				return
 			}
 

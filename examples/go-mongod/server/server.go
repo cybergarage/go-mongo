@@ -51,14 +51,14 @@ func NewServer() *Server {
 
 // MessageReceived passes a request message from MongoDB client
 func (server *Server) MessageReceived(msg mongo.OpMessage) {
-	//fmt.Printf("-> %s\n", msg.String())
-	//log.Hexdump(log.LevelInfo, msg.Bytes())
+	// fmt.Printf("-> %s\n", msg.String())
+	// log.Hexdump(log.LevelInfo, msg.Bytes())
 }
 
 // MessageRespond passes a response message from mongo.Server
 func (server *Server) MessageRespond(msg mongo.OpMessage) {
-	//fmt.Printf("<- %s\n", msg.String())
-	//log.Hexdump(log.LevelInfo, msg.Bytes())
+	// fmt.Printf("<- %s\n", msg.String())
+	// log.Hexdump(log.LevelInfo, msg.Bytes())
 }
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG or OP_QUERY.
@@ -141,7 +141,7 @@ func (server *Server) Update(q *mongo.Query) (int32, bool) {
 
 	queryDocs := q.GetDocuments()
 	queryConds := q.GetConditions()
-	if len(queryConds) <= 0 {
+	if len(queryConds) == 0 {
 		return 0, true
 	}
 
@@ -216,7 +216,7 @@ func (server *Server) Delete(q *mongo.Query) (int32, bool) {
 	nDeleted := 0
 
 	queryConds := q.GetConditions()
-	if len(queryConds) <= 0 {
+	if len(queryConds) == 0 {
 		nDeleted := len(server.documents)
 		server.documents = make([]bson.Document, 0)
 		return int32(nDeleted), true

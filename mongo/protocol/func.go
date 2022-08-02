@@ -42,7 +42,8 @@ func AppendInt64(dst []byte, val int64) []byte {
 
 // AppendCString appends the string value to the buffer.
 func AppendCString(dst []byte, val string) []byte {
-	b := append(dst, val...)
+	b := dst
+	b = append(b, val...)
 	return append(b, 0x00)
 }
 
