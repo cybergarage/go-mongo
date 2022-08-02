@@ -29,4 +29,4 @@ linters:
     - exhaustivestruct
     - scopelint
     - typecheck
-    - exhaustruct
+    - exhaustive
