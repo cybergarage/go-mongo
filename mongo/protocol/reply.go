@@ -23,13 +23,13 @@ import (
 
 const (
 
-	//CursorNotFound sets when getMore is called but the cursor id is not valid at the server. Returned with zero results.
+	// CursorNotFound sets when getMore is called but the cursor id is not valid at the server. Returned with zero results.
 	CursorNotFound = 0x01
 	// QueryFailure sets when query failed. Results consist of one document containing an “$err” field describing the failure.
 	QueryFailure = 0x02
 	// ShardConfigStale needs to update config from the server, and so drivers should ignore this.
 	ShardConfigStale = 0x04
-	//AwaitCapable sets when the server supports the AwaitData Query option. If it doesn’t, a client should sleep a little between getMore’s of a Tailable cursor. Mongod version 1.6 supports AwaitData and thus always sets AwaitCapable.
+	// AwaitCapable sets when the server supports the AwaitData Query option. If it doesn’t, a client should sleep a little between getMore’s of a Tailable cursor. Mongod version 1.6 supports AwaitData and thus always sets AwaitCapable.
 	AwaitCapable = 0x08
 )
 

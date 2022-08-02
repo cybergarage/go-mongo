@@ -116,7 +116,7 @@ func (q *Query) parseDocuments(docs []bson.Document) error {
 			if err != nil {
 				return err
 			}
-			if len(docElems) <= 0 {
+			if len(docElems) == 0 {
 				continue
 			}
 			ope := docElems[0]
