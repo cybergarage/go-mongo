@@ -32,3 +32,4 @@ linters:
     - exhaustive
     - forbidigo
     - nonamedreturns
+    - maligned
