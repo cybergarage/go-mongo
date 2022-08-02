@@ -63,7 +63,7 @@ ALL_PACKAGES=\
 all: test
 
 format:
-	gofmt -w ${ALL_ROOTS}
+	gofmt -s -w ${ALL_ROOTS}
 
 vet: format
 	go vet ${ALL_PACKAGES}
