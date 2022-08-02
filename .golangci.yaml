@@ -30,3 +30,4 @@ linters:
     - scopelint
     - typecheck
     - exhaustive
+    - forbidigo
