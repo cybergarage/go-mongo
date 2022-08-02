@@ -132,7 +132,7 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 		case Datetime:
 			elementBytes = AppendDateTimeElement(elementBytes, key, int64(val))
 		case Document:
-			elementBytes = AppendDocumentElement(elementBytes, key, Document(val))
+			elementBytes = AppendDocumentElement(elementBytes, key, val)
 		case nil:
 			elementBytes = AppendNullElement(elementBytes, key)
 		case []int32:

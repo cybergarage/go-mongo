@@ -133,9 +133,9 @@ func (op *Reply) Size() int32 {
 func (op *Reply) Bytes() []byte {
 	dst := op.Header.Bytes()
 	dst = AppendInt32(dst, int32(op.ReplyFlags))
-	dst = AppendInt64(dst, int64(op.CursorID))
-	dst = AppendInt32(dst, int32(op.StartingFrom))
-	dst = AppendInt32(dst, int32(op.NumberReturned))
+	dst = AppendInt64(dst, op.CursorID)
+	dst = AppendInt32(dst, op.StartingFrom)
+	dst = AppendInt32(dst, op.NumberReturned)
 	for _, document := range op.Documents {
 		dst = AppendDocument(dst, document)
 	}

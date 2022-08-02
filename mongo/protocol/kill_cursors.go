@@ -58,7 +58,7 @@ func NewKillCursorsWithHeaderAndBody(header *Header, body []byte) (*KillCursors,
 // Size returns the message size including the header.
 func (op *KillCursors) Size() int32 {
 	bodySize := 4 + 4 + (8 * op.NumberOfCursorIDs)
-	return int32(HeaderSize + bodySize)
+	return HeaderSize + bodySize
 }
 
 // String returns the string description.
