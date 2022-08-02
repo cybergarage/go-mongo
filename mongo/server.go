@@ -106,21 +106,17 @@ func (server *Server) Start() error {
 
 // Stop stops the server.
 func (server *Server) Stop() error {
-	err := server.close()
-	if err != nil {
+	if err := server.close(); err != nil {
 		return err
 	}
-
 	return nil
 }
 
 // Restart restarts the server.
 func (server *Server) Restart() error {
-	err := server.Stop()
-	if err != nil {
+	if err := server.Stop(); err != nil {
 		return err
 	}
-
 	return server.Start()
 }
 
