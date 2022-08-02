@@ -26,14 +26,10 @@ type Command = message.Command
 type Query = message.Query
 
 // CommandExecutor represents an executor interface for MongoDB commands.
-type CommandExecutor interface {
-	message.CommandExecutor
-}
+type CommandExecutor = message.CommandExecutor
 
 // MessageExecutor represents an executor interface for MongoDB message.
-type MessageExecutor interface {
-	message.MessageExecutor
-}
+type MessageExecutor = message.MessageExecutor
 
 // UserCommandExecutor represents an executor interface for MongoDB query commands.
 type UserCommandExecutor interface {
