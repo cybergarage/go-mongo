@@ -49,13 +49,13 @@ func NewServer() *Server {
 //
 //////////////////////////////////////////////////
 
-// MessageReceived passes a request message from MongoDB client
+// MessageReceived passes a request message from MongoDB client.
 func (server *Server) MessageReceived(msg mongo.OpMessage) {
 	// fmt.Printf("-> %s\n", msg.String())
 	// log.Hexdump(log.LevelInfo, msg.Bytes())
 }
 
-// MessageRespond passes a response message from mongo.Server
+// MessageRespond passes a response message from mongo.Server.
 func (server *Server) MessageRespond(msg mongo.OpMessage) {
 	// fmt.Printf("<- %s\n", msg.String())
 	// log.Hexdump(log.LevelInfo, msg.Bytes())

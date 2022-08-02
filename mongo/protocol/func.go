@@ -101,7 +101,7 @@ func ReadDocument(src []byte) (bson.Document, []byte, bool) {
 	return bsoncore.ReadDocument(src)
 }
 
-// ReadDocuments reads as many documents as possible from src
+// ReadDocuments reads as many documents as possible from src.
 func ReadDocuments(src []byte) (docs []bson.Document, rem []byte, ok bool) {
 	rem = src
 	for {

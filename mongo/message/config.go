@@ -42,7 +42,7 @@ type BuildConfig interface {
 	GetVersion() string
 }
 
-// Config represents all configurations for MongoDB
+// Config represents all configurations for MongoDB.
 type Config interface {
 	ServerConfig
 	BuildConfig

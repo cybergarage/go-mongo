@@ -30,7 +30,7 @@ const (
 	numberOfModifiedDocuments = "nModified"
 )
 
-// Response represents response elements
+// Response represents response elements.
 type Response struct {
 	*bson.Dictionary
 }
