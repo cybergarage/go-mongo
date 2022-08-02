@@ -33,7 +33,10 @@ func baseCommandExecutorNotImplementedError(q *Query) error {
 
 // NewBaseCommandExecutor returns a complete null executor for CommandExecutor.
 func NewBaseCommandExecutor() *BaseCommandExecutor {
-	executor := &BaseCommandExecutor{}
+	executor := &BaseCommandExecutor{
+		UserCommandExecutor:     nil,
+		DatabaseCommandExecutor: nil,
+	}
 	executor.UserCommandExecutor = executor
 	executor.DatabaseCommandExecutor = executor
 	return executor

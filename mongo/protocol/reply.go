@@ -104,6 +104,7 @@ func NewReplyWithHeaderAndBody(header *Header, body []byte) (*Reply, error) {
 	}
 
 	op := &Reply{
+		Header:         header,
 		ReplyFlags:     ReplyFlag(responseFlags),
 		CursorID:       cursorID,
 		StartingFrom:   startingFrom,
