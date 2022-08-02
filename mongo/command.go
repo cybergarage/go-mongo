@@ -29,7 +29,7 @@ type Query = message.Query
 type CommandExecutor = message.CommandExecutor
 
 // MessageExecutor represents an executor interface for MongoDB message.
-type MessageExecutor = message.MessageExecutor
+type MessageExecutor = message.Executor
 
 // UserCommandExecutor represents an executor interface for MongoDB query commands.
 type UserCommandExecutor interface {
