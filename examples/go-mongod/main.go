@@ -32,8 +32,7 @@ func main() {
 
 	server := server.NewServer()
 
-	err := server.Start()
-	if err != nil {
+	if err := server.Start(); err != nil {
 		os.Exit(1)
 	}
 
@@ -52,13 +51,11 @@ func main() {
 			s := <-sigCh
 			switch s {
 			case syscall.SIGHUP:
-				err = server.Restart()
-				if err != nil {
+				if err := server.Restart(); err != nil {
 					os.Exit(1)
 				}
 			case syscall.SIGINT, syscall.SIGTERM:
-				err = server.Stop()
-				if err != nil {
+				if err := server.Stop(); err != nil {
 					os.Exit(1)
 				}
 				exitCh <- 0
