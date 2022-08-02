@@ -200,7 +200,7 @@ func (server *Server) receive(conn net.Conn) error {
 	return err
 }
 
-// nextMessageRequestID returns a next message request identifer.
+// nextMessageRequestID returns a next message request identifier.
 func (server *Server) nextMessageRequestID() int32 {
 	server.lastMessageRequestID++
 	if math.MaxInt32 <= server.lastMessageRequestID {
