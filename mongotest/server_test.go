@@ -40,8 +40,19 @@ func TestServer(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Stop()
 
+	t.Run("Tutorial", func(t *testing.T) {
+		testTutorialOperation(t)
+	})
+
+	err = server.Stop()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
+
+func testTutorialOperation(t *testing.T) {
 	// MongoDB Go Driver
 	// https://github.com/mongodb/mongo-go-driver
 	//
