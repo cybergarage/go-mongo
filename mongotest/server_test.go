@@ -42,7 +42,20 @@ func TestServer(t *testing.T) {
 	}
 
 	t.Run("Tutorial", func(t *testing.T) {
-		testTutorialOperation(t)
+		t.Run("CRUD Operations", func(t *testing.T) {
+			testTutorialCRUDOperations(t)
+		})
+	})
+
+	// YCSB
+
+	workloads := []string{"workloada", "workloadb"}
+	t.Run("YCSB", func(t *testing.T) {
+		for _, workload := range workloads {
+			t.Run(workload, func(t *testing.T) {
+				ExecYCSBWorkload(t, workload)
+			})
+		}
 	})
 
 	err = server.Stop()
@@ -52,7 +65,7 @@ func TestServer(t *testing.T) {
 	}
 }
 
-func testTutorialOperation(t *testing.T) {
+func testTutorialCRUDOperations(t *testing.T) {
 	// MongoDB Go Driver
 	// https://github.com/mongodb/mongo-go-driver
 	//
@@ -77,155 +90,172 @@ func testTutorialOperation(t *testing.T) {
 		return
 	}
 
-	fmt.Println("Connected to MongoDB!")
-
 	// Use BSON Objects in Go
 
 	collection := client.Database("test").Collection("trainers")
 
 	// Insert documents
 
-	trainers := []Trainer{
-		ash,
-		misty,
-		brock,
-	}
-
-	for _, trainer := range trainers {
-		insertResult, err := collection.InsertOne(context.TODO(), trainer)
-		if err != nil {
-			t.Error(err)
+	t.Run("Insert documents", func(t *testing.T) {
+		trainers := []Trainer{
+			ash,
+			misty,
+			brock,
 		}
-		fmt.Println("Inserted a single document: ", insertResult.InsertedID)
-	}
+
+		for _, trainer := range trainers {
+			t.Run(fmt.Sprintf("%s %d %s", trainer.Name, trainer.Age, trainer.City), func(t *testing.T) {
+				insertResult, err := collection.InsertOne(context.TODO(), trainer)
+				if err != nil {
+					t.Error(err)
+				}
+				t.Log("Inserted a single document: ", insertResult.InsertedID)
+			})
+		}
+	})
 
 	// Find all inserted documents
 
-	filters := []bson.D{
-		{{Key: "name", Value: "Ash"}},
-		{{Key: "name", Value: "Misty"}},
-		{{Key: "name", Value: "Brock"}},
-	}
-
-	trainers = []Trainer{
-		ash,
-		misty,
-		brock,
-	}
-
-	for n, filter := range filters {
-		var result Trainer
-
-		err = collection.FindOne(context.TODO(), filter).Decode(&result)
-		if err != nil {
-			t.Error(err)
+	t.Run("Find inserted documents", func(t *testing.T) {
+		filters := []bson.D{
+			{{Key: "name", Value: "Ash"}},
+			{{Key: "name", Value: "Misty"}},
+			{{Key: "name", Value: "Brock"}},
 		}
 
-		fmt.Printf("Found a single document: %+v\n", result)
-
-		if result != trainers[n] {
-			t.Errorf("Found result is not matched : (%v != %v)", result, filter)
-			return
+		trainers := []Trainer{
+			ash,
+			misty,
+			brock,
 		}
-	}
+
+		for n, filter := range filters {
+			t.Run(fmt.Sprintf("%s", filter), func(t *testing.T) {
+				var result Trainer
+
+				err = collection.FindOne(context.TODO(), filter).Decode(&result)
+				if err != nil {
+					t.Error(err)
+				}
+
+				t.Logf("Found a single document: %+v\n", result)
+
+				if result != trainers[n] {
+					t.Errorf("Found result is not matched : (%v != %v)", result, filter)
+					return
+				}
+			})
+		}
+	})
 
 	// Update documents
 
-	filter := bson.D{{Key: "name", Value: "Ash"}}
+	t.Run("Update documents", func(t *testing.T) {
+		filter := bson.D{{Key: "name", Value: "Ash"}}
 
-	update := bson.D{
-		{Key: "$set", Value: bson.D{
-			{Key: "age", Value: 11},
-		}},
-	}
+		update := bson.D{
+			{Key: "$set", Value: bson.D{
+				{Key: "age", Value: 11},
+			}},
+		}
 
-	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
-	if err != nil {
-		t.Error(err)
-	}
-
-	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+		t.Run(fmt.Sprintf("%s", update), func(t *testing.T) {
+			updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				t.Error(err)
+			}
+			t.Logf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+		})
+	})
 
 	// Find all inserted documents
 
-	ash.Age = 11
+	t.Run("Find updated documents", func(t *testing.T) {
+		ash.Age = 11
 
-	filters = []bson.D{
-		{{Key: "name", Value: "Brock"}},
-		{{Key: "name", Value: "Misty"}},
-		{{Key: "name", Value: "Ash"}},
-	}
-
-	trainers = []Trainer{
-		brock,
-		misty,
-		ash,
-	}
-
-	for n, filter := range filters {
-		var result Trainer
-
-		err = collection.FindOne(context.TODO(), filter).Decode(&result)
-		if err != nil {
-			t.Error(err)
+		filters := []bson.D{
+			{{Key: "name", Value: "Brock"}},
+			{{Key: "name", Value: "Misty"}},
+			{{Key: "name", Value: "Ash"}},
 		}
 
-		fmt.Printf("Found a single document: %+v\n", result)
-
-		if result != trainers[n] {
-			t.Errorf("Found result is not matched : (%v != %v)", result, filter)
-			return
+		trainers := []Trainer{
+			brock,
+			misty,
+			ash,
 		}
-	}
+
+		for n, filter := range filters {
+			t.Run(fmt.Sprintf("%s", filter), func(t *testing.T) {
+				var result Trainer
+
+				err = collection.FindOne(context.TODO(), filter).Decode(&result)
+				if err != nil {
+					t.Error(err)
+				}
+
+				t.Logf("Found a single document: %+v\n", result)
+
+				if result != trainers[n] {
+					t.Errorf("Found result is not matched : (%v != %v)", result, filter)
+					return
+				}
+			})
+		}
+	})
 
 	// Delete all documents
 
-	filters = []bson.D{
-		{{Key: "name", Value: "Ash"}},
-		{{Key: "name", Value: "Misty"}},
-		{{Key: "name", Value: "Brock"}},
-	}
-
-	trainers = []Trainer{
-		ash,
-		misty,
-		brock,
-	}
-
-	for i, filter := range filters {
-		var result Trainer
-
-		deleteResult, err := collection.DeleteMany(context.TODO(), filter)
-		if err != nil {
-			t.Error(err)
+	t.Run("Delete documents", func(t *testing.T) {
+		filters := []bson.D{
+			{{Key: "name", Value: "Ash"}},
+			{{Key: "name", Value: "Misty"}},
+			{{Key: "name", Value: "Brock"}},
 		}
 
-		fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
-
-		// Check deleted document
-
-		err = collection.FindOne(context.TODO(), filter).Decode(&result)
-		if err == nil {
-			t.Errorf("Found the delete document: %+v\n", filter)
-			return
+		trainers := []Trainer{
+			ash,
+			misty,
+			brock,
 		}
 
-		// Find other documents
+		for i, filter := range filters {
+			t.Run(fmt.Sprintf("%s", filter), func(t *testing.T) {
+				var result Trainer
 
-		for j := (i + 1); j < len(filters); j++ {
-			var result Trainer
-			err = collection.FindOne(context.TODO(), filters[j]).Decode(&result)
-			if err != nil {
-				t.Error(err)
-				return
-			}
+				deleteResult, err := collection.DeleteMany(context.TODO(), filter)
+				if err != nil {
+					t.Error(err)
+				}
 
-			fmt.Printf("Found a single document: %+v\n", result)
+				t.Logf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 
-			if result != trainers[j] {
-				t.Errorf("Found result is not matched : (%v != %v)", result, trainers[j])
-				return
-			}
+				// Check deleted document
+
+				err = collection.FindOne(context.TODO(), filter).Decode(&result)
+				if err == nil {
+					t.Errorf("Found the delete document: %+v\n", filter)
+					return
+				}
+
+				// Find other documents
+
+				for j := (i + 1); j < len(filters); j++ {
+					var result Trainer
+					err = collection.FindOne(context.TODO(), filters[j]).Decode(&result)
+					if err != nil {
+						t.Error(err)
+						return
+					}
+
+					t.Logf("Found a single document: %+v\n", result)
+
+					if result != trainers[j] {
+						t.Errorf("Found result is not matched : (%v != %v)", result, trainers[j])
+						return
+					}
+				}
+			})
 		}
-	}
+	})
 }
