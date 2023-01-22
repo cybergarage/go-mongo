@@ -3,7 +3,7 @@ module github.com/cybergarage/go-mongo
 go 1.12
 
 require (
-	github.com/cybergarage/go-logger v1.1.0 // indirect
+	github.com/cybergarage/go-logger v1.3.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
