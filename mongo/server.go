@@ -229,26 +229,26 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 		if nRead <= 0 {
 			return nil, err
 		}
-		log.Fatal(err.Error())
+		log.Fatalf(err.Error())
 		return nil, err
 	}
 
 	header, err := protocol.NewHeaderWithBytes(headerBytes)
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatalf(err.Error())
 		return nil, err
 	}
 
 	bodyBytes := make([]byte, header.GetBodySize())
 	_, err = conn.Read(bodyBytes)
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatalf(err.Error())
 		return nil, err
 	}
 
 	msg, err := protocol.NewMessageWithHeaderAndBytes(header, bodyBytes)
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatalf(err.Error())
 		return nil, err
 	}
 
