@@ -76,6 +76,15 @@ func (res *Response) SetStatus(flag bool) {
 	res.SetDoubleElement(ok, 0.0)
 }
 
+// SetErrorStatus sets an int32 response result.
+func (res *Response) SetErrorStatus(err error) {
+	if err == nil {
+		res.SetDoubleElement(ok, 1.0)
+		return
+	}
+	res.SetDoubleElement(ok, 0.0)
+}
+
 // SetNumberOfAffectedDocuments sets a number of affected documents.
 func (res *Response) SetNumberOfAffectedDocuments(n int32) {
 	res.SetInt32Element(numberOfAffectedDocuments, n)

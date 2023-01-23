@@ -94,10 +94,10 @@ func (server *Server) Insert(q *mongo.Query) (int32, error) {
 	}
 
 	if len(docs) != int(nInserted) {
-		return nInserted, false
+		return nInserted, mongo.NewQueryError(q)
 	}
 
-	return nInserted, true
+	return nInserted, nil
 }
 
 // Find hadles 'find' query of OP_MSG or OP_QUERY.
@@ -109,7 +109,7 @@ func (server *Server) Find(q *mongo.Query) ([]bson.Document, error) {
 		for _, cond := range q.GetConditions() {
 			condElems, err := cond.Elements()
 			if err != nil {
-				return nil, false
+				return nil, mongo.NewQueryError(q)
 			}
 			for _, condElem := range condElems {
 				docValue, err := doc.LookupErr(condElem.Key())
@@ -132,7 +132,7 @@ func (server *Server) Find(q *mongo.Query) ([]bson.Document, error) {
 		foundDoc = append(foundDoc, doc)
 	}
 
-	return foundDoc, true
+	return foundDoc, nil
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG or OP_QUERY.
@@ -142,7 +142,7 @@ func (server *Server) Update(q *mongo.Query) (int32, error) {
 	queryDocs := q.GetDocuments()
 	queryConds := q.GetConditions()
 	if len(queryConds) == 0 {
-		return 0, true
+		return 0, nil
 	}
 
 	for n := (len(server.documents) - 1); 0 <= n; n-- {
@@ -151,7 +151,7 @@ func (server *Server) Update(q *mongo.Query) (int32, error) {
 		for _, cond := range q.GetConditions() {
 			condElems, err := cond.Elements()
 			if err != nil {
-				return 0, false
+				return 0, mongo.NewQueryError(q)
 			}
 			for _, condElem := range condElems {
 				serverFoundElem, err := serverDoc.LookupErr(condElem.Key())
@@ -174,7 +174,7 @@ func (server *Server) Update(q *mongo.Query) (int32, error) {
 
 		serverDocElems, err := serverDoc.Elements()
 		if err != nil {
-			return int32(nUpdated), false
+			return int32(nUpdated), mongo.NewQueryError(q)
 		}
 
 		updateDoc := bson.StartDocument()
@@ -190,17 +190,17 @@ func (server *Server) Update(q *mongo.Query) (int32, error) {
 			}
 			updateDoc, err = bson.AppendValueElement(updateDoc, elemKey, elemValue)
 			if err != nil {
-				return int32(nUpdated), false
+				return int32(nUpdated), mongo.NewQueryError(q)
 			}
 		}
 		updateDoc, err = bson.EndDocument(updateDoc)
 		if err != nil {
-			return int32(nUpdated), false
+			return int32(nUpdated), mongo.NewQueryError(q)
 		}
 
 		err = updateDoc.Validate()
 		if err != nil {
-			return int32(nUpdated), false
+			return int32(nUpdated), mongo.NewQueryError(q)
 		}
 
 		server.documents = append(server.documents, updateDoc)
@@ -208,7 +208,7 @@ func (server *Server) Update(q *mongo.Query) (int32, error) {
 		nUpdated++
 	}
 
-	return int32(nUpdated), true
+	return int32(nUpdated), nil
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG or OP_QUERY.
@@ -219,7 +219,7 @@ func (server *Server) Delete(q *mongo.Query) (int32, error) {
 	if len(queryConds) == 0 {
 		nDeleted := len(server.documents)
 		server.documents = make([]bson.Document, 0)
-		return int32(nDeleted), true
+		return int32(nDeleted), nil
 	}
 
 	for n := (len(server.documents) - 1); 0 <= n; n-- {
@@ -228,7 +228,7 @@ func (server *Server) Delete(q *mongo.Query) (int32, error) {
 		for _, cond := range q.GetConditions() {
 			condElems, err := cond.Elements()
 			if err != nil {
-				return 0, false
+				return 0, mongo.NewQueryError(q)
 			}
 			for _, condElem := range condElems {
 				docValue, err := serverDoc.LookupErr(condElem.Key())
@@ -252,5 +252,5 @@ func (server *Server) Delete(q *mongo.Query) (int32, error) {
 		nDeleted++
 	}
 
-	return int32(nDeleted), true
+	return int32(nDeleted), nil
 }
