@@ -127,7 +127,7 @@ func (executor *BaseCommandExecutor) Insert(q *Query) (int32, error) {
 	if executor.UserCommandExecutor != nil {
 		return executor.UserCommandExecutor.Insert(q)
 	}
-	return 0, false
+	return 0, NewNotSupported(q)
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
@@ -135,7 +135,7 @@ func (executor *BaseCommandExecutor) Update(q *Query) (int32, error) {
 	if executor.UserCommandExecutor != nil {
 		return executor.UserCommandExecutor.Update(q)
 	}
-	return 0, false
+	return 0, NewNotSupported(q)
 }
 
 // Find hadles 'find' query of OP_MSG.
@@ -143,7 +143,7 @@ func (executor *BaseCommandExecutor) Find(q *Query) ([]bson.Document, error) {
 	if executor.UserCommandExecutor != nil {
 		return executor.UserCommandExecutor.Find(q)
 	}
-	return nil, false
+	return nil, NewNotSupported(q)
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG.
@@ -151,5 +151,5 @@ func (executor *BaseCommandExecutor) Delete(q *Query) (int32, error) {
 	if executor.UserCommandExecutor != nil {
 		return executor.UserCommandExecutor.Delete(q)
 	}
-	return 0, false
+	return 0, NewNotSupported(q)
 }

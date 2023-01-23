@@ -161,22 +161,22 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 func (handler *BaseMessageHandler) executeQuery(q *message.Query, res *message.Response) error {
 	switch q.GetType() {
 	case message.Insert:
-		n, ok := handler.MessageExecutor.Insert(q)
-		res.SetStatus(ok)
+		n, err := handler.MessageExecutor.Insert(q)
+		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Delete:
-		n, ok := handler.MessageExecutor.Delete(q)
-		res.SetStatus(ok)
+		n, err := handler.MessageExecutor.Delete(q)
+		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Update:
-		n, ok := handler.MessageExecutor.Update(q)
-		res.SetStatus(ok)
+		n, err := handler.MessageExecutor.Update(q)
+		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 		res.SetNumberOfModifiedDocuments(n)
 	case message.Find:
-		docs, ok := handler.MessageExecutor.Find(q)
+		docs, err := handler.MessageExecutor.Find(q)
+		res.SetErrorStatus(err)
 		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
-		res.SetStatus(ok)
 	default:
 		res.SetStatus(false)
 	}
