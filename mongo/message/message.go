@@ -24,11 +24,11 @@ type Executor interface {
 // QueryCommandExecutor represents an executor interface for MongoDB queries.
 type QueryCommandExecutor interface {
 	// Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-	Insert(*Query) (int32, bool)
+	Insert(*Query) (int32, error)
 	// Update hadles OP_UPDATE and 'update' query of OP_MSG.
-	Update(*Query) (int32, bool)
+	Update(*Query) (int32, error)
 	// Find hadles 'find' query of OP_MSG.
-	Find(*Query) ([]bson.Document, bool)
+	Find(*Query) ([]bson.Document, error)
 	// Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-	Delete(*Query) (int32, bool)
+	Delete(*Query) (int32, error)
 }
