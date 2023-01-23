@@ -9,7 +9,8 @@ import (
 	"fmt"
 )
 
-var QueryError = errors.New("query error")
+var ErrQuery = errors.New("query error")
+var ErrQueryNotSupported = errors.New("query not supported")
 
 const (
 	errorLostConnection                    = "lost connection to %s:%d"
@@ -22,5 +23,9 @@ const (
 )
 
 func NewQueryError(q *Query) error {
-	return fmt.Errorf("%w (%s)", q)
+	return fmt.Errorf("%w (%v)", ErrQuery, q)
+}
+
+func NewNotSupported(q *Query) error {
+	return fmt.Errorf("%w (%v)", ErrQueryNotSupported, q)
 }
