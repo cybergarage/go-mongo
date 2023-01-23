@@ -4,6 +4,13 @@
 
 package mongo
 
+import (
+	"errors"
+	"fmt"
+)
+
+var QueryError = errors.New("query error")
+
 const (
 	errorLostConnection                    = "lost connection to %s:%d"
 	errorCollectionNotFound                = "collection (%s:%s) not found"
@@ -13,3 +20,7 @@ const (
 	errorQueryHanderNotImplemented         = "QueryHandler does not support (%s)"
 	errorOpMsgDocumentSequenceNotSupported = "document Sequence does not supported"
 )
+
+func NewQueryError(q *Query) error {
+	return fmt.Errorf("%w (%s)", q)
+}
