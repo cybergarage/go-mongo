@@ -52,6 +52,8 @@ func ServerTeet(t *testing.T) {
 }
 
 func testTutorialCRUDOperations(t *testing.T) {
+	t.Helper()
+
 	// MongoDB Go Driver
 	// https://github.com/mongodb/mongo-go-driver
 	//
