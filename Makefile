@@ -48,7 +48,8 @@ EXAMPLES_PKGS=\
 EXAMPLE_BINARIES=\
 	${EXAMPLES_DEAMON_ROOT}
 
-TEST_PKG_NAME=${PKG_NAME}test
+TEST_ROOT=${PKG_NAME}test
+TEST_PKG_NAME=${TEST_ROOT}
 TEST_PKG_ROOT=${GIT_ROOT}${MODULE_NAME}/${TEST_PKG_NAME}
 TEST_PKG_DIR=${TEST_PKG_NAME}
 TEST_PKG_SRCS=\
@@ -63,13 +64,15 @@ ALL_SRCS=\
 
 ALL_ROOTS=\
 	${MODULE_ROOT} \
-	${TEST_PKG_ROOT} \
+	${TEST_ROOT} \
 	${EXAMPLES_ROOT}
 
 ALL_PKGS=\
 	${MODULE_PKGS} \
 	${TEST_PKGS} \
 	${EXAMPLES_PKGS}
+
+BINARIES=${EXAMPLE_BINARIES}
 
 .PHONY: clean format vet lint
 
@@ -89,6 +92,9 @@ build: lint
 
 test:
 	go test -v -cover -p=1 ${ALL_PKGS}
+
+install: build
+	go install -v -gcflags=${GCFLAGS} ${BINARIES}
 
 clean:
 	go clean -i ${ALL_PKGS}
