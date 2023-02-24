@@ -1,6 +1,6 @@
 module github.com/cybergarage/go-mongo
 
-go 1.12
+go 1.20
 
 require (
 	github.com/cybergarage/go-logger v1.3.2 // indirect
