@@ -5,6 +5,7 @@
 - Add developer documents
 
 ## v0.9.1 (2023-xx-xx)
+- Upgrade to go 1.20
 - Fix compiler warnings
 
 ## v0.9.0 (2019-08-15)
