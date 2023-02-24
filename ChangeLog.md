@@ -4,7 +4,7 @@
 - Fix executor interfaces for major MongoDB commands
 - Add developer documents
 
-## v0.9.1 (2023-xx-xx)
+## v0.9.1 (2023-02-23)
 - Upgrade to go 1.20
 - Fix compiler warnings
 
