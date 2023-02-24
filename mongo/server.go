@@ -16,6 +16,7 @@ package mongo
 
 import (
 	"fmt"
+	"io"
 	"math"
 	"net"
 	"strconv"
@@ -210,7 +211,7 @@ func (server *Server) nextMessageRequestID() int32 {
 }
 
 // responseMessage returns a specified message to the request connection.
-func (server *Server) responseMessage(conn net.Conn, msg protocol.Message) error {
+func (server *Server) responseMessage(conn io.Writer, msg protocol.Message) error {
 	msgBytes := msg.Bytes()
 	_, err := conn.Write(msgBytes)
 
@@ -222,7 +223,7 @@ func (server *Server) responseMessage(conn net.Conn, msg protocol.Message) error
 }
 
 // readMessage handles client messages.
-func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
+func (server *Server) readMessage(conn io.Reader) (protocol.Message, error) {
 	headerBytes := make([]byte, protocol.HeaderSize)
 	nRead, err := conn.Read(headerBytes)
 	if err != nil {
