@@ -90,10 +90,10 @@ lint: vet
 build: lint
 	go build -v ${MODULE_PKGS}
 
-test:
+test: lint
 	go test -v -cover -p=1 ${ALL_PKGS}
 
-install: build
+install: test
 	go install -v -gcflags=${GCFLAGS} ${BINARIES}
 
 clean:
