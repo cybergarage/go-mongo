@@ -12,15 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/*
+go-mongod is an example of a compatible MongoDB server implementation using go-mongo.
+
+	NAME
+		go-mongod
+
+	SYNOPSIS
+		go-mongod [OPTIONS]
+
+	OPTIONS
+	-v      : Enable verbose output.
+	-p      : Enable profiling.
+
+	RETURN VALUE
+		Return EXIT_SUCCESS or EXIT_FAILURE
+*/
+
 package main
 
 import (
+	"flag"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/cybergarage/go-logger/log"
-	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
+	clog "github.com/cybergarage/go-logger/log"
+	"github.com/cybergarage/go-mysql/examples/go-mysqld/server"
 )
 
 //////////////////////////////////////////////////
@@ -28,7 +48,20 @@ import (
 //////////////////////////////////////////////////
 
 func main() {
-	log.SetStdoutDebugEnbled(true)
+	isDebugEnabled := flag.Bool("debug", false, "enable debugging log output")
+	isProfileEnabled := flag.Bool("profile", false, "enable profiling server")
+	flag.Parse()
+
+	if *isDebugEnabled {
+		clog.SetStdoutDebugEnbled(true)
+	}
+
+	if *isProfileEnabled {
+		go func() {
+			// nolint: gosec
+			log.Println(http.ListenAndServe("localhost:6060", nil))
+		}()
+	}
 
 	server := server.NewServer()
 
