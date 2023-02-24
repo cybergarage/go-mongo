@@ -33,3 +33,4 @@ linters:
     - forbidigo
     - nonamedreturns
     - maligned
+    - interfacer
