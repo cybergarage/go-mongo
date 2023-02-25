@@ -171,12 +171,14 @@ func (server *Server) receive(conn net.Conn) error {
 
 	var err error
 	var reqMsg, resMsg protocol.Message
+
+	handlerConn := newConn()
 	for err == nil {
 		reqMsg, err = server.readMessage(conn)
 		if err != nil {
 			break
 		}
-		resMsg, err = server.handleMessage(reqMsg)
+		resMsg, err = server.handleMessage(handlerConn, reqMsg)
 		if err != nil {
 			// FIXME : Check MongoDB implementation, and update to return a more standard error response
 			badReply, _ := message.NewBadResponse().BSONBytes()
@@ -256,7 +258,7 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 }
 
 // handleMessage handles client messages.
-func (server *Server) handleMessage(reqMsg protocol.Message) (protocol.Message, error) {
+func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protocol.Message, error) {
 	// MessageListener
 
 	if server.messageListener != nil {
