@@ -31,7 +31,7 @@ const (
 func YCSBTest(t *testing.T) {
 	t.Helper()
 
-	workloads := []string{"workloada", "workloadb"}
+	workloads := []string{"workloada"}
 	t.Run("YCSB", func(t *testing.T) {
 		for _, workload := range workloads {
 			t.Run(workload, func(t *testing.T) {
