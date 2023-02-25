@@ -30,7 +30,8 @@ func TestServer(t *testing.T) {
 		return
 	}
 
-	ServerTeet(t)
+	ServerTest(t)
+	YCSBTest(t)
 
 	err = server.Stop()
 	if err != nil {

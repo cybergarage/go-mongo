@@ -30,24 +30,13 @@ type Trainer struct {
 	City string
 }
 
-func ServerTeet(t *testing.T) {
+func ServerTest(t *testing.T) {
 	t.Helper()
 
 	t.Run("Tutorial", func(t *testing.T) {
 		t.Run("CRUD Operations", func(t *testing.T) {
 			testTutorialCRUDOperations(t)
 		})
-	})
-
-	// YCSB
-
-	workloads := []string{"workloada", "workloadb"}
-	t.Run("YCSB", func(t *testing.T) {
-		for _, workload := range workloads {
-			t.Run(workload, func(t *testing.T) {
-				ExecYCSBWorkload(t, workload)
-			})
-		}
 	})
 }
 
