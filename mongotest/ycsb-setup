@@ -1,0 +1,26 @@
+#!/bin/bash
+# Copyright (C) 2020 The go-mongo Authors. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+YCSB=ycsb-0.17.0
+YCSB_JDBC_LIB=${YCSB}/jdbc-binding/lib
+
+if [ ! -d ${YCSB} ]; then
+  wget https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/${YCSB}.tar.gz
+  tar xvfx ${YCSB}.tar.gz
+fi
+
+export YCSB_ROOT=`pwd`/${YCSB}
+
+echo "YCSB_ROOT          : ${YCSB_ROOT}"
