@@ -1,6 +1,6 @@
 # Getting Started
 
-This section describes how to implement your MongoDB-compatible serverusing go-mongo and see  [Examples](doc/examples.md) about the sample implementation.
+This section describes how to implement your MongoDB-compatible serverusing go-mongo and see [Examples](examples.md) about the sample implementation.
 
 ## STEP1: Inheriting Server
 
