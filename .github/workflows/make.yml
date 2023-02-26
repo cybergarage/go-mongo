@@ -30,4 +30,4 @@ jobs:
       run: tar xvfx ycsb-0.17.0.tar.gz
 
     - name: Test
-      run: env CGO_ENABLED=0 make test
+      run: make test
