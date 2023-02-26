@@ -42,8 +42,11 @@ type QueryCommandExecutor interface {
 // Command represents a query command of MongoDB database command.
 type Command = message.Command
 
-// CommandExecutor represents an executor interface for MongoDB commands.
-type CommandExecutor = message.CommandExecutor
+// CommandExecutor represents an interface for MongoDB database commands.
+type CommandExecutor interface {
+	// ExecuteCommand handles query commands other than those explicitly specified above.
+	ExecuteCommand(cmd *Command) (bson.Document, error)
+}
 
 // UserCommandExecutor represents an executor interface for MongoDB query commands.
 type UserCommandExecutor interface {
