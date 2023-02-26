@@ -56,17 +56,17 @@ type OpMessage = protocol.Message
 // OpMessageHandler represents an interface for MongoDB query request.
 type OpMessageHandler interface {
 	// Update handles OP_UPDATE of MongoDB wire protocol.
-	OpUpdate(q *OpUpdate) (bson.Document, error)
+	OpUpdate(conn *Conn, q *OpUpdate) (bson.Document, error)
 	// Insert handles OP_INSERT of MongoDB wire protocol.
-	OpInsert(q *OpInsert) (bson.Document, error)
+	OpInsert(conn *Conn, q *OpInsert) (bson.Document, error)
 	// Query handles OP_QUERY of MongoDB wire protocol.
-	OpQuery(q *OpQuery) (bson.Document, error)
+	OpQuery(conn *Conn, q *OpQuery) (bson.Document, error)
 	// GetMore handles GET_MORE of MongoDB wire protocol.
-	OpGetMore(q *OpGetMore) (bson.Document, error)
+	OpGetMore(conn *Conn, q *OpGetMore) (bson.Document, error)
 	// Delete handles OP_DELETE of MongoDB wire protocol.
-	OpDelete(q *OpDelete) (bson.Document, error)
+	OpDelete(conn *Conn, q *OpDelete) (bson.Document, error)
 	// KillCursors handles OP_KILL_CURSORS of MongoDB wire protocol.
-	OpKillCursors(q *OpKillCursors) (bson.Document, error)
+	OpKillCursors(conn *Conn, q *OpKillCursors) (bson.Document, error)
 	// Msg handles OP_MSG of MongoDB wire protocol.
-	OpMsg(q *OpMsg) (bson.Document, error)
+	OpMsg(conn *Conn, q *OpMsg) (bson.Document, error)
 }

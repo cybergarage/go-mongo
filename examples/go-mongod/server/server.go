@@ -62,7 +62,7 @@ func (server *Server) MessageRespond(msg mongo.OpMessage) {
 }
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG or OP_QUERY.
-func (server *Server) Insert(q *mongo.Query) (int32, error) {
+func (server *Server) Insert(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	nInserted := int32(0)
 
 	docs := q.GetDocuments()
@@ -101,7 +101,7 @@ func (server *Server) Insert(q *mongo.Query) (int32, error) {
 }
 
 // Find hadles 'find' query of OP_MSG or OP_QUERY.
-func (server *Server) Find(q *mongo.Query) ([]bson.Document, error) {
+func (server *Server) Find(conn *mongo.Conn, q *mongo.Query) ([]bson.Document, error) {
 	foundDoc := make([]bson.Document, 0)
 
 	for _, doc := range server.documents {
@@ -136,7 +136,7 @@ func (server *Server) Find(q *mongo.Query) ([]bson.Document, error) {
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG or OP_QUERY.
-func (server *Server) Update(q *mongo.Query) (int32, error) {
+func (server *Server) Update(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	nUpdated := 0
 
 	queryDocs := q.GetDocuments()
@@ -212,7 +212,7 @@ func (server *Server) Update(q *mongo.Query) (int32, error) {
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG or OP_QUERY.
-func (server *Server) Delete(q *mongo.Query) (int32, error) {
+func (server *Server) Delete(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	nDeleted := 0
 
 	queryConds := q.GetConditions()

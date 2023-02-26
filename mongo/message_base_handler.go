@@ -50,17 +50,17 @@ func (handler *BaseMessageHandler) SetMessageExecutor(fn MessageExecutor) {
 }
 
 // OpUpdate handles OP_UPDATE of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpUpdate(msg *OpUpdate) (bson.Document, error) {
+func (handler *BaseMessageHandler) OpUpdate(conn *Conn, msg *OpUpdate) (bson.Document, error) {
 	return nil, newBaseMessageHandlerNotImplementedError(msg)
 }
 
 // OpInsert handles OP_INSERT of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpInsert(msg *OpInsert) (bson.Document, error) {
+func (handler *BaseMessageHandler) OpInsert(conn *Conn, msg *OpInsert) (bson.Document, error) {
 	return nil, newBaseMessageHandlerNotImplementedError(msg)
 }
 
 // OpQuery handles OP_QUERY of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) (bson.Document, error) {
+func (handler *BaseMessageHandler) OpQuery(conn *Conn, msg *OpQuery) (bson.Document, error) {
 	if handler.CommandExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
@@ -78,7 +78,7 @@ func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) (bson.Document, error) 
 			return nil, err
 		}
 		res := message.NewResponse()
-		err = handler.executeQuery(q, res)
+		err = handler.executeQuery(conn, q, res)
 		if err != nil {
 			return nil, err
 		}
@@ -93,17 +93,17 @@ func (handler *BaseMessageHandler) OpQuery(msg *OpQuery) (bson.Document, error) 
 }
 
 // OpGetMore handles GET_MORE of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpGetMore(msg *OpGetMore) (bson.Document, error) {
+func (handler *BaseMessageHandler) OpGetMore(conn *Conn, msg *OpGetMore) (bson.Document, error) {
 	return nil, newBaseMessageHandlerNotImplementedError(msg)
 }
 
 // OpDelete handles OP_DELETE of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpDelete(msg *OpDelete) (bson.Document, error) {
+func (handler *BaseMessageHandler) OpDelete(conn *Conn, msg *OpDelete) (bson.Document, error) {
 	return nil, newBaseMessageHandlerNotImplementedError(msg)
 }
 
 // OpKillCursors handles OP_KILL_CURSORS of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpKillCursors(msg *OpKillCursors) (bson.Document, error) {
+func (handler *BaseMessageHandler) OpKillCursors(conn *Conn, msg *OpKillCursors) (bson.Document, error) {
 	// TODO : Kill the specified cursors internally
 	res := message.NewResponse()
 	res.SetStatus(true)
@@ -115,7 +115,7 @@ func (handler *BaseMessageHandler) OpKillCursors(msg *OpKillCursors) (bson.Docum
 }
 
 // OpMsg handles OP_MSG of MongoDB wire protocol.
-func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
+func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document, error) {
 	if handler.MessageExecutor == nil {
 		return nil, newBaseMessageHandlerNotImplementedError(msg)
 	}
@@ -130,7 +130,7 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 	switch q.GetType() {
 	// For user database commands over OP_MSG from MongoDB v3.6
 	case message.Insert, message.Delete, message.Update, message.Find:
-		err = handler.executeQuery(q, res)
+		err = handler.executeQuery(conn, q, res)
 		if err != nil {
 			return nil, err
 		}
@@ -158,23 +158,23 @@ func (handler *BaseMessageHandler) OpMsg(msg *OpMsg) (bson.Document, error) {
 }
 
 // executeQuery executes user database commands (insert, update, find and delete) over OP_MSG and OP_QUERY.
-func (handler *BaseMessageHandler) executeQuery(q *message.Query, res *message.Response) error {
+func (handler *BaseMessageHandler) executeQuery(conn *Conn, q *message.Query, res *message.Response) error {
 	switch q.GetType() {
 	case message.Insert:
-		n, err := handler.MessageExecutor.Insert(q)
+		n, err := handler.MessageExecutor.Insert(conn, q)
 		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Delete:
-		n, err := handler.MessageExecutor.Delete(q)
+		n, err := handler.MessageExecutor.Delete(conn, q)
 		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Update:
-		n, err := handler.MessageExecutor.Update(q)
+		n, err := handler.MessageExecutor.Update(conn, q)
 		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 		res.SetNumberOfModifiedDocuments(n)
 	case message.Find:
-		docs, err := handler.MessageExecutor.Find(q)
+		docs, err := handler.MessageExecutor.Find(conn, q)
 		res.SetErrorStatus(err)
 		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
 	default:
