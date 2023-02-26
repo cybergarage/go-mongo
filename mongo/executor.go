@@ -22,8 +22,8 @@ import (
 // Query represents a query of MongoDB database command.
 type Query = message.Query
 
-// Executor represents an executor interface for MongoDB message commands.
-type Executor interface {
+// MessageExecutor represents an executor interface for MongoDB message.
+type MessageExecutor interface {
 	QueryCommandExecutor
 }
 
@@ -37,4 +37,37 @@ type QueryCommandExecutor interface {
 	Find(*Conn, *Query) ([]bson.Document, error)
 	// Delete hadles OP_DELETE and 'delete' query of OP_MSG.
 	Delete(*Conn, *Query) (int32, error)
+}
+
+// Command represents a query command of MongoDB database command.
+type Command = message.Command
+
+// CommandExecutor represents an executor interface for MongoDB commands.
+type CommandExecutor = message.CommandExecutor
+
+// UserCommandExecutor represents an executor interface for MongoDB query commands.
+type UserCommandExecutor interface {
+	QueryCommandExecutor
+}
+
+// DatabaseCommandExecutor represents an executor interface for MongoDB operation commands.
+type DatabaseCommandExecutor interface {
+	ReplicationCommandExecutor
+	DiagnosticCommandExecutor
+	WriteOperationExecutor
+}
+
+// ReplicationCommandExecutor represents an executor interface for MongoDB replication commands.
+type ReplicationCommandExecutor interface {
+	ExecuteIsMaster(cmd *Command) (bson.Document, error)
+}
+
+// DiagnosticCommandExecutor represents an executor interface for MongoDB diagnostic commands.
+type DiagnosticCommandExecutor interface {
+	ExecuteBuildInfo(cmd *Command) (bson.Document, error)
+}
+
+// WriteOperationExecutor represents an executor interface for MongoDB write operation commands.
+type WriteOperationExecutor interface {
+	ExecuteGetLastError(cmd *Command) (bson.Document, error)
 }
