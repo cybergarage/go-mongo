@@ -123,33 +123,33 @@ func (executor *BaseCommandExecutor) ExecuteGetLastError(cmd *Command) (bson.Doc
 //////////////////////////////////////////////////
 
 // Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-func (executor *BaseCommandExecutor) Insert(q *Query) (int32, error) {
+func (executor *BaseCommandExecutor) Insert(conn *Conn, q *Query) (int32, error) {
 	if executor.UserCommandExecutor != nil {
-		return executor.UserCommandExecutor.Insert(q)
+		return executor.UserCommandExecutor.Insert(conn, q)
 	}
 	return 0, NewNotSupported(q)
 }
 
 // Update hadles OP_UPDATE and 'update' query of OP_MSG.
-func (executor *BaseCommandExecutor) Update(q *Query) (int32, error) {
+func (executor *BaseCommandExecutor) Update(conn *Conn, q *Query) (int32, error) {
 	if executor.UserCommandExecutor != nil {
-		return executor.UserCommandExecutor.Update(q)
+		return executor.UserCommandExecutor.Update(conn, q)
 	}
 	return 0, NewNotSupported(q)
 }
 
 // Find hadles 'find' query of OP_MSG.
-func (executor *BaseCommandExecutor) Find(q *Query) ([]bson.Document, error) {
+func (executor *BaseCommandExecutor) Find(conn *Conn, q *Query) ([]bson.Document, error) {
 	if executor.UserCommandExecutor != nil {
-		return executor.UserCommandExecutor.Find(q)
+		return executor.UserCommandExecutor.Find(conn, q)
 	}
 	return nil, NewNotSupported(q)
 }
 
 // Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-func (executor *BaseCommandExecutor) Delete(q *Query) (int32, error) {
+func (executor *BaseCommandExecutor) Delete(conn *Conn, q *Query) (int32, error) {
 	if executor.UserCommandExecutor != nil {
-		return executor.UserCommandExecutor.Delete(q)
+		return executor.UserCommandExecutor.Delete(conn, q)
 	}
 	return 0, NewNotSupported(q)
 }

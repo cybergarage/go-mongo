@@ -12,9 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package message
+package mongo
 
-import "github.com/cybergarage/go-mongo/mongo/bson"
+import (
+	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/message"
+)
+
+// Query represents a query of MongoDB database command.
+type Query = message.Query
 
 // Executor represents an executor interface for MongoDB message commands.
 type Executor interface {
@@ -24,11 +30,11 @@ type Executor interface {
 // QueryCommandExecutor represents an executor interface for MongoDB queries.
 type QueryCommandExecutor interface {
 	// Insert hadles OP_INSERT and 'insert' query of OP_MSG.
-	Insert(*Query) (int32, error)
+	Insert(*Conn, *Query) (int32, error)
 	// Update hadles OP_UPDATE and 'update' query of OP_MSG.
-	Update(*Query) (int32, error)
+	Update(*Conn, *Query) (int32, error)
 	// Find hadles 'find' query of OP_MSG.
-	Find(*Query) ([]bson.Document, error)
+	Find(*Conn, *Query) ([]bson.Document, error)
 	// Delete hadles OP_DELETE and 'delete' query of OP_MSG.
-	Delete(*Query) (int32, error)
+	Delete(*Conn, *Query) (int32, error)
 }

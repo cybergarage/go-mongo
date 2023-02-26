@@ -22,18 +22,15 @@ import (
 // Command represents a query command of MongoDB database command.
 type Command = message.Command
 
-// Query represents a query of MongoDB database command.
-type Query = message.Query
-
 // CommandExecutor represents an executor interface for MongoDB commands.
 type CommandExecutor = message.CommandExecutor
 
 // MessageExecutor represents an executor interface for MongoDB message.
-type MessageExecutor = message.Executor
+type MessageExecutor = Executor
 
 // UserCommandExecutor represents an executor interface for MongoDB query commands.
 type UserCommandExecutor interface {
-	message.QueryCommandExecutor
+	QueryCommandExecutor
 }
 
 // DatabaseCommandExecutor represents an executor interface for MongoDB operation commands.

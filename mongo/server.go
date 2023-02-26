@@ -279,25 +279,25 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 	switch reqMsg.GetOpCode() {
 	case protocol.OpUpdate:
 		msg, _ := reqMsg.(*OpUpdate)
-		resDoc, err = server.MessageHandler.OpUpdate(msg)
+		resDoc, err = server.MessageHandler.OpUpdate(conn, msg)
 	case protocol.OpInsert:
 		msg, _ := reqMsg.(*OpInsert)
-		resDoc, err = server.MessageHandler.OpInsert(msg)
+		resDoc, err = server.MessageHandler.OpInsert(conn, msg)
 	case protocol.OpQuery:
 		msg, _ := reqMsg.(*OpQuery)
-		resDoc, err = server.MessageHandler.OpQuery(msg)
+		resDoc, err = server.MessageHandler.OpQuery(conn, msg)
 	case protocol.OpGetMore:
 		msg, _ := reqMsg.(*OpGetMore)
-		resDoc, err = server.MessageHandler.OpGetMore(msg)
+		resDoc, err = server.MessageHandler.OpGetMore(conn, msg)
 	case protocol.OpDelete:
 		msg, _ := reqMsg.(*OpDelete)
-		resDoc, err = server.MessageHandler.OpDelete(msg)
+		resDoc, err = server.MessageHandler.OpDelete(conn, msg)
 	case protocol.OpKillCursors:
 		msg, _ := reqMsg.(*OpKillCursors)
-		resDoc, err = server.MessageHandler.OpKillCursors(msg)
+		resDoc, err = server.MessageHandler.OpKillCursors(conn, msg)
 	case protocol.OpMsg:
 		msg, _ := reqMsg.(*OpMsg)
-		resDoc, err = server.MessageHandler.OpMsg(msg)
+		resDoc, err = server.MessageHandler.OpMsg(conn, msg)
 	default:
 		err = fmt.Errorf(errorMessageHandeUnknownOpCode, reqMsg.GetOpCode())
 	}
