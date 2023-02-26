@@ -45,12 +45,6 @@ type Command struct {
 	Type     string
 }
 
-// CommandExecutor represents an interface for MongoDB database commands.
-type CommandExecutor interface {
-	// ExecuteCommand handles query commands other than those explicitly specified above.
-	ExecuteCommand(cmd *Command) (bson.Document, error)
-}
-
 // NewCommandWithDocument returns a new command instance with the specified BSON document.
 func NewCommandWithDocument(doc bson.Document) (*Command, error) {
 	elements, err := doc.Elements()
