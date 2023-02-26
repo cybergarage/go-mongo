@@ -21,13 +21,5 @@ jobs:
     - name: Set up golangci-lint
       run: sudo snap install golangci-lint
 
-    - name: Get YCSB
-      uses: wei/wget@v1
-      with:
-        args: https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
-
-    - name: Set up YCSB
-      run: tar xvfx ycsb-0.17.0.tar.gz
-
     - name: Test
-      run: env CGO_ENABLED=0 make test
+      run: export CGO_ENABLED=0 make test
