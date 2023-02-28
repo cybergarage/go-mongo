@@ -16,16 +16,24 @@ package mongo
 
 import (
 	"sync"
+	"time"
 )
 
 // Conn represents a connection of Wire protocol.
 type Conn struct {
 	sync.Map
+	ts time.Time
 }
 
 // newConn returns a connection with a default empty connection.
 func newConn() *Conn {
 	return &Conn{
 		Map: sync.Map{},
+		ts:  time.Now(),
 	}
+}
+
+// Timestamp returns the creation time of the connection.
+func (conn *Conn) Timestamp() time.Time {
+	return conn.ts
 }
