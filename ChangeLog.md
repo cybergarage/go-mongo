@@ -6,6 +6,7 @@
 
 ## v0.9.2 (2023-xx-xx)
 - Add Conn parameter to executor functions
+- Update mongo-driver from v1.10.0 to v1.11.2
 
 ## v0.9.1 (2023-02-23)
 - Upgrade to go 1.20
