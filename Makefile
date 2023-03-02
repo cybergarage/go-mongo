@@ -85,7 +85,7 @@ vet: format
 	go vet ${ALL_PKGS}
 
 lint: vet
-	golangci-lint run --timeout=10m ${ALL_SRCS}
+	golangci-lint run ${ALL_SRCS}
 
 build: lint
 	go build -v ${MODULE_PKGS}
