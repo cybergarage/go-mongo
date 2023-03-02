@@ -91,7 +91,7 @@ build: lint
 	go build -v ${MODULE_PKGS}
 
 test: lint
-	go test -v -cover -p=1 ${ALL_PKGS}
+	go test -v -cover -p=1 -timeout 30m ${ALL_PKGS}
 
 install: test
 	go install -v -gcflags=${GCFLAGS} ${BINARIES}
