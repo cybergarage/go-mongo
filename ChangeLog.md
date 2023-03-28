@@ -4,7 +4,7 @@
 - Fix executor interfaces for major MongoDB commands
 - Add developer documents
 
-## v0.9.2 (2023-xx-xx)
+## v0.9.2 (2023-03-28)
 - Add Conn parameter to executor functions
 - Update mongo-driver from v1.10.0 to v1.11.2
 
