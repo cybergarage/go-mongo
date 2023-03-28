@@ -40,7 +40,7 @@ import (
 	"syscall"
 
 	clog "github.com/cybergarage/go-logger/log"
-	"github.com/cybergarage/go-mysql/examples/go-mysqld/server"
+	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
 )
 
 //////////////////////////////////////////////////
