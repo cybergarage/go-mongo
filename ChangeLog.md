@@ -4,7 +4,7 @@
 - Fix executor interfaces for major MongoDB commands
 - Add developer documents
 
-## v0.9.3 (2023-xx-xx)
+## v0.9.3 (2023-04-02)
 - Add connection logs
 - Add Dockerfile
 
