@@ -173,6 +173,8 @@ func (server *Server) receive(conn net.Conn) error {
 	var err error
 	var reqMsg, resMsg protocol.Message
 
+	log.Debugf("%s/%s (%s) accepted", PackageName, Version, conn.RemoteAddr().String())
+
 	handlerConn := newConn()
 	for err == nil {
 		reqMsg, err = server.readMessage(conn)
