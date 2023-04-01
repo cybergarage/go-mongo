@@ -39,6 +39,7 @@ MODULE_PKGS=\
 EXAMPLES_ROOT=examples
 EXAMPLES_PKG_ROOT=${GIT_ROOT}${MODULE_NAME}/${EXAMPLES_ROOT}
 EXAMPLES_DEAMON_BIN=go-mongod
+EXAMPLES_DOCKER_TAG=cybergarage/${EXAMPLES_DEAMON_BIN}:${PKG_VER}
 EXAMPLES_DEAMON_ROOT=${EXAMPLES_PKG_ROOT}/${EXAMPLES_DEAMON_BIN}
 EXAMPLES_SRC_DIR=${EXAMPLES_ROOT}/${EXAMPLES_DEAMON_BIN}
 EXAMPLES_SRCS=\
@@ -96,10 +97,16 @@ install: test
 	go install -v -gcflags=${GCFLAGS} ${BINARIES}
 
 image: test
-	docker image build -tcybergarage/go-mongod:${PKG_VER} .
+	docker image build ${EXAMPLES_DOCKER_TAG} .
 
 build: lint
 	go build  -v -gcflags=${GCFLAGS} ${BINARIES}
+
+# run: iamge
+#	docker container run -it --rm -p 27017:27017 ${EXAMPLES_DOCKER_TAG}
+
+run: build
+	./go-mongod
 
 clean:
 	go clean -i ${ALL_PKGS}
