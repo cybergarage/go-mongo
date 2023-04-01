@@ -88,7 +88,7 @@ lint: vet
 	golangci-lint run ${ALL_SRCS}
 
 build: lint
-	go build -v ${MODULE_PKGS}
+	go build  -v -gcflags=${GCFLAGS} ${BINARIES}
 
 test: lint
 	go test -v -cover -p=1 ${ALL_PKGS}
