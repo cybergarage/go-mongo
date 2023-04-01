@@ -97,13 +97,13 @@ install: test
 	go install -v -gcflags=${GCFLAGS} ${BINARIES}
 
 image: test
-	docker image build ${EXAMPLES_DOCKER_TAG} .
+	docker image build -t ${EXAMPLES_DOCKER_TAG} .
 
-build: lint
+build: test
 	go build  -v -gcflags=${GCFLAGS} ${BINARIES}
 
-# run: iamge
-#	docker container run -it --rm -p 27017:27017 ${EXAMPLES_DOCKER_TAG}
+# run: image
+# 	docker container run -it --rm -p 27017:27017 ${EXAMPLES_DOCKER_TAG}
 
 run: build
 	./go-mongod
