@@ -15,6 +15,8 @@
 package mongo
 
 const (
+	// PackageName is the package name.
+	PackageName = "gp-mongo"
 	// DefaultHost is the default host for MongoDB servers.
 	DefaultHost string = "localhost"
 	// DefaultPort is the default port for mongod and mongos.
