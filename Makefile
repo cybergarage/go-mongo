@@ -18,7 +18,9 @@ PREFIX?=$(shell pwd)
 
 GIT_ROOT=github.com/cybergarage/
 MODULE_NAME=go-mongo
+
 PKG_NAME=mongo
+PKG_VER=$(shell git describe --abbrev=0 --tags)
 
 MODULE_ROOT=${PKG_NAME}
 MODULE_SRC_DIR=${PKG_NAME}
@@ -87,14 +89,17 @@ vet: format
 lint: vet
 	golangci-lint run ${ALL_SRCS}
 
-build: lint
-	go build  -v -gcflags=${GCFLAGS} ${BINARIES}
-
 test: lint
 	go test -v -cover -p=1 ${ALL_PKGS}
 
 install: test
 	go install -v -gcflags=${GCFLAGS} ${BINARIES}
+
+image: test
+	docker image build -tcybergarage/go-mongod:${PKG_VER} .
+
+build: lint
+	go build  -v -gcflags=${GCFLAGS} ${BINARIES}
 
 clean:
 	go clean -i ${ALL_PKGS}
