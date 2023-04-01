@@ -33,13 +33,12 @@ package main
 
 import (
 	"flag"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	clog "github.com/cybergarage/go-logger/log"
+	"github.com/cybergarage/go-logger/log"
 	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
 )
 
@@ -52,14 +51,16 @@ func main() {
 	isProfileEnabled := flag.Bool("profile", false, "enable profiling server")
 	flag.Parse()
 
+	logLevel := log.LevelTrace
 	if *isDebugEnabled {
-		clog.SetStdoutDebugEnbled(true)
+		logLevel = log.LevelDebug
 	}
+	log.SetSharedLogger(log.NewStdoutLogger(logLevel))
 
 	if *isProfileEnabled {
 		go func() {
 			// nolint: gosec
-			log.Println(http.ListenAndServe("localhost:6060", nil))
+			http.ListenAndServe("localhost:6060", nil)
 		}()
 	}
 
