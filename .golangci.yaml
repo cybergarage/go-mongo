@@ -37,3 +37,4 @@ linters:
     - nonamedreturns
     - maligned
     - interfacer
+    - ifshort
