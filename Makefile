@@ -111,5 +111,8 @@ image: test
 rund: image
 	docker container run -it --rm -p 27017:27017 ${EXAMPLES_DOCKER_TAG}
 
+mongod:
+	docker container run -it --rm -p 27017:27017 mongo:4.4.19
+
 clean:
 	go clean -i ${ALL_PKGS}
