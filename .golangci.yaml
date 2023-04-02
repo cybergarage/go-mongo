@@ -38,3 +38,4 @@ linters:
     - maligned
     - interfacer
     - ifshort
+    - golint
