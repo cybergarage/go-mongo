@@ -15,8 +15,9 @@
 package mongotest
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // QueryResponseRowsKey represents a query response.
@@ -45,11 +46,15 @@ func NewQueryResponseWithString(json string) (*QueryResponse, error) {
 }
 
 // ParseString parses a specified string response as a JSON data.
-func (res *QueryResponse) ParseString(jsonStr string) error {
-	var rootObj any
-	err := json.Unmarshal([]byte(jsonStr), &rootObj)
+func (res *QueryResponse) ParseString(exJsonStr string) error {
+	// Extended JSON
+	// https://github.com/mongodb/specifications/blob/master/source/extended-json.rst
+	// bson package - go.mongodb.org/mongo-driver/bson - Go Packages
+	// var rootObj QueryResponseMap
+	var rootObj map[string]interface{}
+	err := bson.UnmarshalExtJSON([]byte(exJsonStr), true, &rootObj)
 	if err != nil {
-		return fmt.Errorf("%w :\n%s", err, jsonStr)
+		return fmt.Errorf("%w :\n%s", err, exJsonStr)
 	}
 	res.Data = rootObj
 	return nil
