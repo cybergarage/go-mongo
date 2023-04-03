@@ -1,0 +1,19 @@
+db.trainers.insertOne({name: "Ash", age: 10, city: "Pallet Town"})
+{
+  acknowledged: true,
+  insertedId: ObjectId("6429625454ee3326b240a06d")
+}
+db.trainers.findOne({name: "Ash"})
+{
+  _id: ObjectId("6429625454ee3326b240a06d"),
+  name: 'Ash',
+  age: 10,
+  city: 'Pallet Town'
+}
+db.trainers.findOne({age: 10})
+{
+  _id: ObjectId("6429625454ee3326b240a06d"),
+  name: 'Ash',
+  age: 10,
+  city: 'Pallet Town'
+}
