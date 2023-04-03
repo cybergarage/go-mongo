@@ -15,64 +15,17 @@
 package mongotest
 
 import (
-	"encoding/json"
 	"testing"
 )
 
-func TestQueryResponse(t *testing.T) {
+func TestQueryResponses(t *testing.T) {
 	testJSONStrs := []string{
-		"{}",
-		"{ \"rows\" : [ { \"k\" : \"0\", \"v1\" : \"0\", \"v2\" : \"0\" } ]}",
-		"{ \"rows\" : [ { \"k\" : \"0\", \"v1\" : \"0\", \"v2\" : \"0\" }, { \"k\" : \"1\", \"v1\" : \"1\", \"v2\" : \"1\" } ]}",
+		"{\nacknowledged: true,\n insertedId: ObjectId(\"6429625454ee3326b240a06d\")\n}",
 	}
 
 	res := NewQueryResponse()
 	for _, jsonStr := range testJSONStrs {
 		err := res.ParseString(jsonStr)
-		if err != nil {
-			t.Error(err)
-		}
-	}
-}
-
-func TestQueryResponseRows(t *testing.T) {
-	testRows := QueryResponseRows{
-		QueryResponseRow{
-			"k":  0,
-			"v1": 0,
-			"v2": 0,
-		},
-		QueryResponseRow{
-			"k":  1,
-			"v1": 1,
-			"v2": 1,
-		},
-	}
-	testResData := QueryResponseData{
-		QueryResponseRowsKey: testRows,
-	}
-
-	jsonStr, err := json.Marshal(testResData)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	res := NewQueryResponse()
-	err = res.ParseString(string(jsonStr))
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	_, err = res.Rows()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	for _, testRow := range testRows {
-		err := res.HasRow(testRow)
 		if err != nil {
 			t.Error(err)
 		}
