@@ -4,6 +4,9 @@
 - Fix executor interfaces for major MongoDB commands
 - Add developer documents
 
+## v0.9.4 (2023-xx-xx)
+- Add senario test framework
+
 ## v0.9.3 (2023-04-02)
 - Add connection logs
 - Add Dockerfile
