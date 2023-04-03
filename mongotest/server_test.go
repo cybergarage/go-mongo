@@ -30,7 +30,7 @@ func TestServer(t *testing.T) {
 		return
 	}
 
-	ServerTest(t)
+	RunOfficialClientTest(t)
 	YCSBTest(t)
 
 	err = server.Stop()
