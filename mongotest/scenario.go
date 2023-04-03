@@ -147,9 +147,10 @@ func (scn *Scenario) ParseLineStrings(lines []string) error {
 	}
 
 	inJSON := false
+
 	for _, line := range lines {
 		if inJSON {
-			if strings.HasPrefix(line, "}") {
+			if strings.HasPrefix(line, "}") || strings.HasPrefix(line, "]") {
 				resultStr += line
 				err := appendResult()
 				if err != nil {
@@ -160,7 +161,7 @@ func (scn *Scenario) ParseLineStrings(lines []string) error {
 			}
 			resultStr += " " + strings.TrimSpace(line)
 		} else {
-			if strings.HasPrefix(line, "{") {
+			if strings.HasPrefix(line, "{") || strings.HasPrefix(line, "[") {
 				appendQuery()
 				resultStr = line
 				inJSON = true
