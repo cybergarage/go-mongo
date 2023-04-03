@@ -24,6 +24,7 @@ func TestEmbedSuite(t *testing.T) {
 	suite, err := NeweEmbedSuite(test.EmbedTests)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	for _, tst := range suite.Tests {
 		t.Run(tst.Name(), func(t *testing.T) {

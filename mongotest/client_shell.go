@@ -14,29 +14,29 @@
 
 package mongotest
 
-type MongoDBClient struct {
+type MongoShell struct {
 	*Config
 }
 
-// NewMongoDBClient returns a client instance.
-func NewMongoDBClient() Client {
-	client := &MongoDBClient{
+// NewMongoShell returns a client instance.
+func NewMongoShell() Client {
+	client := &MongoShell{
 		Config: NewDefaultConfig(),
 	}
 	return client
 }
 
 // Open opens a database specified by the internal configuration.
-func (client *MongoDBClient) Open() error {
+func (client *MongoShell) Open() error {
 	return nil
 }
 
 // Close closes opens a database specified by the internal configuration.
-func (client *MongoDBClient) Close() error {
+func (client *MongoShell) Close() error {
 	return nil
 }
 
 // Query executes a query that returns rows.
-func (client *MongoDBClient) Query(query string, args ...interface{}) (any, error) {
+func (client *MongoShell) Query(query string, args ...interface{}) (any, error) {
 	return nil, nil
 }
