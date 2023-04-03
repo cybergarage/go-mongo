@@ -17,3 +17,12 @@ db.trainers.findOne({age: 10})
   age: 10,
   city: 'Pallet Town'
 }
+db.trainers.find()
+[
+  {
+    _id: ObjectId("642a8fb2267f49b99957ee13"),
+    name: 'Ash',
+    age: 10,
+    city: 'Pallet Town'
+  }
+]
