@@ -15,45 +15,64 @@
 package mongotest
 
 import (
+	"fmt"
 	"regexp"
 
-	"github.com/cybergarage/go-sqltest/sqltest"
 	"github.com/cybergarage/go-sqltest/sqltest/util"
 )
 
-type MongoTest = sqltest.SQLTest
-
 const (
 	SuiteDefaultTestDirectory = "./test"
-	MongoTestFileExt          = "qst"
 )
 
-// Suite represents a test suite for MongoDB.
+// Suite represents a scenario test suite.
 type Suite struct {
-	Tests []*MongoTest
+	Tests  []*ScenarioTest
+	client Client
 }
 
-// NewSuite returns a new test suite.
+// NewSuite returns a scenario test suite instance.
 func NewSuite() *Suite {
 	suite := &Suite{
-		Tests: make([]*MongoTest, 0),
+		Tests:  make([]*ScenarioTest, 0),
+		client: nil,
 	}
 	return suite
 }
 
+// SetClient sets a client for testing.
+func (suite *Suite) SetClient(c Client) {
+	suite.client = c
+}
+
+// NewSuiteWithDirectory returns a scenario test suite instance which loads under the specified directory.
 func NewSuiteWithDirectory(dir string) (*Suite, error) {
 	suite := NewSuite()
-	findPath := util.NewFileWithPath(dir)
 
-	re := regexp.MustCompile(".*\\." + MongoTestFileExt)
+	re := regexp.MustCompile(".*\\." + ScenarioTestFileExt)
+	findPath := util.NewFileWithPath(dir)
 	files, err := findPath.ListFilesWithRegexp(re)
 	if err != nil {
 		return nil, err
 	}
 
-	suite.Tests = make([]*MongoTest, 0)
+	suite.Tests = make([]*ScenarioTest, 0)
 	for _, file := range files {
-		s, err := sqltest.NewSQLTestWithFile(file.Path)
+		s, err := NewScenarioTestWithFile(file.Path)
+		if err != nil {
+			return nil, err
+		}
+		suite.Tests = append(suite.Tests, s)
+	}
+
+	return suite, nil
+}
+
+// NeweEmbedSuite returns a scenario test suite instance which loads under the specified directory.
+func NeweEmbedSuite(tests map[string][]byte) (*Suite, error) {
+	suite := NewSuite()
+	for name, b := range tests {
+		s, err := NewScenarioTestWithBytes(name, b)
 		if err != nil {
 			return nil, err
 		}
@@ -62,14 +81,14 @@ func NewSuiteWithDirectory(dir string) (*Suite, error) {
 	return suite, nil
 }
 
-func NeweEmbedSQLTestSuite(tests map[string][]byte) (*Suite, error) {
-	suite := NewSuite()
-	for name, b := range tests {
-		s, err := sqltest.NewSQLTestWithBytes(name, b)
+// Run runs all loaded scenario tests. The method stops the testing when a scenario test is aborted, and the following tests are not run.
+func (suite *Suite) Run() error {
+	for _, test := range suite.Tests {
+		test.SetClient(suite.client)
+		err := test.Run()
 		if err != nil {
-			return nil, err
+			return fmt.Errorf("%s : %w", test.Name(), err)
 		}
-		suite.Tests = append(suite.Tests, s)
 	}
-	return suite, nil
+	return nil
 }
