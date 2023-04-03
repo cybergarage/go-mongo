@@ -63,9 +63,6 @@ TEST_FILE_DIR=${TEST_ROOT}/test
 TEST_HELPER_NAME=embed
 TEST_HELPER=${TEST_FILE_DIR}/${TEST_HELPER_NAME}.go
 
-${TEST_HELPER} : ${TEST_FILE_DIR}/${TEST_HELPER_NAME}.pl $(wildcard ${TEST_FILE_DIR}/*.qst)
-	perl $< > $@
-
 ALL_SRCS=\
 	${MODULE_SRCS} \
 	${TEST_PKG_SRCS} \
@@ -89,6 +86,9 @@ all: test
 
 version:
 	@pushd ${MODULE_SRC_DIR} && ./version.gen > version.go && popd
+
+${TEST_HELPER} : ${TEST_FILE_DIR}/${TEST_HELPER_NAME}.pl $(wildcard ${TEST_FILE_DIR}/*.qst)
+	perl $< > $@
 
 format: version ${TEST_HELPER} 
 	gofmt -s -w ${ALL_ROOTS}
