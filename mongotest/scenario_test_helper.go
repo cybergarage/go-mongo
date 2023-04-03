@@ -22,7 +22,7 @@ import (
 func RunScenarioTestFiles(t *testing.T, testFilenames []string) {
 	t.Helper()
 
-	client := NewMongoDBClient()
+	client := NewMongoShell()
 	for _, testFilename := range testFilenames {
 		t.Run(testFilename, func(t *testing.T) {
 			ct := NewScenarioTest()

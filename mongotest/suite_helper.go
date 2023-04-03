@@ -64,7 +64,7 @@ func RunLocalSuite(t *testing.T) {
 		return
 	}
 
-	client := NewMongoDBClient()
+	client := NewMongoShell()
 
 	err = client.Open()
 	if err != nil {
