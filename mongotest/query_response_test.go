@@ -20,7 +20,7 @@ import (
 
 func TestQueryResponses(t *testing.T) {
 	testJSONStrs := []string{
-		"{\nacknowledged: true,\n insertedId: ObjectId(\"6429625454ee3326b240a06d\")\n}",
+		"{\nacknowledged: true,\ninsertedId: ObjectId(\"6429625454ee3326b240a06d\")\n}",
 	}
 
 	res := NewQueryResponse()
