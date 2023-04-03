@@ -49,7 +49,7 @@ func (res *QueryResponse) ParseString(jsonStr string) error {
 	var rootObj any
 	err := json.Unmarshal([]byte(jsonStr), &rootObj)
 	if err != nil {
-		return err
+		return fmt.Errorf("%w :\n%s", err, jsonStr)
 	}
 	res.Data = rootObj
 	return nil
