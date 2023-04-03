@@ -43,27 +43,33 @@ func NewSuite() *Suite {
 
 func NewSuiteWithDirectory(dir string) (*Suite, error) {
 	suite := NewSuite()
-	err := suite.LoadDirectory(dir)
-	return suite, err
-}
-
-func (suite *Suite) LoadDirectory(dir string) error {
 	findPath := util.NewFileWithPath(dir)
 
 	re := regexp.MustCompile(".*\\." + MongoTestFileExt)
 	files, err := findPath.ListFilesWithRegexp(re)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	suite.Tests = make([]*MongoTest, 0)
 	for _, file := range files {
 		s, err := sqltest.NewSQLTestWithFile(file.Path)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		suite.Tests = append(suite.Tests, s)
 	}
+	return suite, nil
+}
 
-	return nil
+func NeweEmbedSQLTestSuite(tests map[string][]byte) (*Suite, error) {
+	suite := NewSuite()
+	for name, b := range tests {
+		s, err := sqltest.NewSQLTestWithBytes(name, b)
+		if err != nil {
+			return nil, err
+		}
+		suite.Tests = append(suite.Tests, s)
+	}
+	return suite, nil
 }
