@@ -16,6 +16,7 @@ package mongotest
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/cybergarage/go-logger/log"
 )
@@ -97,10 +98,6 @@ func (tst *ScenarioTest) Run() error {
 		return fmt.Errorf(errorClientNotFound)
 	}
 
-	err = client.Open()
-	if err != nil {
-		return err
-	}
 	errTraceMsg := func(n int) string {
 		errTraceMsg := tst.Name() + "\n"
 		for i := 0; i < n; i++ {
@@ -109,98 +106,17 @@ func (tst *ScenarioTest) Run() error {
 		}
 		return errTraceMsg
 	}
+
 	for n, query := range scenario.Queries {
 		log.Infof("[%d] %s", n, query)
-		_, err := client.Query(query)
+		queryRes, err := client.Query(query)
 		if err != nil {
 			return fmt.Errorf("%s%w", errTraceMsg(n), err)
 		}
-		/*
-			defer rs.Close()
-
-			columns, err := rs.Columns()
-			if err != nil {
-				return err
-			}
-			columnCnt := len(columns)
-
-			columnTypes, err := rs.ColumnTypes()
-			if err != nil {
-				return err
-			}
-
-			// NOTE: Run() supports only the following standard column types yet.
-			values := make([]interface{}, columnCnt)
-			for n, columnType := range columnTypes {
-				switch columnType.DatabaseTypeName() {
-				case "INTEGER", "INT", "SMALLINT", "TINYINT", "MEDIUMINT", "BIGINT":
-					var v int
-					values[n] = &v
-				case "FLOAT", "DOUBLE":
-					var v float64
-					values[n] = &v
-				case "TEXT", "NVARCHAR":
-					var v string
-					values[n] = &v
-				case "VARBINARY", "BINARY":
-					var v string
-					values[n] = &v
-				default:
-					var v interface{}
-					values[n] = &v
-				}
-			}
-
-			rsRows := make([]interface{}, 0)
-			for rs.Next() {
-				err = rs.Scan(values...)
-				if err != nil {
-					return err
-				}
-
-				row := map[string]interface{}{}
-				for i := 0; i < columnCnt; i++ {
-					switch v := values[i].(type) {
-					case *int:
-						row[columns[i]] = *v
-					case *float64:
-						row[columns[i]] = *v
-					case *string:
-						row[columns[i]] = *v
-					case *interface{}:
-						row[columns[i]] = *v
-					default:
-						row[columns[i]] = values[i]
-					}
-				}
-
-				rsRows = append(rsRows, row)
-			}
-
-			expectedRes := scenario.Results[n]
-			expectedRows, err := expectedRes.Rows()
-			if err != nil {
-				if len(rsRows) != 0 {
-					return fmt.Errorf("%s"+errorJSONResponseHasUnexpectedRows, errTraceMsg(n), n, query, rsRows)
-				}
-			} else {
-				if len(rsRows) != len(expectedRows) {
-					return fmt.Errorf("%s"+errorJSONResponseUnmatchedRowCount, errTraceMsg(n), n, query, rsRows, expectedRows)
-				}
-			}
-
-			for _, row := range rsRows {
-				err = expectedRes.HasRow(row)
-				if err != nil {
-					return fmt.Errorf("%s"+errorQueryPrefix+"%w", errTraceMsg(n), n, query, err)
-				}
-			}
-		*/
-	}
-
-	err = client.Close()
-	if err != nil {
-		return err
+		expectedRes := scenario.Expecteds[n]
+		if !reflect.DeepEqual(queryRes, expectedRes) {
+			return fmt.Errorf("%s", errTraceMsg(n))
+		}
 	}
 
 	return nil
