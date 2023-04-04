@@ -25,17 +25,17 @@ type Line = string
 
 // Scenario represents a scenario.
 type Scenario struct {
-	Filename string
-	Queries  []string
-	Results  []*QueryResponse
+	Filename  string
+	Queries   []string
+	Expecteds []*QueryResponse
 }
 
 // NewScenario return a scenario instance.
 func NewScenario() *Scenario {
 	file := &Scenario{
-		Filename: "",
-		Queries:  []string{},
-		Results:  []*QueryResponse{},
+		Filename:  "",
+		Queries:   []string{},
+		Expecteds: []*QueryResponse{},
 	}
 	return file
 }
@@ -61,8 +61,8 @@ func (scn *Scenario) Name() string {
 
 // IsValid checks whether the loaded scenario is available.
 func (scn *Scenario) IsValid() error {
-	if len(scn.Queries) != len(scn.Results) {
-		return fmt.Errorf(errorInvalidScenarioCases, len(scn.Queries), len(scn.Results))
+	if len(scn.Queries) != len(scn.Expecteds) {
+		return fmt.Errorf(errorInvalidScenarioCases, len(scn.Queries), len(scn.Expecteds))
 	}
 	return nil
 }
@@ -124,7 +124,7 @@ func (scn *Scenario) parseByteLines(fileBytes []byte) ([]Line, error) {
 func (scn *Scenario) ParseLineStrings(lines []string) error {
 	var queryStr, resultStr string
 	scn.Queries = make([]string, 0)
-	scn.Results = make([]*QueryResponse, 0)
+	scn.Expecteds = make([]*QueryResponse, 0)
 
 	appendQuery := func() {
 		if len(queryStr) == 0 {
@@ -141,7 +141,7 @@ func (scn *Scenario) ParseLineStrings(lines []string) error {
 		if err != nil {
 			return err
 		}
-		scn.Results = append(scn.Results, result)
+		scn.Expecteds = append(scn.Expecteds, result)
 		resultStr = ""
 		return nil
 	}
@@ -177,11 +177,11 @@ func (scn *Scenario) ParseLineStrings(lines []string) error {
 // String returns the string representation.
 func (scn *Scenario) String() string {
 	var str string
-	nResults := len(scn.Results)
+	nResults := len(scn.Expecteds)
 	for n, query := range scn.Queries {
 		str += query + "\n"
 		if n < nResults {
-			str += scn.Results[n].String() + "\n"
+			str += scn.Expecteds[n].String() + "\n"
 		}
 	}
 	return str
