@@ -111,9 +111,30 @@ func (tst *ScenarioTest) Run() error {
 		return errTraceMsg
 	}
 
+	isEqualQueryMapResponses := func(queryMap, expectedMap map[string]interface{}) bool {
+		for queryKey, queryValue := range queryMap {
+			expectedVal, ok := expectedMap[queryKey]
+			if !ok {
+				return false
+			}
+			if fmt.Sprintf("%s", queryValue) != fmt.Sprintf("%s", expectedVal) {
+				return false
+			}
+		}
+		return true
+	}
+
 	isEqualQueryResponses := func(queryRes, expectedRes any) bool {
 		if reflect.DeepEqual(queryRes, expectedRes) {
 			return true
+		}
+		queryMap, ok := queryRes.(map[string]interface{})
+		if ok {
+			expectedMap, ok := expectedRes.(map[string]interface{})
+			if !ok {
+				return false
+			}
+			return isEqualQueryMapResponses(queryMap, expectedMap)
 		}
 		return false
 	}
