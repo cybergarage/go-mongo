@@ -111,6 +111,13 @@ func (tst *ScenarioTest) Run() error {
 		return errTraceMsg
 	}
 
+	isEqualQueryResponses := func(queryRes, expectedRes any) bool {
+		if reflect.DeepEqual(queryRes, expectedRes) {
+			return true
+		}
+		return false
+	}
+
 	for n, query := range scenario.Queries {
 		log.Infof("[%d] %s", n, query)
 		queryRes, err := client.Query(query)
@@ -118,7 +125,7 @@ func (tst *ScenarioTest) Run() error {
 			return fmt.Errorf("%s%w", errTraceMsg(n), err)
 		}
 		expectedRes := scenario.Expecteds[n]
-		if !reflect.DeepEqual(queryRes, expectedRes) {
+		if !isEqualQueryResponses(queryRes, expectedRes) {
 			return fmt.Errorf("%sexpected:\n%s\nactual:\n%s", errTraceMsg(n), expectedRes, queryRes)
 		}
 	}
