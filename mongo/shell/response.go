@@ -20,6 +20,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// ResponseToJSONString converts a shell response string to a JSON string.
 func ResponseToJSONString(res string) string {
 	reps := []struct {
 		from string
@@ -37,6 +38,7 @@ func ResponseToJSONString(res string) string {
 	return jsonStr
 }
 
+// UnmarshalResponse unmarshals a shell response string to a JSON response.
 func UnmarshalResponse(res string, to any) (any, error) {
 	// Extended JSON
 	// https://github.com/mongodb/specifications/blob/master/source/extended-json.rst
@@ -49,6 +51,7 @@ func UnmarshalResponse(res string, to any) (any, error) {
 	return to, nil
 }
 
+// DecodeResponse decodes a shell response string to a JSON response.
 func DecodeResponse(res string) (any, error) {
 	var v any
 	return UnmarshalResponse(res, v)
