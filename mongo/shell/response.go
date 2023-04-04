@@ -26,9 +26,9 @@ func ResponseToJSONString(res string) string {
 		from string
 		to   string
 	}{
-		{from: "([0-9A-Za-z]*):", to: "\"$1\":"},
+		{from: "([_0-9A-Za-z]*):", to: "\"$1\":"},
 		{from: "ObjectId\\((.*)\\)", to: "$1"},
-		{from: "\\'(.*)\\'", to: "\"$1\""},
+		{from: "\\'([ _0-9A-Za-z]*)\\'", to: "\"$1\""},
 	}
 	jsonStr := res
 	for _, rep := range reps {
