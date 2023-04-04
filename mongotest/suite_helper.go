@@ -17,6 +17,7 @@ package mongotest
 import (
 	"testing"
 
+	"github.com/cybergarage/go-mongo/mongo/shell"
 	"github.com/cybergarage/go-mongo/mongotest/test"
 )
 
@@ -64,7 +65,7 @@ func RunLocalSuite(t *testing.T) {
 		return
 	}
 
-	client := NewMongoShell()
+	client := shell.NewClient()
 
 	err = client.Open()
 	if err != nil {

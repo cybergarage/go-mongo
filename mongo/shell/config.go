@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongotest
+package shell
 
 const (
 	defaultHost = "127.0.0.1"
