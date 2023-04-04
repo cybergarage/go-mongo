@@ -137,11 +137,11 @@ func (scn *Scenario) ParseLineStrings(lines []string) error {
 		if len(resultStr) == 0 {
 			return nil
 		}
-		result, err := NewQueryResponseWithString(strings.TrimSpace(resultStr))
+		expected, err := NewQueryResponseWithString(strings.TrimSpace(resultStr))
 		if err != nil {
 			return err
 		}
-		scn.Expecteds = append(scn.Expecteds, result)
+		scn.Expecteds = append(scn.Expecteds, expected)
 		resultStr = ""
 		return nil
 	}
