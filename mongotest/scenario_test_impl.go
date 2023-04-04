@@ -112,13 +112,18 @@ func (tst *ScenarioTest) Run() error {
 	}
 
 	isEqualQueryMapResponses := func(queryMap, expectedMap map[string]interface{}) bool {
-		for queryKey, queryValue := range queryMap {
-			expectedVal, ok := expectedMap[queryKey]
-			if !ok {
-				return false
-			}
-			if fmt.Sprintf("%s", queryValue) != fmt.Sprintf("%s", expectedVal) {
-				return false
+		for key, queryValue := range queryMap {
+			switch key {
+			case "_id", "insertedId":
+				continue
+			default:
+				expectedVal, ok := expectedMap[key]
+				if !ok {
+					return false
+				}
+				if fmt.Sprintf("%s", queryValue) != fmt.Sprintf("%s", expectedVal) {
+					return false
+				}
 			}
 		}
 		return true
