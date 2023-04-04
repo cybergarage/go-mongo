@@ -20,5 +20,5 @@ type Client interface {
 	SetPort(port int)
 	Open() error
 	Close() error
-	Query(query string, args ...interface{}) (any, error)
+	Query(query string) (any, error)
 }
