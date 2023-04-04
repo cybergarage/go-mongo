@@ -17,6 +17,7 @@ package shell
 import (
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
 const (
@@ -48,10 +49,28 @@ func (client *Client) Close() error {
 func (client *Client) Query(query string) (any, error) {
 	var args []string
 	args = append(args, "--eval", fmt.Sprintf("'%s'", query))
-	out, err := exec.Command(mongosh, args...).CombinedOutput()
-	if err == nil {
-		// TODO: Parse the output result set response
-		return nil, nil
+	out, err := exec.Command(mongosh, args...).Output()
+	if err != nil {
+		return nil, err
 	}
-	return nil, fmt.Errorf("%w : %s", err, string(out))
+
+	lines := strings.Split(string(out), "\n")
+	resLineNo := -1
+	for n, line := range lines {
+		if strings.HasPrefix(line, "[") || strings.HasPrefix(line, "{") {
+			resLineNo = n
+			break
+		}
+	}
+	if resLineNo < 0 {
+		return nil, fmt.Errorf("no result")
+	}
+
+	res := strings.Join(lines[resLineNo:], "\n")
+	v, err := DecodeResponse(res)
+	if err != nil {
+		return nil, err
+	}
+
+	return v, nil
 }
