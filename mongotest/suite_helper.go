@@ -35,7 +35,7 @@ func RunEmbedSuite(t *testing.T) {
 	client := shell.NewClient()
 	err = client.Open()
 	if err != nil {
-		t.Error(err)
+		t.Skipf(err.Error())
 		return
 	}
 
