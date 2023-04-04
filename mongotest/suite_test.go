@@ -15,42 +15,22 @@
 package mongotest
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/cybergarage/go-logger/log"
-	"github.com/cybergarage/go-mongo/mongo/shell"
-	"github.com/cybergarage/go-mongo/mongotest/test"
 )
 
 func TestEmbedSuite(t *testing.T) {
 	log.SetStdoutDebugEnbled(true)
 
-	suite, err := NeweEmbedSuite(test.EmbedTests)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	client := shell.NewClient()
-	suite.SetClient(client)
-
 	server := NewServer()
-	err = server.Start()
+	err := server.Start()
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	for _, tst := range suite.Tests {
-		t.Run(tst.Name(), func(t *testing.T) {
-			tst.SetClient(client)
-			err := tst.Run()
-			if err != nil {
-				t.Error(fmt.Errorf("%s : %w", tst.Name(), err))
-			}
-		})
-	}
+	RunEmbedSuite(t)
 
 	err = server.Stop()
 	if err != nil {
