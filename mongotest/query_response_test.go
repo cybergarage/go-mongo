@@ -19,13 +19,15 @@ import (
 )
 
 func TestQueryResponses(t *testing.T) {
-	testJSONStrs := []string{
+	testResponses := []string{
 		"{\nacknowledged: true,\ninsertedId: ObjectId(\"6429625454ee3326b240a06d\")\n}",
+		"{\n_id: ObjectId(\"6429625454ee3326b240a06d\"),\nname: 'Ash',\nage: 10,\ncity: 'Pallet Town'}",
+		"[\n{\n_id: ObjectId(\"642a8fb2267f49b99957ee13\"),\nname:'Ash',\nage: 10,\ncity: 'Pallet Town'\n}\n]\n",
 	}
 
 	res := NewQueryResponse()
-	for _, jsonStr := range testJSONStrs {
-		err := res.ParseString(jsonStr)
+	for _, resStr := range testResponses {
+		err := res.ParseString(resStr)
 		if err != nil {
 			t.Error(err)
 		}
