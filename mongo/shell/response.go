@@ -26,7 +26,7 @@ func ResponseToJSONString(res string) string {
 		from string
 		to   string
 	}{
-		{from: "(.*):", to: "\"$1\":"},
+		{from: "([0-9A-Za-z]*):", to: "\"$1\":"},
 		{from: "ObjectId\\((.*)\\)", to: "$1"},
 		{from: "\\'(.*)\\'", to: "\"$1\""},
 	}
@@ -53,6 +53,16 @@ func UnmarshalResponse(res string, to any) (any, error) {
 
 // DecodeResponse decodes a shell response string to a JSON response.
 func DecodeResponse(res string) (any, error) {
-	var v any
-	return UnmarshalResponse(res, v)
+	jsonStr := ResponseToJSONString(res)
+	var vmap map[string]interface{}
+	err := bson.UnmarshalExtJSON([]byte(jsonStr), true, &vmap)
+	if err == nil {
+		return vmap, nil
+	}
+	var vamap []map[string]interface{}
+	err = bson.UnmarshalExtJSON([]byte(jsonStr), true, &vamap)
+	if err != nil {
+		return nil, err
+	}
+	return vamap, nil
 }
