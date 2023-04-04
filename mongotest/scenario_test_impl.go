@@ -100,8 +100,12 @@ func (tst *ScenarioTest) Run() error {
 
 	errTraceMsg := func(n int) string {
 		errTraceMsg := tst.Name() + "\n"
-		for i := 0; i < n; i++ {
-			errTraceMsg += fmt.Sprintf(goodQueryPrefix, i, scenario.Queries[i])
+		for i := 0; i <= n; i++ {
+			prefix := goodQueryPrefix
+			if i == n {
+				prefix = errorQueryPrefix
+			}
+			errTraceMsg += fmt.Sprintf(prefix, i, scenario.Queries[i])
 			errTraceMsg += "\n"
 		}
 		return errTraceMsg
@@ -115,7 +119,7 @@ func (tst *ScenarioTest) Run() error {
 		}
 		expectedRes := scenario.Expecteds[n]
 		if !reflect.DeepEqual(queryRes, expectedRes) {
-			return fmt.Errorf("%s\nexpected:\n%s\nactual:\n%s", errTraceMsg(n), expectedRes, queryRes)
+			return fmt.Errorf("%sexpected:\n%s\nactual:\n%s", errTraceMsg(n), expectedRes, queryRes)
 		}
 	}
 
