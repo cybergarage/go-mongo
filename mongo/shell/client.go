@@ -37,7 +37,9 @@ func NewClient() *Client {
 
 // Open opens a database specified by the internal configuration.
 func (client *Client) Open() error {
-	return nil
+	args := []string{"-h"}
+	_, err := exec.Command(mongosh, args...).Output()
+	return err
 }
 
 // Close closes opens a database specified by the internal configuration.
