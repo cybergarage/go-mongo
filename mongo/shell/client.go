@@ -42,12 +42,12 @@ func (client *Client) Open() error {
 	return err
 }
 
-// Close closes opens a database specified by the internal configuration.
+// Close closes the database.
 func (client *Client) Close() error {
 	return nil
 }
 
-// Query executes a query that returns rows.
+// Query executes a query and returns a result.
 func (client *Client) Query(query string) (any, error) {
 	var args []string
 	args = append(args, "--eval", fmt.Sprintf("'%s'", query))
@@ -59,13 +59,17 @@ func (client *Client) Query(query string) (any, error) {
 	lines := strings.Split(string(out), "\n")
 	resLineNo := -1
 	for n, line := range lines {
-		if strings.HasPrefix(line, "[") || strings.HasPrefix(line, "{") {
+		if strings.HasPrefix(line, "[") || strings.HasPrefix(line, "{") || strings.HasPrefix(line, "null") {
 			resLineNo = n
 			break
 		}
 	}
 	if resLineNo < 0 {
 		return nil, fmt.Errorf("no result")
+	}
+
+	if strings.HasPrefix(lines[resLineNo], "null") {
+		return nil, nil
 	}
 
 	res := strings.Join(lines[resLineNo:], "\n")
