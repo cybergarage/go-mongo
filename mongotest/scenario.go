@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/cybergarage/go-mongo/mongo/shell"
 )
 
 // Line represents a line of a scenario test file.
@@ -27,7 +29,7 @@ type Line = string
 type Scenario struct {
 	Filename  string
 	Queries   []string
-	Expecteds []*QueryResponse
+	Expecteds []any
 }
 
 // NewScenario return a scenario instance.
@@ -35,7 +37,7 @@ func NewScenario() *Scenario {
 	file := &Scenario{
 		Filename:  "",
 		Queries:   []string{},
-		Expecteds: []*QueryResponse{},
+		Expecteds: []any{},
 	}
 	return file
 }
@@ -124,7 +126,7 @@ func (scn *Scenario) parseByteLines(fileBytes []byte) ([]Line, error) {
 func (scn *Scenario) ParseLineStrings(lines []string) error {
 	var queryStr, resultStr string
 	scn.Queries = make([]string, 0)
-	scn.Expecteds = make([]*QueryResponse, 0)
+	scn.Expecteds = make([]any, 0)
 
 	appendQuery := func() {
 		if len(queryStr) == 0 {
@@ -137,7 +139,7 @@ func (scn *Scenario) ParseLineStrings(lines []string) error {
 		if len(resultStr) == 0 {
 			return nil
 		}
-		expected, err := NewQueryResponseWithString(strings.TrimSpace(resultStr))
+		expected, err := shell.DecodeResponse(resultStr)
 		if err != nil {
 			return err
 		}
@@ -181,7 +183,7 @@ func (scn *Scenario) String() string {
 	for n, query := range scn.Queries {
 		str += query + "\n"
 		if n < nResults {
-			str += scn.Expecteds[n].String() + "\n"
+			str += fmt.Sprintf("%s", scn.Expecteds[n]) + "\n"
 		}
 	}
 	return str
