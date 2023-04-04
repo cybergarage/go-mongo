@@ -115,7 +115,7 @@ func (tst *ScenarioTest) Run() error {
 		}
 		expectedRes := scenario.Expecteds[n]
 		if !reflect.DeepEqual(queryRes, expectedRes) {
-			return fmt.Errorf("%s", errTraceMsg(n))
+			return fmt.Errorf("%s\nexpected:\n%s\nactual:\n%s", errTraceMsg(n), expectedRes, queryRes)
 		}
 	}
 
