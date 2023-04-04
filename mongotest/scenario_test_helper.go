@@ -17,12 +17,14 @@ package mongotest
 import (
 	"path"
 	"testing"
+
+	"github.com/cybergarage/go-mongo/mongo/shell"
 )
 
 func RunScenarioTestFiles(t *testing.T, testFilenames []string) {
 	t.Helper()
 
-	client := NewMongoShell()
+	client := shell.NewClient()
 	for _, testFilename := range testFilenames {
 		t.Run(testFilename, func(t *testing.T) {
 			ct := NewScenarioTest()
