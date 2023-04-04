@@ -28,12 +28,14 @@ MODULE_SRCS=\
 	${MODULE_SRC_DIR}/bson \
 	${MODULE_SRC_DIR}/message \
 	${MODULE_SRC_DIR}/protocol \
+	${MODULE_SRC_DIR}/shell \
 	${MODULE_SRC_DIR}
 MODULE_PKG_ROOT=${GIT_ROOT}${MODULE_NAME}/${MODULE_ROOT}
 MODULE_PKGS=\
 	${MODULE_PKG_ROOT}/bson \
 	${MODULE_PKG_ROOT}/message \
 	${MODULE_PKG_ROOT}/protocol \
+	${MODULE_PKG_ROOT}/shell \
 	${MODULE_PKG_ROOT}
 
 EXAMPLES_ROOT=examples
