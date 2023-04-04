@@ -26,7 +26,7 @@ const ScenarioTestDatabase = "qst"
 func RunEmbedSuite(t *testing.T) {
 	t.Helper()
 
-	cs, err := NeweEmbedSuite(test.EmbedTests)
+	es, err := NeweEmbedSuite(test.EmbedTests)
 	if err != nil {
 		t.Error(err)
 		return
@@ -39,16 +39,10 @@ func RunEmbedSuite(t *testing.T) {
 		return
 	}
 
-	cs.SetClient(client)
-
-	for _, test := range cs.Tests {
-		t.Run(test.Name(), func(t *testing.T) {
-			test.SetClient(cs.client)
-			err := test.Run()
-			if err != nil {
-				t.Errorf("%s : %s", test.Name(), err.Error())
-			}
-		})
+	es.SetClient(client)
+	err = es.Run()
+	if err != nil {
+		t.Error(err)
 	}
 
 	err = client.Close()
