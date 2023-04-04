@@ -16,6 +16,7 @@ package mongotest
 
 import (
 	"fmt"
+	"regexp"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -51,10 +52,14 @@ func (res *QueryResponse) ParseString(exJsonStr string) error {
 	// https://github.com/mongodb/specifications/blob/master/source/extended-json.rst
 	// bson package - go.mongodb.org/mongo-driver/bson - Go Packages
 	// var rootObj QueryResponseMap
+
+	re := regexp.MustCompile("(.*):")
+	jsonStr := re.ReplaceAllString(exJsonStr, "\"$1\":")
+
 	var rootObj map[string]interface{}
-	err := bson.UnmarshalExtJSON([]byte(exJsonStr), true, &rootObj)
+	err := bson.UnmarshalExtJSON([]byte(jsonStr), true, &rootObj)
 	if err != nil {
-		return fmt.Errorf("%w :\n%s", err, exJsonStr)
+		return fmt.Errorf("%w :\n%s", err, jsonStr)
 	}
 	res.Data = rootObj
 	return nil
