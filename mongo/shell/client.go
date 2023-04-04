@@ -12,31 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongotest
+package shell
 
-type MongoShell struct {
+import (
+	"fmt"
+	"os/exec"
+)
+
+const (
+	mongosh = "mongosh"
+)
+
+type Client struct {
 	*Config
 }
 
-// NewMongoShell returns a client instance.
-func NewMongoShell() Client {
-	client := &MongoShell{
+// NewClient returns a shell client instance.
+func NewClient() *Client {
+	return &Client{
 		Config: NewDefaultConfig(),
 	}
-	return client
 }
 
 // Open opens a database specified by the internal configuration.
-func (client *MongoShell) Open() error {
+func (client *Client) Open() error {
 	return nil
 }
 
 // Close closes opens a database specified by the internal configuration.
-func (client *MongoShell) Close() error {
+func (client *Client) Close() error {
 	return nil
 }
 
 // Query executes a query that returns rows.
-func (client *MongoShell) Query(query string, args ...interface{}) (any, error) {
-	return nil, nil
+func (client *Client) Query(query string) (any, error) {
+	var args []string
+	args = append(args, "--eval", fmt.Sprintf("'%s'", query))
+	out, err := exec.Command(mongosh, args...).CombinedOutput()
+	if err == nil {
+		// TODO: Parse the output result set response
+		return nil, nil
+	}
+	return nil, fmt.Errorf("%w : %s", err, string(out))
 }

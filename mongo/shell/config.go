@@ -12,12 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongotest
+package shell
 
-import (
-	"testing"
+const (
+	defaultHost = "127.0.0.1"
+	defaultPort = 27017
 )
 
-func TestDefaultConfig(t *testing.T) {
-	NewDefaultConfig()
+// Config stores server configuration parammeters.
+type Config struct {
+	Host string
+	Port int
+}
+
+// NewDefaultConfig returns a default configuration instance.
+func NewDefaultConfig() *Config {
+	config := &Config{
+		Host: defaultHost,
+		Port: defaultPort,
+	}
+	return config
+}
+
+// SetHost sets a host address.
+func (config *Config) SetHost(host string) {
+	config.Host = host
+}
+
+// SetPort sets a listen port.
+func (config *Config) SetPort(port int) {
+	config.Port = port
 }
