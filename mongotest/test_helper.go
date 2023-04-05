@@ -30,7 +30,7 @@ type Trainer struct {
 	City string
 }
 
-func RunOfficialClientTest(t *testing.T) {
+func RunClientTest(t *testing.T) {
 	t.Helper()
 
 	t.Run("Tutorial", func(t *testing.T) {
