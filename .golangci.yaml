@@ -44,3 +44,7 @@ linters:
     - maligned
     - nosnakecase
     - structcheck
+
+linters-settings:
+  revive:
+    unused-parameter: false
