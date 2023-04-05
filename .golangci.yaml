@@ -47,4 +47,8 @@ linters:
 
 linters-settings:
   revive:
-    unused-parameter: false
+    enabled: true
+    config:
+      rules:
+        unused-parameter:
+          enabled: false
