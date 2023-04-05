@@ -40,7 +40,7 @@ func (q *Query) ParseMsg(msg *protocol.Msg) error {
 
 // parseBodyDocument parses the specified BSON document.
 func (q *Query) parseBodyDocument(doc bson.Document) error {
-	elements, err := doc.Elemments()
+	elements, err := doc.Elements()
 	if err != nil {
 		return err
 	}
