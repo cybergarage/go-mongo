@@ -40,3 +40,7 @@ linters:
     - ifshort
     - golint
     - dupword
+    - scopelint
+    - maligned
+    - nosnakecase
+    - structcheck
