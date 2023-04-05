@@ -76,6 +76,23 @@ func (q *Query) GetConditions() []bson.Document {
 	return q.Conditions
 }
 
+// HasConditions returns true if the query has conditions.
+func (q *Query) HasConditions() bool {
+	if q.Conditions == nil || len(q.Conditions) == 0 {
+		return false
+	}
+	for _, cond := range q.GetConditions() {
+		condElems, err := cond.Elements()
+		if err != nil {
+			return false
+		}
+		if 0 < len(condElems) {
+			return true
+		}
+	}
+	return false
+}
+
 // GetDocuments returns the search conditions.
 func (q *Query) GetDocuments() []bson.Document {
 	return q.Documents
