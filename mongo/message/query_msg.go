@@ -60,6 +60,20 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 			if ok {
 				q.Database = db
 			}
+		case Documents:
+			docs, ok := element.Value().ArrayOK()
+			if ok {
+				vals, err := docs.Values()
+				if err != nil {
+					return err
+				}
+				for _, val := range vals {
+					doc, ok := val.DocumentOK()
+					if ok {
+						q.Documents = append(q.Documents, doc)
+					}
+				}
+			}
 		case Filter:
 			doc, ok := element.Value().DocumentOK()
 			if ok {
@@ -75,7 +89,7 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 func (q *Query) parseDocuments(docs []bson.Document) error {
 	switch q.Type {
 	case Insert:
-		q.Documents = docs
+		q.Documents = append(q.Documents, docs...)
 	case Delete:
 		for _, doc := range docs {
 			condElem, err := doc.LookupErr("q")
