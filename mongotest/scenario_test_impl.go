@@ -111,28 +111,42 @@ func (tst *ScenarioTest) Run() error {
 		return errTraceMsg
 	}
 
-	isEqualQueryMapResponses := func(queryMap, expectedMap map[string]interface{}) bool {
-		for key, queryValue := range queryMap {
-			switch key {
-			case "_id", "insertedId":
-				continue
-			default:
-				expectedVal, ok := expectedMap[key]
-				if !ok {
-					return false
-				}
-				if fmt.Sprintf("%s", queryValue) != fmt.Sprintf("%s", expectedVal) {
-					return false
-				}
-			}
-		}
-		return true
-	}
-
 	isEqualQueryResponses := func(queryRes, expectedRes any) bool {
 		if reflect.DeepEqual(queryRes, expectedRes) {
 			return true
 		}
+
+		isEqualQueryMapResponses := func(queryMap, expectedMap map[string]interface{}) bool {
+			for key, queryValue := range queryMap {
+				switch key {
+				case "_id", "insertedId":
+					continue
+				default:
+					expectedVal, ok := expectedMap[key]
+					if !ok {
+						return false
+					}
+					if fmt.Sprintf("%s", queryValue) != fmt.Sprintf("%s", expectedVal) {
+						return false
+					}
+				}
+			}
+			return true
+		}
+
+		isEqualQueryArrayResponses := func(queryArray, expectedArray []map[string]interface{}) bool {
+			if len(queryArray) != len(expectedArray) {
+				return false
+			}
+			for n, queryMap := range queryArray {
+				expectedMap := expectedArray[n]
+				if !isEqualQueryMapResponses(queryMap, expectedMap) {
+					return false
+				}
+			}
+			return true
+		}
+
 		queryMap, ok := queryRes.(map[string]interface{})
 		if ok {
 			expectedMap, ok := expectedRes.(map[string]interface{})
@@ -141,6 +155,16 @@ func (tst *ScenarioTest) Run() error {
 			}
 			return isEqualQueryMapResponses(queryMap, expectedMap)
 		}
+
+		queryArray, ok := queryRes.([]map[string]interface{})
+		if ok {
+			expectedArray, ok := expectedRes.([]map[string]interface{})
+			if !ok {
+				return false
+			}
+			return isEqualQueryArrayResponses(queryArray, expectedArray)
+		}
+
 		return false
 	}
 
