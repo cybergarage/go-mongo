@@ -7,6 +7,7 @@
 ## v0.9.4 (2023-xx-xx)
 - Add senario test framework
 - Add mongosh-based client for testing
+- Update wire protocol parser to support the protocols used by mongosh
 
 ## v0.9.3 (2023-04-02)
 - Add connection logs
