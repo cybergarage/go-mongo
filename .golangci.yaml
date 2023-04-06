@@ -49,4 +49,4 @@ linters-settings:
   revive:
     rules:
       - name: unused-parameter
-        enabled: false
+        disabled: true
