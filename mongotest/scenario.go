@@ -114,7 +114,7 @@ func (scn *Scenario) parseByteLines(fileBytes []byte) ([]Line, error) {
 	lines := make([]Line, 0)
 	for _, line := range strings.Split(string(fileBytes), "\n") {
 		// Skip blank or comment lines
-		if len(line) == 0 || strings.HasPrefix(line, "-") {
+		if len(line) == 0 || strings.HasPrefix(line, "-") || strings.HasPrefix(line, "#") {
 			continue
 		}
 		lines = append(lines, line)
