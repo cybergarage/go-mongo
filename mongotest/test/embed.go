@@ -19,8 +19,12 @@ import (
 )
 
 var EmbedTests = map[string][]byte{
-	"Tutorial": tutorial,
+	"Tutorial":         tutorial,
+	"GoDriverTutorial": goDriverTutorial,
 }
 
 //go:embed tutorial.qst
 var tutorial []byte
+
+//go:embed go_driver_tutorial.qst
+var goDriverTutorial []byte
