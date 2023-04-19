@@ -4,6 +4,9 @@
 - Fix executor interfaces for major MongoDB commands
 - Add developer documents
 
+## v0.9.5 (2023-xx-xx)
+- Add createIndex interface
+
 ## v0.9.4 (2023-04-08)
 - Add senario test framework
 - Add mongosh-based client for testing
