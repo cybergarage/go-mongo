@@ -185,6 +185,7 @@ func (server *Server) receive(conn net.Conn) error {
 
 	handlerConn := newConn()
 	handlerConn.SpanContext = server.Tracer.StartSpan(spanRoot)
+	defer handlerConn.SpanContext.Span().Finish()
 
 	for err == nil {
 		reqMsg, err = server.readMessage(conn)
