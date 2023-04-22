@@ -184,6 +184,10 @@ func (server *Server) receive(conn net.Conn) error {
 	log.Debugf("%s/%s (%s) accepted", PackageName, Version, conn.RemoteAddr().String())
 
 	handlerConn := newConn()
+	if server.Tracer != nil {
+		handlerConn.SpanContext = server.Tracer.StartSpan(spanRoot)
+	}
+
 	for err == nil {
 		reqMsg, err = server.readMessage(conn)
 		if err != nil {

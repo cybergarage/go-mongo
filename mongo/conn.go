@@ -17,19 +17,23 @@ package mongo
 import (
 	"sync"
 	"time"
+
+	"github.com/cybergarage/go-tracing/tracer"
 )
 
 // Conn represents a connection of Wire protocol.
 type Conn struct {
 	sync.Map
 	ts time.Time
+	tracer.SpanContext
 }
 
 // newConn returns a connection with a default empty connection.
 func newConn() *Conn {
 	return &Conn{
-		Map: sync.Map{},
-		ts:  time.Now(),
+		Map:         sync.Map{},
+		ts:          time.Now(),
+		SpanContext: nil,
 	}
 }
 
