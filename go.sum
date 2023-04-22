@@ -4,6 +4,8 @@ github.com/cybergarage/go-sqltest v0.9.2 h1:/pybi/2K1n0keyOkcQNyqV4wxyr63Om6lP76
 github.com/cybergarage/go-sqltest v0.9.2/go.mod h1:McSUrZEH5nC+4w3lBO1I4NBREIGJd8nUBVtBLiNZgl4=
 github.com/cybergarage/go-tracing v0.8.0 h1:zM62QvgDMLX/yQxwiB6/J+hQCA6cAZFwmMCNRMFYsaQ=
 github.com/cybergarage/go-tracing v0.8.0/go.mod h1:KN09KvqpypNVvEUg/Tn8Id14XQbwEUlzfLFppFmnRr8=
+github.com/cybergarage/go-tracing v0.8.1 h1:Q6UbJpBp6ZDsRY5Ux7uRnKyfuEpMGC8+ZT4jHnmxNbI=
+github.com/cybergarage/go-tracing v0.8.1/go.mod h1:KN09KvqpypNVvEUg/Tn8Id14XQbwEUlzfLFppFmnRr8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
