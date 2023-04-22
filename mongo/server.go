@@ -25,6 +25,7 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
+	"github.com/cybergarage/go-tracing/tracer"
 )
 
 // MessageListener represents a listener for MongoDB messages.
@@ -35,6 +36,7 @@ type MessageListener interface {
 // Server is an instance for MongoDB protocols.
 type Server struct {
 	*Config
+	tracer.Tracer
 	Addr                 string
 	Port                 int
 	messageListener      MessageListener
@@ -49,6 +51,7 @@ type Server struct {
 func NewServer() *Server {
 	server := &Server{
 		Config:               NewDefaultConfig(),
+		Tracer:               nil,
 		Addr:                 "",
 		Port:                 DefaultPort,
 		messageListener:      nil,
@@ -76,6 +79,11 @@ func (server *Server) SetPort(port int) {
 // GetPort returns a listent port.
 func (server *Server) GetPort() int {
 	return server.Port
+}
+
+// SetTracer sets a tracing tracer.
+func (server *Server) SetTracer(t tracer.Tracer) {
+	server.Tracer = t
 }
 
 // SetMessageListener sets a message listener.
