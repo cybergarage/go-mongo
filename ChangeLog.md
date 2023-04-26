@@ -6,6 +6,7 @@
 
 ## v0.9.6 (2023-xx-xx)
 - Add createIndex interface
+- Add Server::SetAddress()
 
 ## v0.9.5 (2023-04-23)
 - Add tracing interface
