@@ -71,6 +71,16 @@ func NewServer() *Server {
 	return server
 }
 
+// SetAddress sets a listen address.
+func (server *Server) SetAddress(addr string) {
+	server.Addr = addr
+}
+
+// GetAddress returns a listen address.
+func (server *Server) GetAddress() string {
+	return server.Addr
+}
+
 // SetPort sets a listen port.
 func (server *Server) SetPort(port int) {
 	server.Port = port
