@@ -303,24 +303,38 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 
 	switch reqMsg.GetOpCode() {
 	case protocol.OpUpdate:
+		s := conn.SpanContext.Span().StartSpan("OpUpdate")
+		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpUpdate)
 		resDoc, err = server.MessageHandler.OpUpdate(conn, msg)
 	case protocol.OpInsert:
+		s := conn.SpanContext.Span().StartSpan("OpInsert")
+		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpInsert)
 		resDoc, err = server.MessageHandler.OpInsert(conn, msg)
 	case protocol.OpQuery:
+		s := conn.SpanContext.Span().StartSpan("OpQuery")
+		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpQuery)
 		resDoc, err = server.MessageHandler.OpQuery(conn, msg)
 	case protocol.OpGetMore:
+		s := conn.SpanContext.Span().StartSpan("OpGetMore")
+		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpGetMore)
 		resDoc, err = server.MessageHandler.OpGetMore(conn, msg)
 	case protocol.OpDelete:
+		s := conn.SpanContext.Span().StartSpan("OpDelete")
+		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpDelete)
 		resDoc, err = server.MessageHandler.OpDelete(conn, msg)
 	case protocol.OpKillCursors:
+		s := conn.SpanContext.Span().StartSpan("OpKillCursors")
+		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpKillCursors)
 		resDoc, err = server.MessageHandler.OpKillCursors(conn, msg)
 	case protocol.OpMsg:
+		s := conn.SpanContext.Span().StartSpan("OpMsg")
+		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpMsg)
 		resDoc, err = server.MessageHandler.OpMsg(conn, msg)
 	default:
