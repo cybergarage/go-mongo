@@ -195,15 +195,15 @@ func (server *Server) receive(conn net.Conn) error {
 	log.Debugf("%s/%s (%s) accepted", PackageName, Version, conn.RemoteAddr().String())
 
 	handlerConn := newConn()
-	handlerConn.SpanContext = server.Tracer.StartSpan(PackageName)
-	defer handlerConn.SpanContext.Span().Finish()
 
 	for err == nil {
 		reqMsg, err = server.readMessage(conn)
 		if err != nil {
 			break
 		}
+		handlerConn.SpanContext = server.Tracer.StartSpan(PackageName)
 		resMsg, err = server.handleMessage(handlerConn, reqMsg)
+		handlerConn.SpanContext.Span().Finish()
 		if err != nil {
 			// FIXME : Check MongoDB implementation, and update to return a more standard error response
 			badReply, _ := message.NewBadResponse().BSONBytes()
