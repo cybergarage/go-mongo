@@ -1,16 +1,15 @@
 # Changelog
 
-## v1.0.0 (2023-xx-xx)
-- Fix executor interfaces for major MongoDB commands
-- Add developer documents
-
-## v0.9.6 (2023-xx-xx)
+## v1.1.0 (2023-xx-xx)
+- Update executor interfaces for major MongoDB commands
 - Add createIndex interface
-- Add Server::SetAddress()
+
+## v1.0.0 (2023-05-04)
+- Fix executor interfaces for basic MongoDB commands
 - Update logger functions to output more detail messages
+- Add tracing interface
 
 ## v0.9.5 (2023-04-23)
-- Add tracing interface
 - Update embed test interface
 
 ## v0.9.4 (2023-04-08)
