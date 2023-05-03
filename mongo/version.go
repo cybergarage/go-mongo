@@ -15,5 +15,5 @@
 package mongo
 
 const (
-	Version = "v1.0.0"
+	Version = "v0.9.5"
 )
