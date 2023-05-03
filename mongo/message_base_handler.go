@@ -70,9 +70,12 @@ func (handler *BaseMessageHandler) OpQuery(conn *Conn, msg *OpQuery) (bson.Docum
 		return nil, err
 	}
 
-	switch cmd.GetType() {
+	cmdType := cmd.GetType()
+	switch cmdType {
 	// For user database commands over OP_QUERY under MongoDB v3.6
 	case message.Insert, message.Delete, message.Update, message.Find:
+		s := conn.SpanContext.Span().StartSpan(cmdType)
+		defer s.Span().Finish()
 		q, err := message.NewQueryWithQuery(msg)
 		if err != nil {
 			return nil, err
