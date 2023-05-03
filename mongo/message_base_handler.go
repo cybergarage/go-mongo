@@ -71,11 +71,12 @@ func (handler *BaseMessageHandler) OpQuery(conn *Conn, msg *OpQuery) (bson.Docum
 	}
 
 	cmdType := cmd.GetType()
+	s := conn.SpanContext.Span().StartSpan(cmdType)
+	defer s.Span().Finish()
+
 	switch cmdType {
 	// For user database commands over OP_QUERY under MongoDB v3.6
 	case message.Insert, message.Delete, message.Update, message.Find:
-		s := conn.SpanContext.Span().StartSpan(cmdType)
-		defer s.Span().Finish()
 		q, err := message.NewQueryWithQuery(msg)
 		if err != nil {
 			return nil, err
@@ -130,7 +131,11 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 
 	res := message.NewResponse()
 
-	switch q.GetType() {
+	queryType := q.GetType()
+	s := conn.SpanContext.Span().StartSpan(queryType)
+	defer s.Span().Finish()
+
+	switch queryType {
 	// For user database commands over OP_MSG from MongoDB v3.6
 	case message.Insert, message.Delete, message.Update, message.Find:
 		err = handler.executeQuery(conn, q, res)
