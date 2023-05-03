@@ -5,11 +5,12 @@
 - Add createIndex interface
 
 ## v1.0.1 (2023-05-xx)
-- Add tracing interface
+- Update tracing spans
 
 ## v1.0.0 (2023-05-04)
 - Fix executor interfaces for basic MongoDB commands
 - Update logger functions to output more detail messages
+- Add tracing interface
 
 ## v0.9.5 (2023-04-23)
 - Update embed test interface
