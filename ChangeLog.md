@@ -4,7 +4,7 @@
 - Update executor interfaces for major MongoDB commands
 - Add createIndex interface
 
-## v1.0.1 (2023-05-xx)
+## v1.0.1 (2023-05-04)
 - Update Conn interface
 - Update tracing spans
 
