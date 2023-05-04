@@ -194,12 +194,15 @@ func (server *Server) receive(conn net.Conn) error {
 
 	log.Debugf("%s/%s (%s) accepted", PackageName, Version, conn.RemoteAddr().String())
 
-	spanCtx := server.Tracer.StartSpan(PackageName)
-	handlerConn := newConnWith(spanCtx)
-	defer spanCtx.FinishSpan()
 	for err == nil {
+		loopSpan := server.Tracer.StartSpan(PackageName)
+		handlerConn := newConnWith(loopSpan)
+
+		loopSpan.StartSpan("parse")
 		reqMsg, err = server.readMessage(conn)
+		loopSpan.FinishSpan()
 		if err != nil {
+			defer loopSpan.FinishSpan()
 			break
 		}
 
@@ -219,7 +222,11 @@ func (server *Server) receive(conn net.Conn) error {
 		resMsg.SetRequestID(server.nextMessageRequestID())
 		resMsg.SetResponseTo(reqMsg.GetRequestID())
 
+		loopSpan.StartSpan("response")
 		err = server.responseMessage(conn, resMsg)
+		loopSpan.FinishSpan()
+
+		loopSpan.FinishSpan()
 		if err != nil {
 			break
 		}
