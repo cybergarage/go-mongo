@@ -3,7 +3,7 @@ module github.com/cybergarage/go-mongo
 go 1.20
 
 require (
-	github.com/cybergarage/go-logger v1.3.3
+	github.com/cybergarage/go-logger v1.3.4
 	github.com/cybergarage/go-sqltest v0.9.2
 	github.com/cybergarage/go-tracing v1.0.0
 	go.mongodb.org/mongo-driver v1.11.2
