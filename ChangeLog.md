@@ -5,7 +5,7 @@
 - Add createIndex interface
 
 ## v1.0.2 (2023-05-xx)
-- Update Conn interface
+- Update Conn to include tracing context
 - Update tracing spans
 
 ## v1.0.1 (2023-05-04)
