@@ -132,17 +132,18 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 	res := message.NewResponse()
 
 	queryType := q.GetType()
-	s := conn.SpanContext().Span().StartSpan(queryType)
-	defer s.Span().Finish()
-
 	switch queryType {
 	// For user database commands over OP_MSG from MongoDB v3.6
 	case message.Insert, message.Delete, message.Update, message.Find:
+		s := conn.SpanContext().Span().StartSpan(queryType)
+		defer s.Span().Finish()
 		err = handler.executeQuery(conn, q, res)
 		if err != nil {
 			return nil, err
 		}
 	case message.KillCursors:
+		s := conn.SpanContext().Span().StartSpan(queryType)
+		defer s.Span().Finish()
 		// TODO : Kill the specified cursors internally
 		res.SetStatus(true)
 	default: // Execute other messages as a database command
@@ -150,6 +151,8 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 		if err != nil {
 			return nil, err
 		}
+		s := conn.SpanContext().Span().StartSpan(cmd.String())
+		defer s.Span().Finish()
 		resDoc, err := handler.CommandExecutor.ExecuteCommand(cmd)
 		if err != nil {
 			return nil, err
