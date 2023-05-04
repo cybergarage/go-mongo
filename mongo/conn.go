@@ -24,20 +24,28 @@ import (
 // Conn represents a connection of Wire protocol.
 type Conn struct {
 	sync.Map
-	ts time.Time
-	tracer.SpanContext
+	ts   time.Time
+	span tracer.SpanContext
 }
 
 // newConn returns a connection with a default empty connection.
 func newConn() *Conn {
 	return &Conn{
-		Map:         sync.Map{},
-		ts:          time.Now(),
-		SpanContext: nil,
+		Map:  sync.Map{},
+		ts:   time.Now(),
+		span: nil,
 	}
 }
 
 // Timestamp returns the creation time of the connection.
 func (conn *Conn) Timestamp() time.Time {
 	return conn.ts
+}
+
+func (conn *Conn) SetSpanContext(span tracer.SpanContext) {
+	conn.span = span
+}
+
+func (conn *Conn) SpanContext() tracer.SpanContext {
+	return conn.span
 }
