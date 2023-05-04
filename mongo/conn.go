@@ -40,3 +40,8 @@ func newConnWith(ctx tracer.Context) *Conn {
 func (conn *Conn) Timestamp() time.Time {
 	return conn.ts
 }
+
+// SpanContext returns the tracer span context of the connection.
+func (conn *Conn) SpanContext() tracer.Context {
+	return conn.Context
+}
