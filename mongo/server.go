@@ -201,9 +201,12 @@ func (server *Server) receive(conn net.Conn) error {
 		if err != nil {
 			break
 		}
-		handlerConn.SpanContext = server.Tracer.StartSpan(PackageName)
+
+		span := server.Tracer.StartSpan(PackageName)
+		handlerConn.SetSpanContext(span)
 		resMsg, err = server.handleMessage(handlerConn, reqMsg)
-		handlerConn.SpanContext.Span().Finish()
+		span.Span().Finish()
+
 		if err != nil {
 			// FIXME : Check MongoDB implementation, and update to return a more standard error response
 			badReply, _ := message.NewBadResponse().BSONBytes()
@@ -303,37 +306,37 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 
 	switch reqMsg.GetOpCode() {
 	case protocol.OpUpdate:
-		s := conn.SpanContext.Span().StartSpan("OpUpdate")
+		s := conn.SpanContext().Span().StartSpan("OpUpdate")
 		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpUpdate)
 		resDoc, err = server.MessageHandler.OpUpdate(conn, msg)
 	case protocol.OpInsert:
-		s := conn.SpanContext.Span().StartSpan("OpInsert")
+		s := conn.SpanContext().Span().StartSpan("OpInsert")
 		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpInsert)
 		resDoc, err = server.MessageHandler.OpInsert(conn, msg)
 	case protocol.OpQuery:
-		s := conn.SpanContext.Span().StartSpan("OpQuery")
+		s := conn.SpanContext().Span().StartSpan("OpQuery")
 		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpQuery)
 		resDoc, err = server.MessageHandler.OpQuery(conn, msg)
 	case protocol.OpGetMore:
-		s := conn.SpanContext.Span().StartSpan("OpGetMore")
+		s := conn.SpanContext().Span().StartSpan("OpGetMore")
 		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpGetMore)
 		resDoc, err = server.MessageHandler.OpGetMore(conn, msg)
 	case protocol.OpDelete:
-		s := conn.SpanContext.Span().StartSpan("OpDelete")
+		s := conn.SpanContext().Span().StartSpan("OpDelete")
 		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpDelete)
 		resDoc, err = server.MessageHandler.OpDelete(conn, msg)
 	case protocol.OpKillCursors:
-		s := conn.SpanContext.Span().StartSpan("OpKillCursors")
+		s := conn.SpanContext().Span().StartSpan("OpKillCursors")
 		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpKillCursors)
 		resDoc, err = server.MessageHandler.OpKillCursors(conn, msg)
 	case protocol.OpMsg:
-		s := conn.SpanContext.Span().StartSpan("OpMsg")
+		s := conn.SpanContext().Span().StartSpan("OpMsg")
 		defer s.Span().Finish()
 		msg, _ := reqMsg.(*OpMsg)
 		resDoc, err = server.MessageHandler.OpMsg(conn, msg)

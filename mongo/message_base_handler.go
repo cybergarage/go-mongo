@@ -71,7 +71,7 @@ func (handler *BaseMessageHandler) OpQuery(conn *Conn, msg *OpQuery) (bson.Docum
 	}
 
 	cmdType := cmd.GetType()
-	s := conn.SpanContext.Span().StartSpan(cmdType)
+	s := conn.SpanContext().Span().StartSpan(cmdType)
 	defer s.Span().Finish()
 
 	switch cmdType {
@@ -132,7 +132,7 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 	res := message.NewResponse()
 
 	queryType := q.GetType()
-	s := conn.SpanContext.Span().StartSpan(queryType)
+	s := conn.SpanContext().Span().StartSpan(queryType)
 	defer s.Span().Finish()
 
 	switch queryType {
