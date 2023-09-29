@@ -44,6 +44,7 @@ linters:
     - maligned
     - nosnakecase
     - structcheck
+    - depguard
 
 linters-settings:
   revive:
