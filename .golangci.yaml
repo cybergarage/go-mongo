@@ -45,6 +45,7 @@ linters:
     - nosnakecase
     - structcheck
     - depguard
+    - inamedparam
 
 linters-settings:
   revive:
