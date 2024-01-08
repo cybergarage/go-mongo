@@ -26,13 +26,15 @@ type Conn struct {
 	sync.Map
 	ts time.Time
 	tracer.Context
+	authrized bool
 }
 
 func newConnWith(ctx tracer.Context) *Conn {
 	return &Conn{
-		Map:     sync.Map{},
-		ts:      time.Now(),
-		Context: ctx,
+		Map:       sync.Map{},
+		ts:        time.Now(),
+		Context:   ctx,
+		authrized: false,
 	}
 }
 
@@ -44,4 +46,14 @@ func (conn *Conn) Timestamp() time.Time {
 // SpanContext returns the tracer span context of the connection.
 func (conn *Conn) SpanContext() tracer.Context {
 	return conn.Context
+}
+
+// SetAuthrized sets the authrized flag to the connection.
+func (conn *Conn) SetAuthrized(authrized bool) {
+	conn.authrized = authrized
+}
+
+// IsAuthrized returns true if the connection is authrized.
+func (conn *Conn) IsAuthrized() bool {
+	return conn.authrized
 }
