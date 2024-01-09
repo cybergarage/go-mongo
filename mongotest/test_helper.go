@@ -34,9 +34,13 @@ func RunClientTest(t *testing.T) {
 	t.Helper()
 
 	t.Run("Tutorial", func(t *testing.T) {
-		t.Run("CRUD Operations", func(t *testing.T) {
+		t.Run("test.trainers", func(t *testing.T) {
 			TestTutorialCRUDOperations(t)
 		})
+	})
+
+	t.Run("DBAuth", func(t *testing.T) {
+		TestDBAuth(t)
 	})
 }
 
@@ -73,7 +77,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 
 	// Insert documents
 
-	t.Run("Insert documents", func(t *testing.T) {
+	t.Run("InsertOne", func(t *testing.T) {
 		trainers := []Trainer{
 			ash,
 			misty,
@@ -93,7 +97,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 
 	// Find all inserted documents
 
-	t.Run("Find inserted documents", func(t *testing.T) {
+	t.Run("FindOne", func(t *testing.T) {
 		filters := []bson.D{
 			{{Key: "name", Value: "Ash"}},
 			{{Key: "name", Value: "Misty"}},
@@ -127,7 +131,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 
 	// Update documents
 
-	t.Run("Update documents", func(t *testing.T) {
+	t.Run("UpdateOne", func(t *testing.T) {
 		filter := bson.D{{Key: "name", Value: "Ash"}}
 
 		update := bson.D{
@@ -147,7 +151,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 
 	// Find all inserted documents
 
-	t.Run("Find updated documents", func(t *testing.T) {
+	t.Run("FindOne", func(t *testing.T) {
 		ash.Age = 11
 
 		filters := []bson.D{
@@ -183,7 +187,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 
 	// Delete all documents
 
-	t.Run("Delete documents", func(t *testing.T) {
+	t.Run("DeleteMany", func(t *testing.T) {
 		filters := []bson.D{
 			{{Key: "name", Value: "Ash"}},
 			{{Key: "name", Value: "Misty"}},
@@ -235,4 +239,8 @@ func TestTutorialCRUDOperations(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestDBAuth(t *testing.T) {
+	t.Helper()
 }
