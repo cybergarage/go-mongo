@@ -28,6 +28,7 @@ type Config struct {
 	readOnly                     bool
 	compressions                 []string
 	version                      string
+	securityAuthorization        bool
 }
 
 // NewDefaultConfig returns a default configuration instance.
@@ -43,6 +44,7 @@ func NewDefaultConfig() *Config {
 		version:                      message.DefaultCompatibleVersion,
 		isMaster:                     true,
 		compressions:                 nil,
+		securityAuthorization:        false,
 	}
 	return config
 }
@@ -95,4 +97,14 @@ func (config *Config) GetCompressions() []string {
 // GetVersion should return supported MongoDB version string.
 func (config *Config) GetVersion() string {
 	return config.version
+}
+
+// SetAuthrization sets the authrized flag to the connection.
+func (config *Config) SetAuthrization(authorized bool) {
+	config.securityAuthorization = authorized
+}
+
+// IsAuthrized returns true if the connection is authrized.
+func (config *Config) IsAuthrized() bool {
+	return config.securityAuthorization
 }
