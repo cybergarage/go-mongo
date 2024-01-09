@@ -24,6 +24,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var testDBURL = "mongodb://localhost:27017"
+
 type Trainer struct {
 	Name string
 	Age  int
@@ -61,9 +63,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 
 	// Connect to MongoDB using the Go Driver
 
-	url := "mongodb://localhost:27017"
-
-	clientOptions := options.Client().ApplyURI(url)
+	clientOptions := options.Client().ApplyURI(testDBURL)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
@@ -243,4 +243,20 @@ func TestTutorialCRUDOperations(t *testing.T) {
 
 func TestDBAuth(t *testing.T) {
 	t.Helper()
+
+	// Authentication Mechanisms — Go Driver
+	// https://www.mongodb.com/docs/drivers/go/current/fundamentals/auth/
+
+	credential := options.Credential{ // nolint: exhaustruct
+		AuthSource: "admin",
+		Username:   "test",
+		Password:   "test",
+	}
+
+	clientOptions := options.Client().ApplyURI(testDBURL).SetAuth(credential)
+	_, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		t.Skip(err)
+		return
+	}
 }
