@@ -5,6 +5,7 @@
 - Add createIndex interface
 
 ## v1.0.3 (2023-xx-xx)
+- Add authrization interfaces
 - Update go-tracing package
 
 ## v1.0.2 (2023-05-04)
