@@ -35,12 +35,12 @@ func RunClientTest(t *testing.T) {
 
 	t.Run("Tutorial", func(t *testing.T) {
 		t.Run("CRUD Operations", func(t *testing.T) {
-			testTutorialCRUDOperations(t)
+			TestTutorialCRUDOperations(t)
 		})
 	})
 }
 
-func testTutorialCRUDOperations(t *testing.T) {
+func TestTutorialCRUDOperations(t *testing.T) {
 	t.Helper()
 
 	// MongoDB Go Driver
