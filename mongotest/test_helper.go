@@ -32,7 +32,7 @@ type Trainer struct {
 	City string
 }
 
-func RunClientTest(t *testing.T) {
+func RunClientTest(t *testing.T, server *Server) {
 	t.Helper()
 
 	t.Run("Tutorial", func(t *testing.T) {
@@ -42,7 +42,7 @@ func RunClientTest(t *testing.T) {
 	})
 
 	t.Run("DBAuth", func(t *testing.T) {
-		TestDBAuth(t)
+		TestDBAuth(t, server)
 	})
 }
 
@@ -241,7 +241,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 	})
 }
 
-func TestDBAuth(t *testing.T) {
+func TestDBAuth(t *testing.T, server *Server) {
 	t.Helper()
 
 	// Authentication Mechanisms — Go Driver
