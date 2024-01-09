@@ -244,6 +244,9 @@ func TestTutorialCRUDOperations(t *testing.T) {
 func TestDBAuth(t *testing.T, server *Server) {
 	t.Helper()
 
+	server.SetAuthrization(true)
+	defer server.SetAuthrization(false)
+
 	// Authentication Mechanisms — Go Driver
 	// https://www.mongodb.com/docs/drivers/go/current/fundamentals/auth/
 
