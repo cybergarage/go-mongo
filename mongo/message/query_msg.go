@@ -49,6 +49,21 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 		switch key {
 		case BuildInfo, IsMaster:
 			q.Type = key
+		case SASLStart:
+			q.Type = SASLStart
+			docs, ok := element.Value().ArrayOK()
+			if ok {
+				vals, err := docs.Values()
+				if err != nil {
+					return err
+				}
+				for _, val := range vals {
+					doc, ok := val.DocumentOK()
+					if ok {
+						q.Documents = append(q.Documents, doc)
+					}
+				}
+			}
 		case Insert, Delete, Update, Find, KillCursors:
 			q.Type = key
 			col, ok := element.Value().StringValueOK()
