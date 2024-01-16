@@ -45,6 +45,7 @@ type Query struct {
 	Documents  []bson.Document
 	Operator   string
 	Limit      int
+	Options    []bson.Document
 }
 
 // NewQuery returns a new query.

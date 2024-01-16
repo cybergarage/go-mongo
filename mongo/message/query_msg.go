@@ -60,7 +60,7 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 				for _, val := range vals {
 					doc, ok := val.DocumentOK()
 					if ok {
-						q.Documents = append(q.Documents, doc)
+						q.Options = append(q.Options, doc)
 					}
 				}
 			}
