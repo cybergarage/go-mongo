@@ -93,7 +93,7 @@ func (handler *BaseMessageHandler) OpQuery(conn *Conn, msg *OpQuery) (bson.Docum
 		return bsonRes, nil
 	}
 
-	return handler.CommandExecutor.ExecuteCommand(cmd)
+	return handler.CommandExecutor.ExecuteCommand(conn, cmd)
 }
 
 // OpGetMore handles GET_MORE of MongoDB wire protocol.
@@ -153,7 +153,7 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 		}
 		conn.StartSpan(cmd.String())
 		defer conn.FinishSpan()
-		resDoc, err := handler.CommandExecutor.ExecuteCommand(cmd)
+		resDoc, err := handler.CommandExecutor.ExecuteCommand(conn, cmd)
 		if err != nil {
 			return nil, err
 		}

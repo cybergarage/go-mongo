@@ -193,7 +193,7 @@ func TestTutorialCRUDOperations(t *testing.T) {
 			{{Key: "name", Value: "Misty"}},
 			{{Key: "name", Value: "Brock"}},
 		}
-		DatabaseCommandExecutor
+
 		trainers := []Trainer{
 			ash,
 			misty,
