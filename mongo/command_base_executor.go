@@ -25,6 +25,7 @@ import (
 type BaseCommandExecutor struct {
 	UserCommandExecutor
 	DatabaseCommandExecutor
+	AuthCommandExecutor
 }
 
 func baseCommandExecutorNotImplementedError(q *Query) error {
@@ -36,9 +37,11 @@ func NewBaseCommandExecutor() *BaseCommandExecutor {
 	executor := &BaseCommandExecutor{
 		UserCommandExecutor:     nil,
 		DatabaseCommandExecutor: nil,
+		AuthCommandExecutor:     nil,
 	}
 	executor.UserCommandExecutor = executor
 	executor.DatabaseCommandExecutor = executor
+	executor.AuthCommandExecutor = executor
 	return executor
 }
 
@@ -74,6 +77,8 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document
 		return executor.DatabaseCommandExecutor.ExecuteBuildInfo(cmd)
 	case message.GetLastError:
 		return executor.DatabaseCommandExecutor.ExecuteGetLastError(cmd)
+	case message.SASLStart:
+		return executor.AuthCommandExecutor.ExecuteSaslStart(cmd)
 	}
 
 	// Returns only a 'ok' response as default
@@ -152,4 +157,13 @@ func (executor *BaseCommandExecutor) Delete(conn *Conn, q *Query) (int32, error)
 		return executor.UserCommandExecutor.Delete(conn, q)
 	}
 	return 0, NewNotSupported(q)
+}
+
+//////////////////////////////////////////////////
+// AuthCommandExecutor
+//////////////////////////////////////////////////
+
+// ExecuteSaslStart handles SASLStart command.
+func (executor *BaseCommandExecutor) ExecuteSaslStart(cmd *Command) (bson.Document, error) {
+	return nil, nil
 }

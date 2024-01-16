@@ -74,3 +74,9 @@ type DiagnosticCommandExecutor interface {
 type WriteOperationExecutor interface {
 	ExecuteGetLastError(cmd *Command) (bson.Document, error)
 }
+
+// AuthCommandExecutor represents an executor interface for MongoDB authentication commands.
+type AuthCommandExecutor interface {
+	// ExecuteSaslStart handles SASLStart command.
+	ExecuteSaslStart(cmd *Command) (bson.Document, error)
+}
