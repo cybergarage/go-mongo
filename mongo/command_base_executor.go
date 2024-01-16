@@ -60,7 +60,7 @@ func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseComma
 //////////////////////////////////////////////////
 
 // ExecuteCommand handles query commands other than those explicitly specified above.
-func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteCommand(conn *Conn, cmd *Command) (bson.Document, error) {
 	if executor.DatabaseCommandExecutor == nil {
 		// Returns only a 'ok' response as default
 		resDoc, err := message.NewOkResponse().BSONBytes()
@@ -72,13 +72,13 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document
 
 	switch cmd.GetType() {
 	case message.IsMaster:
-		return executor.DatabaseCommandExecutor.ExecuteIsMaster(cmd)
+		return executor.DatabaseCommandExecutor.ExecuteIsMaster(conn, cmd)
 	case message.BuildInfo:
-		return executor.DatabaseCommandExecutor.ExecuteBuildInfo(cmd)
+		return executor.DatabaseCommandExecutor.ExecuteBuildInfo(conn, cmd)
 	case message.GetLastError:
-		return executor.DatabaseCommandExecutor.ExecuteGetLastError(cmd)
+		return executor.DatabaseCommandExecutor.ExecuteGetLastError(conn, cmd)
 	case message.SASLStart:
-		return executor.AuthCommandExecutor.ExecuteSaslStart(cmd)
+		return executor.AuthCommandExecutor.ExecuteSaslStart(conn, cmd)
 	}
 
 	// Returns only a 'ok' response as default
@@ -94,7 +94,7 @@ func (executor *BaseCommandExecutor) ExecuteCommand(cmd *Command) (bson.Document
 //////////////////////////////////////////////////
 
 // ExecuteIsMaster returns information about this member’s role in the replica set, including whether it is the master.
-func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) (bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteIsMaster(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply := message.NewDefaultIsMasterResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
@@ -104,7 +104,7 @@ func (executor *BaseCommandExecutor) ExecuteIsMaster(cmd *Command) (bson.Documen
 }
 
 // ExecuteBuildInfo returns statistics about the MongoDB build.
-func (executor *BaseCommandExecutor) ExecuteBuildInfo(cmd *Command) (bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteBuildInfo(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply := message.NewDefaultBuildInfoResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
@@ -114,7 +114,7 @@ func (executor *BaseCommandExecutor) ExecuteBuildInfo(cmd *Command) (bson.Docume
 }
 
 // ExecuteGetLastError returns statistics about the MongoDB build.
-func (executor *BaseCommandExecutor) ExecuteGetLastError(cmd *Command) (bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteGetLastError(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply := message.NewDefaultLastErrorResponse()
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
@@ -164,6 +164,6 @@ func (executor *BaseCommandExecutor) Delete(conn *Conn, q *Query) (int32, error)
 //////////////////////////////////////////////////
 
 // ExecuteSaslStart handles SASLStart command.
-func (executor *BaseCommandExecutor) ExecuteSaslStart(cmd *Command) (bson.Document, error) {
+func (executor *BaseCommandExecutor) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document, error) {
 	return nil, nil
 }

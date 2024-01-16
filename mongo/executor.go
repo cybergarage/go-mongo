@@ -45,7 +45,7 @@ type Command = message.Command
 // CommandExecutor represents an interface for MongoDB database commands.
 type CommandExecutor interface {
 	// ExecuteCommand handles query commands other than those explicitly specified above.
-	ExecuteCommand(cmd *Command) (bson.Document, error)
+	ExecuteCommand(*Conn, *Command) (bson.Document, error)
 }
 
 // UserCommandExecutor represents an executor interface for MongoDB query commands.
@@ -62,21 +62,21 @@ type DatabaseCommandExecutor interface {
 
 // ReplicationCommandExecutor represents an executor interface for MongoDB replication commands.
 type ReplicationCommandExecutor interface {
-	ExecuteIsMaster(cmd *Command) (bson.Document, error)
+	ExecuteIsMaster(*Conn, *Command) (bson.Document, error)
 }
 
 // DiagnosticCommandExecutor represents an executor interface for MongoDB diagnostic commands.
 type DiagnosticCommandExecutor interface {
-	ExecuteBuildInfo(cmd *Command) (bson.Document, error)
+	ExecuteBuildInfo(*Conn, *Command) (bson.Document, error)
 }
 
 // WriteOperationExecutor represents an executor interface for MongoDB write operation commands.
 type WriteOperationExecutor interface {
-	ExecuteGetLastError(cmd *Command) (bson.Document, error)
+	ExecuteGetLastError(*Conn, *Command) (bson.Document, error)
 }
 
 // AuthCommandExecutor represents an executor interface for MongoDB authentication commands.
 type AuthCommandExecutor interface {
 	// ExecuteSaslStart handles SASLStart command.
-	ExecuteSaslStart(cmd *Command) (bson.Document, error)
+	ExecuteSaslStart(*Conn, *Command) (bson.Document, error)
 }
