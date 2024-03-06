@@ -74,24 +74,22 @@ func ReadCString(src []byte) (string, []byte, bool) {
 }
 
 // ReadCursorIDs reads numIDs cursor IDs from src.
-func ReadCursorIDs(src []byte, numIDs int32) (cursorIDs []int64, rem []byte, ok bool) {
-	var i int32
-	var id int64
-	for i = 0; i < numIDs; i++ {
-		id, src, ok = ReadInt64(src)
+func ReadCursorIDs(src []byte, numIDs int32) ([]int64, []byte, bool) {
+	cursorIDs := []int64{}
+	for i := 0; i < int(numIDs); i++ {
+		id, src, ok := ReadInt64(src)
 		if !ok {
 			return cursorIDs, src, false
 		}
-
 		cursorIDs = append(cursorIDs, id)
 	}
 	return cursorIDs, src, true
 }
 
 // ReadSectionType reads the section type from src.
-func ReadSectionType(src []byte) (stype SectionType, rem []byte, ok bool) {
+func ReadSectionType(src []byte) (SectionType, []byte, bool) {
 	if len(src) < 1 {
-		return 0, src, false
+		return SectionType(0), src, false
 	}
 	return SectionType(src[0]), src[1:], true
 }
@@ -102,21 +100,22 @@ func ReadDocument(src []byte) (bson.Document, []byte, bool) {
 }
 
 // ReadDocuments reads as many documents as possible from src.
-func ReadDocuments(src []byte) (docs []bson.Document, rem []byte, ok bool) {
-	rem = src
+func ReadDocuments(src []byte) ([]bson.Document, []byte, bool) {
+	docs := []bson.Document{}
 	for {
 		var doc bsoncore.Document
-		doc, rem, ok = bsoncore.ReadDocument(rem)
+		var ok bool
+		doc, src, ok = bsoncore.ReadDocument(src)
 		if !ok {
 			break
 		}
 		docs = append(docs, doc)
 	}
-	return docs, rem, true
+	return docs, src, true
 }
 
 // ReadDocumentSequence reads an identifier and document sequence from src.
-func ReadDocumentSequence(src []byte) (identifier string, docs []bsoncore.Document, rem []byte, ok bool) {
+func ReadDocumentSequence(src []byte) (string, []bsoncore.Document, []byte, bool) {
 	length, rem, ok := ReadInt32(src)
 	if !ok || int(length) > len(src) {
 		return "", nil, rem, false
@@ -124,12 +123,13 @@ func ReadDocumentSequence(src []byte) (identifier string, docs []bsoncore.Docume
 
 	rem, ret := rem[:length-4], rem[length-4:] // reslice so we can just iterate a loop later
 
+	var identifier string
 	identifier, rem, ok = ReadCString(rem)
 	if !ok {
 		return "", nil, rem, false
 	}
 
-	docs = make([]bsoncore.Document, 0)
+	docs := make([]bsoncore.Document, 0)
 	var doc bsoncore.Document
 	for {
 		doc, rem, ok = bsoncore.ReadDocument(rem)
