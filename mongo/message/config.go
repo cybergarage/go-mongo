@@ -18,28 +18,28 @@ package message
 type ServerConfig interface {
 	// IsMaster should return true when the instance is running as master, otherwise false
 	IsMaster() bool
-	// GetMaxBsonObjectSize should return a max limitation value of BSON object size.
-	GetMaxBsonObjectSize() int32
-	// GetMaxMessageSizeBytes should return a max limitation value of message size.
-	GetMaxMessageSizeBytes() int32
-	// GetMaxWriteBatchSize should return a max limitation value of write batch size.
-	GetMaxWriteBatchSize() int32
-	// GetLogicalSessionTimeoutMinutes should return a settion timeout value.
-	GetLogicalSessionTimeoutMinutes() int32
-	// GetMinWireVersion should return a min supported version.
-	GetMinWireVersion() int32
-	// GetMaxWireVersion should return a max supported version.
-	GetMaxWireVersion() int32
-	// GetReadOnly should return true when the instance does not support write operations.
-	GetReadOnly() bool
-	// GetCompressions should return supported compress strings.
-	GetCompressions() []string
+	// MaxBsonObjectSize should return a max limitation value of BSON object size.
+	MaxBsonObjectSize() int32
+	// MaxMessageSizeBytes should return a max limitation value of message size.
+	MaxMessageSizeBytes() int32
+	// MaxWriteBatchSize should return a max limitation value of write batch size.
+	MaxWriteBatchSize() int32
+	// LogicalSessionTimeoutMinutes should return a settion timeout value.
+	LogicalSessionTimeoutMinutes() int32
+	// MinWireVersion should return a min supported version.
+	MinWireVersion() int32
+	// MaxWireVersion should return a max supported version.
+	MaxWireVersion() int32
+	// IsReadOnly should return true when the instance does not support write operations.
+	IsReadOnly() bool
+	// Compressions should return supported compress strings.
+	Compressions() []string
 }
 
 // BuildConfig represents a limit configurations for 'buildInfo' command.
 type BuildConfig interface {
-	// GetVersion should return a software version.
-	GetVersion() string
+	// Version should return a software version.
+	Version() string
 }
 
 // Config represents all configurations for MongoDB.
