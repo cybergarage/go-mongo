@@ -1,11 +1,12 @@
 # Changelog
 
-## v1.1.0 (2023-xx-xx)
+## v1.1.x (2023-xx-xx)
 - Update executor interfaces for major MongoDB commands
 - Add createIndex interface
-
-## v1.0.3 (2023-xx-xx)
 - Add authrization interfaces
+
+## v1.1.0 (2024-05-20)
+- Support TLS connection
 - Update go-tracing package
 
 ## v1.0.2 (2023-05-04)
