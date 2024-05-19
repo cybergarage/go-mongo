@@ -24,7 +24,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var testDBURL = "mongodb://localhost:27017"
+var testDBURL = "mongodb://localhost:27017/"
+var testTLSDBURL = "mongodb://localhost:27017/?ssl=true"
 
 type Trainer struct {
 	Name string
