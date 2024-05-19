@@ -39,3 +39,26 @@ func TestServer(t *testing.T) {
 		return
 	}
 }
+
+func TestTLSServer(t *testing.T) {
+	log.SetStdoutDebugEnbled(true)
+
+	server := NewServer()
+
+	server.SetTLSEnabled(true)
+	server.SetServerKey(TestSeverKey)
+	server.SetServerCert(TestServerCert)
+	server.SetRootCerts(TestCACert)
+
+	err := server.Start()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = server.Stop()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
