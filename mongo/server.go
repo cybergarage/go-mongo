@@ -15,6 +15,7 @@
 package mongo
 
 import (
+	"crypto/tls"
 	"fmt"
 	"math"
 	"net"
@@ -36,6 +37,7 @@ type MessageListener interface {
 type Server struct {
 	*Config
 	*TLSConf
+	tlsConfig *tls.Config
 	tracer.Tracer
 	Addr                 string
 	Port                 int
@@ -52,6 +54,7 @@ func NewServer() *Server {
 	server := &Server{
 		Config:               NewDefaultConfig(),
 		TLSConf:              NewTLSConf(),
+		tlsConfig:            nil,
 		Tracer:               tracer.NullTracer,
 		Addr:                 "",
 		Port:                 DefaultPort,
@@ -109,6 +112,14 @@ func (server *Server) SetMessageHandler(h OpMessageHandler) {
 
 // Start starts the server.
 func (server *Server) Start() error {
+	if server.IsTLSEnabled() {
+		tlsConfig, err := server.TLSConfig()
+		if err != nil {
+			return err
+		}
+		server.tlsConfig = tlsConfig
+	}
+
 	err := server.open()
 	if err != nil {
 		return err
@@ -179,6 +190,11 @@ func (server *Server) serve() error {
 		conn, err := l.Accept()
 		if err != nil {
 			return err
+		}
+
+		if server.IsTLSEnabled() {
+			tlsConn := tls.Server(conn, server.tlsConfig)
+			conn = tlsConn
 		}
 
 		go server.receive(conn)
