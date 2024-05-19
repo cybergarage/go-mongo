@@ -31,6 +31,10 @@ func TestServer(t *testing.T) {
 	}
 
 	RunClientTest(t, server)
+	t.Run("DBAuth", func(t *testing.T) {
+		TestDBAuth(t, server)
+	})
+
 	YCSBTest(t)
 
 	err = server.Stop()
