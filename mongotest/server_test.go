@@ -15,9 +15,12 @@
 package mongotest
 
 import (
+	"context"
 	"testing"
 
 	"github.com/cybergarage/go-logger/log"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func TestServer(t *testing.T) {
@@ -30,8 +33,18 @@ func TestServer(t *testing.T) {
 		return
 	}
 
+	// Connect to MongoDB using the Go Driver
+
+	clientOptions := options.Client().ApplyURI(testDBURL)
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	t.Run("Tutorial", func(t *testing.T) {
-		RunClientTest(t, server)
+		RunClientTest(t, client)
 	})
 
 	t.Run("DBAuth", func(t *testing.T) {

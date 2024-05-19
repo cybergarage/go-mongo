@@ -32,16 +32,18 @@ type Trainer struct {
 	City string
 }
 
-func RunClientTest(t *testing.T, server *Server) {
+func RunClientTest(t *testing.T, client *mongo.Client) {
 	t.Helper()
 
 	t.Run("test.trainers", func(t *testing.T) {
-		TestTutorialCRUDOperations(t)
+		TestTutorialCRUDOperations(t, client)
 	})
 }
 
-func TestTutorialCRUDOperations(t *testing.T) {
+func TestTutorialCRUDOperations(t *testing.T, client *mongo.Client) {
 	t.Helper()
+
+	var err error
 
 	// MongoDB Go Driver
 	// https://github.com/mongodb/mongo-go-driver
@@ -54,16 +56,6 @@ func TestTutorialCRUDOperations(t *testing.T) {
 	ash := Trainer{"Ash", 10, "Pallet Town"}
 	misty := Trainer{"Misty", 10, "Cerulean City"}
 	brock := Trainer{"Brock", 15, "Pewter City"}
-
-	// Connect to MongoDB using the Go Driver
-
-	clientOptions := options.Client().ApplyURI(testDBURL)
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-
-	if err != nil {
-		t.Error(err)
-		return
-	}
 
 	// Use BSON Objects in Go
 
