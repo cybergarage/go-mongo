@@ -32,13 +32,11 @@ func YCSBTest(t *testing.T) {
 	t.Helper()
 
 	workloads := []string{"workloada"}
-	t.Run("YCSB", func(t *testing.T) {
-		for _, workload := range workloads {
-			t.Run(workload, func(t *testing.T) {
-				ExecYCSBWorkload(t, workload)
-			})
-		}
-	})
+	for _, workload := range workloads {
+		t.Run(workload, func(t *testing.T) {
+			ExecYCSBWorkload(t, workload)
+		})
+	}
 }
 
 func ExecYCSBWorkload(t *testing.T, workload string) {
