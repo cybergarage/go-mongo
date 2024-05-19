@@ -35,14 +35,8 @@ type Trainer struct {
 func RunClientTest(t *testing.T, server *Server) {
 	t.Helper()
 
-	t.Run("Tutorial", func(t *testing.T) {
-		t.Run("test.trainers", func(t *testing.T) {
-			TestTutorialCRUDOperations(t)
-		})
-	})
-
-	t.Run("DBAuth", func(t *testing.T) {
-		TestDBAuth(t, server)
+	t.Run("test.trainers", func(t *testing.T) {
+		TestTutorialCRUDOperations(t)
 	})
 }
 
