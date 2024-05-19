@@ -30,7 +30,7 @@ func TestServer(t *testing.T) {
 		return
 	}
 
-	t.Run("DBAuth", func(t *testing.T) {
+	t.Run("Tutorial", func(t *testing.T) {
 		RunClientTest(t, server)
 	})
 
@@ -38,7 +38,9 @@ func TestServer(t *testing.T) {
 		TestDBAuth(t, server)
 	})
 
-	YCSBTest(t)
+	t.Run("YCSB", func(t *testing.T) {
+		YCSBTest(t)
+	})
 
 	err = server.Stop()
 	if err != nil {
