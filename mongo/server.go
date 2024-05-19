@@ -35,6 +35,7 @@ type MessageListener interface {
 // Server is an instance for MongoDB protocols.
 type Server struct {
 	*Config
+	*TLSConf
 	tracer.Tracer
 	Addr                 string
 	Port                 int
@@ -50,6 +51,7 @@ type Server struct {
 func NewServer() *Server {
 	server := &Server{
 		Config:               NewDefaultConfig(),
+		TLSConf:              NewTLSConf(),
 		Tracer:               tracer.NullTracer,
 		Addr:                 "",
 		Port:                 DefaultPort,
