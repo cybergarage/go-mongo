@@ -64,14 +64,14 @@ func NewDefaultIsMasterResponse() *Response {
 func NewIsMasterResponseWithConfig(config ServerConfig) *Response {
 	defaultElements := map[string]interface{}{
 		IsMaster:                     config.IsMaster(),
-		maxBsonObjectSize:            config.GetMaxBsonObjectSize(),
-		maxMessageSizeBytes:          config.GetMaxMessageSizeBytes(),
-		maxWriteBatchSize:            config.GetMaxWriteBatchSize(),
+		maxBsonObjectSize:            config.MaxBsonObjectSize(),
+		maxMessageSizeBytes:          config.MaxMessageSizeBytes(),
+		maxWriteBatchSize:            config.MaxWriteBatchSize(),
 		localTime:                    bson.Datetime(time.Now().Unix()),
-		logicalSessionTimeoutMinutes: config.GetLogicalSessionTimeoutMinutes(),
-		minWireVersion:               config.GetMinWireVersion(),
-		maxWireVersion:               config.GetMaxWireVersion(),
-		readOnly:                     config.GetReadOnly(),
+		logicalSessionTimeoutMinutes: config.LogicalSessionTimeoutMinutes(),
+		minWireVersion:               config.MinWireVersion(),
+		maxWireVersion:               config.MaxWireVersion(),
+		readOnly:                     config.IsReadOnly(),
 	}
 
 	res := NewResponseWithElements(defaultElements)

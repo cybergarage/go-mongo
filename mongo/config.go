@@ -54,48 +54,48 @@ func (config *Config) IsMaster() bool {
 	return config.isMaster
 }
 
-// GetMaxBsonObjectSize should return a max limitation value of BSON object size.
-func (config *Config) GetMaxBsonObjectSize() int32 {
+// MaxBsonObjectSize should return a max limitation value of BSON object size.
+func (config *Config) MaxBsonObjectSize() int32 {
 	return config.maxBsonObjectSize
 }
 
-// GetMaxMessageSizeBytes should return a max limitation value of message size.
-func (config *Config) GetMaxMessageSizeBytes() int32 {
+// MaxMessageSizeBytes should return a max limitation value of message size.
+func (config *Config) MaxMessageSizeBytes() int32 {
 	return config.maxMessageSizeBytes
 }
 
-// GetMaxWriteBatchSize should return a max limitation value of write batch size.
-func (config *Config) GetMaxWriteBatchSize() int32 {
+// MaxWriteBatchSize should return a max limitation value of write batch size.
+func (config *Config) MaxWriteBatchSize() int32 {
 	return config.maxWriteBatchSize
 }
 
-// GetLogicalSessionTimeoutMinutes should return a settion timeout value.
-func (config *Config) GetLogicalSessionTimeoutMinutes() int32 {
+// LogicalSessionTimeoutMinutes should return a settion timeout value.
+func (config *Config) LogicalSessionTimeoutMinutes() int32 {
 	return config.logicalSessionTimeoutMinutes
 }
 
-// GetMinWireVersion should return a min supported version.
-func (config *Config) GetMinWireVersion() int32 {
+// MinWireVersion should return a min supported version.
+func (config *Config) MinWireVersion() int32 {
 	return config.minWireVersion
 }
 
-// GetMaxWireVersion should return a max supported version.
-func (config *Config) GetMaxWireVersion() int32 {
+// MaxWireVersion should return a max supported version.
+func (config *Config) MaxWireVersion() int32 {
 	return config.maxWireVersion
 }
 
-// GetReadOnly should return true when the instance does not support write operations.
-func (config *Config) GetReadOnly() bool {
+// IsReadOnly should return true when the instance does not support write operations.
+func (config *Config) IsReadOnly() bool {
 	return config.readOnly
 }
 
-// GetCompressions should return supported compress strings.
-func (config *Config) GetCompressions() []string {
+// Compressions should return supported compress strings.
+func (config *Config) Compressions() []string {
 	return config.compressions
 }
 
-// GetVersion should return supported MongoDB version string.
-func (config *Config) GetVersion() string {
+// Version should return supported MongoDB version string.
+func (config *Config) Version() string {
 	return config.version
 }
 

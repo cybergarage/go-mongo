@@ -46,7 +46,7 @@ func NewDefaultBuildInfoResponse() *Response {
 // NewBuildInfoResponseWithConfig returns a response instance with the specified configuration.
 func NewBuildInfoResponseWithConfig(config Config) *Response {
 	res := NewDefaultBuildInfoResponse()
-	res.SetVersion(config.GetVersion())
+	res.SetVersion(config.Version())
 	res.SetStatus(true)
 
 	return res
