@@ -23,7 +23,7 @@ import (
 
 const ScenarioTestDatabase = "qst"
 
-func RunEmbedSuite(t *testing.T) error {
+func RunEmbedSuite(t *testing.T, client *shell.Client) error {
 	t.Helper()
 
 	es, err := NeweEmbedSuite(test.EmbedTests)
@@ -31,20 +31,6 @@ func RunEmbedSuite(t *testing.T) error {
 		t.Error(err)
 		return err
 	}
-
-	client := shell.NewClient()
-	err = client.Open()
-	if err != nil {
-		t.Skipf(err.Error())
-		return nil
-	}
-
-	defer func() {
-		err := client.Close()
-		if err != nil {
-			t.Error(err)
-		}
-	}()
 
 	es.SetClient(client)
 	err = es.Run()

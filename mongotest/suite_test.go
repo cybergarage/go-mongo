@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"github.com/cybergarage/go-logger/log"
+	"github.com/cybergarage/go-mongo/mongo/shell"
 )
 
 func TestEmbedSuite(t *testing.T) {
@@ -30,11 +31,27 @@ func TestEmbedSuite(t *testing.T) {
 		return
 	}
 
-	RunEmbedSuite(t)
+	defer func() {
+		err := server.Stop()
+		if err != nil {
+			t.Error(err)
+			return
+		}
+	}()
 
-	err = server.Stop()
+	client := shell.NewClient()
+	err = client.Open()
 	if err != nil {
-		t.Error(err)
+		t.Skipf(err.Error())
 		return
 	}
+
+	defer func() {
+		err := client.Close()
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+
+	RunEmbedSuite(t, client)
 }
