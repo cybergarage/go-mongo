@@ -52,6 +52,7 @@ func (client *Client) Query(query string) (any, error) {
 	var args []string
 	if client.TLSEnabled {
 		args = append(args, "--tls")
+		args = append(args, "--tlsAllowInvalidCertificates")
 	}
 	if 0 < len(client.TLSCertificateKeyFile) {
 		args = append(args, "--tlsCertificateKeyFile", client.TLSCertificateKeyFile)
