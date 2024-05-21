@@ -15,7 +15,7 @@
 package shell
 
 const (
-	defaultHost = "127.0.0.1"
+	defaultHost = "localhost"
 	defaultPort = 27017
 )
 
