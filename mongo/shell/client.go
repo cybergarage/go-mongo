@@ -50,6 +50,15 @@ func (client *Client) Close() error {
 // Query executes a query and returns a result.
 func (client *Client) Query(query string) (any, error) {
 	var args []string
+	if client.TLSEnabled {
+		args = append(args, "--tls")
+	}
+	if 0 < len(client.TLSCertificateKeyFile) {
+		args = append(args, "--tlsCertificateKeyFile", client.TLSCertificateKeyFile)
+	}
+	if 0 < len(client.TLSCAFile) {
+		args = append(args, "--tlsCAFile", client.TLSCAFile)
+	}
 	args = append(args, "--eval", fmt.Sprintf("'%s'", query))
 	out, err := exec.Command(mongosh, args...).Output()
 	if err != nil {
