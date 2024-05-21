@@ -5,6 +5,9 @@
 - Add createIndex interface
 - Add authrization interfaces
 
+## v1.1.1 (2024-05-22)
+- Update embeded MongoDB tests
+
 ## v1.1.0 (2024-05-20)
 - Support TLS connection
 - Update go-tracing package
