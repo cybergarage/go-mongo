@@ -21,15 +21,21 @@ const (
 
 // Config stores server configuration parammeters.
 type Config struct {
-	Host string
-	Port int
+	Host                  string
+	Port                  int
+	TLSEnabled            bool
+	TLSCertificateKeyFile string
+	TLSCAFile             string
 }
 
 // NewDefaultConfig returns a default configuration instance.
 func NewDefaultConfig() *Config {
 	config := &Config{
-		Host: defaultHost,
-		Port: defaultPort,
+		Host:                  defaultHost,
+		Port:                  defaultPort,
+		TLSEnabled:            false,
+		TLSCertificateKeyFile: "",
+		TLSCAFile:             "",
 	}
 	return config
 }
@@ -42,4 +48,19 @@ func (config *Config) SetHost(host string) {
 // SetPort sets a listen port.
 func (config *Config) SetPort(port int) {
 	config.Port = port
+}
+
+// SetTLSEnabled sets a TLS enabled flag.
+func (config *Config) SetTLSEnabled(enabled bool) {
+	config.TLSEnabled = enabled
+}
+
+// SetTLSCertificateKeyFile sets a TLS certificate key file.
+func (config *Config) SetTLSCertificateKeyFile(file string) {
+	config.TLSCertificateKeyFile = file
+}
+
+// SetTLSCAFile sets a TLS CA file.
+func (config *Config) SetTLSCAFile(file string) {
+	config.TLSCAFile = file
 }
