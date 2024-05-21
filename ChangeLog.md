@@ -5,7 +5,10 @@
 - Add createIndex interface
 - Add authrization interfaces
 
-## v1.1.1 (2024-05-22)
+## v1.1.2 (2024-05-22)
+- Update mongo shell client
+
+## v1.1.1 (2024-05-21)
 - Update embeded MongoDB tests
 
 ## v1.1.0 (2024-05-20)
