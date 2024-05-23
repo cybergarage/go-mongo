@@ -194,6 +194,9 @@ func (server *Server) serve() error {
 
 		if server.IsTLSEnabled() {
 			tlsConn := tls.Server(conn, server.tlsConfig)
+			if err := tlsConn.Handshake(); err != nil {
+				return err
+			}
 			conn = tlsConn
 		}
 
