@@ -15,6 +15,7 @@
 package mongo
 
 import (
+	"crypto/tls"
 	"sync"
 	"time"
 
@@ -27,14 +28,16 @@ type Conn struct {
 	ts time.Time
 	tracer.Context
 	authrized bool
+	tlsState  *tls.ConnectionState
 }
 
-func newConnWith(ctx tracer.Context) *Conn {
+func newConnWith(ctx tracer.Context, tlsState *tls.ConnectionState) *Conn {
 	return &Conn{
 		Map:       sync.Map{},
 		ts:        time.Now(),
 		Context:   ctx,
 		authrized: false,
+		tlsState:  tlsState,
 	}
 }
 
@@ -56,4 +59,14 @@ func (conn *Conn) SetAuthrized(authrized bool) {
 // IsAuthrized returns true if the connection is authrized.
 func (conn *Conn) IsAuthrized() bool {
 	return conn.authrized
+}
+
+// IsTLSConnection return true if the connection is enabled TLS.
+func (conn *Conn) IsTLSConnection() bool {
+	return conn.tlsState != nil
+}
+
+// TLSConnectionState returns the TLS connection state.
+func (conn *Conn) TLSConnectionState() (*tls.ConnectionState, bool) {
+	return conn.tlsState, conn.tlsState != nil
 }

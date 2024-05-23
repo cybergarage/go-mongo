@@ -192,22 +192,25 @@ func (server *Server) serve() error {
 			return err
 		}
 
+		var tlsState *tls.ConnectionState
 		if server.IsTLSEnabled() {
 			tlsConn := tls.Server(conn, server.tlsConfig)
 			if err := tlsConn.Handshake(); err != nil {
 				return err
 			}
+			tlsStateObj := tlsConn.ConnectionState()
+			tlsState = &tlsStateObj
 			conn = tlsConn
 		}
 
-		go server.receive(conn)
+		go server.receive(conn, tlsState)
 	}
 
 	return nil
 }
 
 // receive handles client messages.
-func (server *Server) receive(conn net.Conn) error {
+func (server *Server) receive(conn net.Conn, tlsState *tls.ConnectionState) error {
 	defer conn.Close()
 
 	var err error
@@ -217,7 +220,7 @@ func (server *Server) receive(conn net.Conn) error {
 
 	for err == nil {
 		loopSpan := server.Tracer.StartSpan(PackageName)
-		handlerConn := newConnWith(loopSpan)
+		handlerConn := newConnWith(loopSpan, tlsState)
 
 		loopSpan.StartSpan("parse")
 		reqMsg, err = server.readMessage(conn)
