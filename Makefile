@@ -92,7 +92,7 @@ version:
 ${TEST_HELPER} : ${TEST_FILE_DIR}/${TEST_HELPER_NAME}.pl $(wildcard ${TEST_FILE_DIR}/*.qst)
 	perl $< > $@
 
-format: version ${TEST_HELPER} 
+format: ${TEST_HELPER} 
 	gofmt -s -w ${ALL_ROOTS}
 
 vet: format
