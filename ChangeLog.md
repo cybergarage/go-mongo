@@ -1,52 +1,55 @@
 # Changelog
 
-## v1.1.x (2023-xx-xx)
+## v1.2.x (2023-xx-xx)
 - Update executor interfaces for major MongoDB commands
 - Add createIndex interface
 - Add authrization interfaces
 
+## v1.1.3 (2024-05-25)
+- Added auth manager
+
 ## v1.1.2 (2024-05-22)
-- Update mongo shell client
+- Updated mongo shell client
 
 ## v1.1.1 (2024-05-21)
-- Update embeded MongoDB tests
+- Updated embeded MongoDB tests
 
 ## v1.1.0 (2024-05-20)
 - Support TLS connection
-- Update go-tracing package
+- Updated go-tracing package
 
 ## v1.0.2 (2023-05-04)
-- Update Conn to embed tracing context
-- Update tracing spans
+- Updated Conn to embed tracing context
+- Updated tracing spans
 
 ## v1.0.1 (2023-05-04)
-- Update Conn interface
-- Update tracing spans
+- Updated Conn interface
+- Updated tracing spans
 
 ## v1.0.0 (2023-05-04)
-- Fix executor interfaces for basic MongoDB commands
-- Update logger functions to output more detail messages
-- Add tracing interface
+- Fixed executor interfaces for basic MongoDB commands
+- Updated logger functions to output more detail messages
+- Added tracing interface
 
 ## v0.9.5 (2023-04-23)
-- Update embed test interface
+- Updated embed test interface
 
 ## v0.9.4 (2023-04-08)
-- Add senario test framework
-- Add mongosh-based client for testing
-- Update wire protocol parser to support the protocols used by mongosh
+- Added senario test framework
+- Added mongosh-based client for testing
+- Updated wire protocol parser to support the protocols used by mongosh
 
 ## v0.9.3 (2023-04-02)
-- Add connection logs
-- Add Dockerfile
+- Added connection logs
+- Added Dockerfile
 
 ## v0.9.2 (2023-03-28)
-- Add Conn parameter to executor functions
-- Update mongo-driver from v1.10.0 to v1.11.2
+- Added Conn parameter to executor functions
+- Updated mongo-driver from v1.10.0 to v1.11.2
 
 ## v0.9.1 (2023-02-23)
 - Upgrade to go 1.20
-- Fix compiler warnings
+- Fixed compiler warnings
 
 ## v0.9.0 (2019-08-15)
 - Initial public release  
