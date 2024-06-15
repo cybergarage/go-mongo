@@ -36,13 +36,13 @@ type Conn struct {
 	uuid      uuid.UUID
 }
 
-func newConnWith(conn net.Conn, ctx tracer.Context, tlsState *tls.ConnectionState) *Conn {
+func newConnWith(conn net.Conn, tlsState *tls.ConnectionState) *Conn {
 	return &Conn{
 		Conn:      conn,
 		isClosed:  false,
 		Map:       sync.Map{},
 		ts:        time.Now(),
-		Context:   ctx,
+		Context:   nil,
 		authrized: false,
 		tlsState:  tlsState,
 		uuid:      uuid.New(),
@@ -59,6 +59,11 @@ func (conn *Conn) Close() error {
 	}
 	conn.isClosed = true
 	return nil
+}
+
+// SetSpanContext sets the span context to the connection.
+func (conn *Conn) SetSpanContext(span tracer.Context) {
+	conn.Context = span
 }
 
 // Timestamp returns the creation time of the connection.
