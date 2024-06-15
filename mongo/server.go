@@ -223,7 +223,7 @@ func (server *Server) receive(conn net.Conn, tlsState *tls.ConnectionState) erro
 
 	for err == nil {
 		loopSpan := server.Tracer.StartSpan(PackageName)
-		handlerConn := newConnWith(loopSpan, tlsState)
+		handlerConn := newConnWith(conn, loopSpan, tlsState)
 
 		loopSpan.StartSpan("parse")
 		reqMsg, err = server.readMessage(conn)
