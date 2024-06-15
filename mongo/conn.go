@@ -16,6 +16,7 @@ package mongo
 
 import (
 	"crypto/tls"
+	"net"
 	"sync"
 	"time"
 
@@ -25,6 +26,7 @@ import (
 
 // Conn represents a connection of Wire protocol.
 type Conn struct {
+	net.Conn
 	sync.Map
 	ts time.Time
 	tracer.Context
@@ -33,8 +35,9 @@ type Conn struct {
 	uuid      uuid.UUID
 }
 
-func newConnWith(ctx tracer.Context, tlsState *tls.ConnectionState) *Conn {
+func newConnWith(conn net.Conn, ctx tracer.Context, tlsState *tls.ConnectionState) *Conn {
 	return &Conn{
+		Conn:      conn,
 		Map:       sync.Map{},
 		ts:        time.Now(),
 		Context:   ctx,
