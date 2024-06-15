@@ -37,6 +37,7 @@ type MessageListener interface {
 // Server is an instance for MongoDB protocols.
 type Server struct {
 	*Config
+	*ConnManager
 	*TLSConf
 	tlsConfig *tls.Config
 	tracer.Tracer
@@ -55,6 +56,7 @@ type Server struct {
 func NewServer() *Server {
 	server := &Server{
 		Config:               NewDefaultConfig(),
+		ConnManager:          NewConnManager(),
 		TLSConf:              NewTLSConf(),
 		tlsConfig:            nil,
 		Tracer:               tracer.NullTracer,
@@ -115,6 +117,10 @@ func (server *Server) SetMessageHandler(h OpMessageHandler) {
 
 // Start starts the server.
 func (server *Server) Start() error {
+	if err := server.ConnManager.Start(); err != nil {
+		return err
+	}
+
 	if server.IsTLSEnabled() {
 		tlsConfig, err := server.TLSConfig()
 		if err != nil {
@@ -138,6 +144,10 @@ func (server *Server) Start() error {
 
 // Stop stops the server.
 func (server *Server) Stop() error {
+	if err := server.ConnManager.Stop(); err != nil {
+		return err
+	}
+
 	if err := server.close(); err != nil {
 		return err
 	}
@@ -214,16 +224,21 @@ func (server *Server) serve() error {
 
 // receive handles client messages.
 func (server *Server) receive(conn net.Conn, tlsState *tls.ConnectionState) error {
-	defer conn.Close()
-
 	var err error
 	var reqMsg, resMsg protocol.Message
 
 	log.Debugf("%s/%s (%s) accepted", PackageName, Version, conn.RemoteAddr().String())
 
+	handlerConn := newConnWith(conn, tlsState)
+	server.AddConn(handlerConn)
+	defer func() {
+		handlerConn.Close()
+		server.RemoveConn(handlerConn)
+	}()
+
 	for err == nil {
 		loopSpan := server.Tracer.StartSpan(PackageName)
-		handlerConn := newConnWith(conn, loopSpan, tlsState)
+		handlerConn.SetSpanContext(loopSpan)
 
 		loopSpan.StartSpan("parse")
 		reqMsg, err = server.readMessage(conn)
