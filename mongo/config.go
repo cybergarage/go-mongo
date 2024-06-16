@@ -28,7 +28,7 @@ type Config struct {
 	readOnly                     bool
 	compressions                 []string
 	version                      string
-	securityAuthorization        bool
+	securityAuthorizationEnabled bool
 }
 
 // NewDefaultConfig returns a default configuration instance.
@@ -44,7 +44,7 @@ func NewDefaultConfig() *Config {
 		version:                      message.DefaultCompatibleVersion,
 		isMaster:                     true,
 		compressions:                 nil,
-		securityAuthorization:        false,
+		securityAuthorizationEnabled: false,
 	}
 	return config
 }
@@ -99,12 +99,12 @@ func (config *Config) Version() string {
 	return config.version
 }
 
-// SetAuthrization sets the authrized flag to the connection.
-func (config *Config) SetAuthrization(authorized bool) {
-	config.securityAuthorization = authorized
+// SetAuthrizationEnabled sets the authorization flag.
+func (config *Config) SetAuthrizationEnabled(authorized bool) {
+	config.securityAuthorizationEnabled = authorized
 }
 
-// IsAuthrized returns true if the connection is authrized.
-func (config *Config) IsAuthrized() bool {
-	return config.securityAuthorization
+// IsAuthrizationEnabled returns true when the authorization is enabled.
+func (config *Config) IsAuthrizationEnabled() bool {
+	return config.securityAuthorizationEnabled
 }
