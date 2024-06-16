@@ -33,10 +33,12 @@ const (
 )
 
 const (
-	IsMaster     = "ismaster"
-	BuildInfo    = "buildinfo"
-	GetLastError = "getlasterror"
-	SASLStart    = "saslstart"
+	IsMaster      = "ismaster"
+	BuildInfo     = "buildinfo"
+	GetLastError  = "getlasterror"
+	SASLStart     = "saslstart"
+	SASLMechanism = "mechanism"
+	SASLContinue  = "saslcontinue"
 )
 
 // Command represents a query command of MongoDB database command.
