@@ -5,6 +5,9 @@
 - Add createIndex interface
 - Add authrization interfaces
 
+## v1.1.4 (2024-06-29)
+- Added connection manager
+
 ## v1.1.3 (2024-05-25)
 - Added auth manager
 
