@@ -106,6 +106,9 @@ func TestTLSServer(t *testing.T) {
 }
 
 func TestSASLServer(t *testing.T) {
+	// Authentication - MongoDB Manual v7.0
+	// https://www.mongodb.com/docs/manual/core/authentication/
+
 	log.SetStdoutDebugEnbled(true)
 
 	server := NewServer()
@@ -129,7 +132,12 @@ func TestSASLServer(t *testing.T) {
 		return
 	}
 
-	clientOptions := options.Client().ApplyURI(testTLSDBURL).SetTLSConfig(tlsConfig)
+	cred := options.Credential{
+		Username: TestUsername,
+		Password: TestPassword,
+	}
+
+	clientOptions := options.Client().ApplyURI(testTLSDBURL).SetTLSConfig(tlsConfig).SetAuth(cred)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {

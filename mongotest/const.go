@@ -19,6 +19,8 @@ import (
 )
 
 const (
+	TestUsername       = "test"
+	TestPassword       = "password"
 	TestClientCertFile = "certs/client.pem"
 	TestClientCAFile   = "certs/ca.pem"
 )
