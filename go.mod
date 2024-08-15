@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/cybergarage/go-sasl v1.0.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
