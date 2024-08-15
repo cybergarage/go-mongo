@@ -104,3 +104,46 @@ func TestTLSServer(t *testing.T) {
 		return
 	}
 }
+
+func TestSASLServer(t *testing.T) {
+	log.SetStdoutDebugEnbled(true)
+
+	server := NewServer()
+
+	server.SetTLSEnabled(true)
+	server.SetServerKey(TestSeverKey)
+	server.SetServerCert(TestServerCert)
+	server.SetRootCerts(TestCACert)
+
+	err := server.Start()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	// Connect to MongoDB using the Go Driver
+
+	tlsConfig, err := server.TLSConfig()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	clientOptions := options.Client().ApplyURI(testTLSDBURL).SetTLSConfig(tlsConfig)
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	t.Run("Tutorial", func(t *testing.T) {
+		RunClientTest(t, client)
+	})
+
+	err = server.Stop()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
