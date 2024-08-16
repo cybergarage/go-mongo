@@ -14,6 +14,10 @@
 
 package mongo
 
+import (
+	"github.com/cybergarage/go-mongo/mongo/bson"
+)
+
 const (
 	saslSupportedMechs           = "saslSupportedMechs"
 	saslStart                    = "saslStart"
@@ -23,7 +27,35 @@ const (
 	saslOptions                  = "options"
 	saslSkipEmptyExchange        = "skipEmptyExchange"
 	saslContinue                 = "saslContinue"
-	saslConversationId           = "conversationId"
+	conversationId               = "conversationId" // nolint:stylecheck
 	saslDone                     = "saslDone"
 	saslSpececulativAuthenticate = "speculativeAuthenticate"
 )
+
+// ExecuteSaslStart handles SASLStart command.
+func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document, error) {
+	var mech string
+	var payload string
+	for _, elem := range cmd.Elements {
+		key := elem.Key()
+		switch key {
+		case saslMechanism:
+			mech = elem.Value().StringValue()
+			if len(mech) == 0 {
+				return nil, nil
+			}
+		case saslPayload:
+			payload = elem.Value().StringValue()
+			if len(payload) == 0 {
+				return nil, nil
+			}
+		}
+	}
+
+	return nil, nil
+}
+
+// ExecuteSaslContinue handles SASLContinue command.
+func (server *Server) ExecuteSaslContinue(*Conn, *Command) (bson.Document, error) {
+	return nil, nil
+}
