@@ -55,6 +55,11 @@ func (executor *BaseCommandExecutor) SetDatabaseCommandExecutor(fn DatabaseComma
 	executor.DatabaseCommandExecutor = fn
 }
 
+// SetAuthCommandExecutor  sets a command exector for auth operation commands.
+func (executor *BaseCommandExecutor) SetAuthCommandExecutor(fn AuthCommandExecutor) {
+	executor.AuthCommandExecutor = fn
+}
+
 //////////////////////////////////////////////////
 // CommandExecutor
 //////////////////////////////////////////////////
