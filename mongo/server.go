@@ -79,6 +79,7 @@ func NewServer() *Server {
 	server.SetMessageExecutor(server)
 	server.SetDatabaseCommandExecutor(server)
 	server.SetUserCommandExecutor(server)
+	server.SetAuthCommandExecutor(server)
 
 	return server
 }
