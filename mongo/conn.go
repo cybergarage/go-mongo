@@ -20,6 +20,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/cybergarage/go-sasl/sasl"
 	"github.com/cybergarage/go-tracing/tracer"
 	"github.com/google/uuid"
 )
@@ -31,21 +32,23 @@ type Conn struct {
 	sync.Map
 	ts time.Time
 	tracer.Context
-	authrized bool
-	tlsState  *tls.ConnectionState
-	uuid      uuid.UUID
+	authrized   bool
+	tlsState    *tls.ConnectionState
+	saslContext sasl.Context
+	uuid        uuid.UUID
 }
 
 func newConnWith(conn net.Conn, tlsState *tls.ConnectionState) *Conn {
 	return &Conn{
-		Conn:      conn,
-		isClosed:  false,
-		Map:       sync.Map{},
-		ts:        time.Now(),
-		Context:   nil,
-		authrized: false,
-		tlsState:  tlsState,
-		uuid:      uuid.New(),
+		Conn:        conn,
+		isClosed:    false,
+		Map:         sync.Map{},
+		ts:          time.Now(),
+		Context:     nil,
+		authrized:   false,
+		tlsState:    tlsState,
+		saslContext: nil,
+		uuid:        uuid.New(),
 	}
 }
 
@@ -99,4 +102,14 @@ func (conn *Conn) TLSConnectionState() (*tls.ConnectionState, bool) {
 // UUID returns the UUID of the connection.
 func (conn *Conn) UUID() uuid.UUID {
 	return conn.uuid
+}
+
+// SetSaslContext sets the SASL context to the connection.
+func (conn *Conn) SetSASLContext(saslContext sasl.Context) {
+	conn.saslContext = saslContext
+}
+
+// SaslContext returns the SASL context of the connection.
+func (conn *Conn) SASLContext() sasl.Context {
+	return conn.saslContext
 }
