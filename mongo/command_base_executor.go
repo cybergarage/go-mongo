@@ -84,6 +84,8 @@ func (executor *BaseCommandExecutor) ExecuteCommand(conn *Conn, cmd *Command) (b
 		return executor.DatabaseCommandExecutor.ExecuteGetLastError(conn, cmd)
 	case message.SASLStart:
 		return executor.AuthCommandExecutor.ExecuteSaslStart(conn, cmd)
+	case message.SASLContinue:
+		return executor.AuthCommandExecutor.ExecuteSaslContinue(conn, cmd)
 	}
 
 	// Returns only a 'ok' response as default
@@ -170,5 +172,10 @@ func (executor *BaseCommandExecutor) Delete(conn *Conn, q *Query) (int32, error)
 
 // ExecuteSaslStart handles SASLStart command.
 func (executor *BaseCommandExecutor) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document, error) {
+	return nil, nil
+}
+
+// ExecuteSaslContinue handles SASLContinue command.
+func (executor *BaseCommandExecutor) ExecuteSaslContinue(*Conn, *Command) (bson.Document, error) {
 	return nil, nil
 }
