@@ -79,4 +79,6 @@ type WriteOperationExecutor interface {
 type AuthCommandExecutor interface {
 	// ExecuteSaslStart handles SASLStart command.
 	ExecuteSaslStart(*Conn, *Command) (bson.Document, error)
+	// ExecuteSaslContinue handles SASLContinue command.
+	ExecuteSaslContinue(*Conn, *Command) (bson.Document, error)
 }
