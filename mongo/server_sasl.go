@@ -16,6 +16,7 @@ package mongo
 
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-sasl/sasl"
 )
 
 const (
@@ -34,23 +35,48 @@ const (
 
 // ExecuteSaslStart handles SASLStart command.
 func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document, error) {
-	var mech string
-	var payload string
+	var reqMech string
+	var reqPayload []byte
 	for _, elem := range cmd.Elements {
 		key := elem.Key()
 		switch key {
 		case saslMechanism:
-			mech = elem.Value().StringValue()
-			if len(mech) == 0 {
-				return nil, nil
-			}
+			reqMech = elem.Value().StringValue()
 		case saslPayload:
-			payload = elem.Value().StringValue()
-			if len(payload) == 0 {
-				return nil, nil
+			reqPayload, err := elem.Value().Binary()
+			if err != nil {
+				return nil, err
 			}
 		}
 	}
+
+	mech, err := server.Mechanism(reqMech)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := []sasl.Option{
+		server.Authenticators(),
+	}
+
+	switch reqMech {
+	case "SCRAM-SHA-1", "SCRAM-SHA-256", "SCRAM-SHA-512":
+		opts = append(opts, sasl.Payload(reqPayload))
+	case "PLAIN":
+		opts = append(opts, reqPayload)
+	}
+
+	ctx, err := mech.Start(opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := ctx.Next()
+	if err != nil {
+		return nil, err
+	}
+
+	conn.SetSASLContext(ctx)
 
 	return nil, nil
 }
