@@ -16,6 +16,7 @@ package mongotest
 
 import (
 	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
 type Server struct {
@@ -24,7 +25,20 @@ type Server struct {
 
 // NewServer returns a test server instance.
 func NewServer() *Server {
-	return &Server{
+	server := &Server{
 		Server: server.NewServer(),
 	}
+	server.AddAuthenticator(server)
+	return server
+}
+
+func (server *Server) HasCredential(username string) (*cred.Credential, bool) {
+	if username != TestUsername {
+		return nil, false
+	}
+	cred := cred.NewCredential(
+		cred.WithUsername(TestUsername),
+		cred.WithPassword(TestPassword),
+	)
+	return cred, true
 }
