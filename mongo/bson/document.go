@@ -32,3 +32,24 @@ func NewDocument() Document {
 func NewDocumentWithBytes(src []byte) (Document, error) {
 	return bsoncore.NewDocumentFromReader(bytes.NewReader(src))
 }
+
+// AppendDocumentEnd appends the end of the document.
+func AppendDocumentStart(dst []byte) (int32, []byte) {
+	return bsoncore.AppendDocumentStart(dst)
+}
+
+// AppendDocumentEnd appends the end of the document.
+func AppendDocumentEnd(dst []byte, start int32) ([]byte, error) {
+	return bsoncore.AppendDocumentEnd(dst, start)
+}
+
+// DocumentStart returns a new document which has only the reserved length header.
+func DocumentStart() Document {
+	_, bytes := bsoncore.AppendDocumentStart(nil)
+	return bytes
+}
+
+// DocumentEnd writes the null byte for a document and updates the length of the document.
+func DocumentEnd(dst []byte) ([]byte, error) {
+	return bsoncore.AppendDocumentEnd(dst, 0)
+}
