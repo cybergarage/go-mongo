@@ -177,7 +177,7 @@ func (server *Server) Update(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 			return int32(nUpdated), mongo.NewQueryError(q)
 		}
 
-		updateDoc := bson.StartDocument()
+		updateDoc := bson.DocumentStart()
 		for _, serverDocElem := range serverDocElems {
 			elemKey := serverDocElem.Key()
 			elemValue := serverDocElem.Value()
@@ -193,7 +193,7 @@ func (server *Server) Update(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 				return int32(nUpdated), mongo.NewQueryError(q)
 			}
 		}
-		updateDoc, err = bson.EndDocument(updateDoc)
+		updateDoc, err = bson.DocumentEnd(updateDoc)
 		if err != nil {
 			return int32(nUpdated), mongo.NewQueryError(q)
 		}
