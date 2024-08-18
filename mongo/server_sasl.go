@@ -43,10 +43,7 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		case saslMechanism:
 			reqMech = elem.Value().StringValue()
 		case saslPayload:
-			reqPayload, err := elem.Value().Binary()
-			if err != nil {
-				return nil, err
-			}
+			reqPayload = elem.Value().Data
 		}
 	}
 
@@ -59,29 +56,61 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		server.Authenticators(),
 	}
 
-	switch reqMech {
-	case "SCRAM-SHA-1", "SCRAM-SHA-256", "SCRAM-SHA-512":
-		opts = append(opts, sasl.Payload(reqPayload))
-	case "PLAIN":
-		opts = append(opts, reqPayload)
-	}
-
 	ctx, err := mech.Start(opts...)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := ctx.Next()
+	res, err := ctx.Next(sasl.Payload(reqPayload))
+	if err != nil {
+		return nil, err
+	}
+
+	doc := bson.DocumentStart()
+
+	doc = bson.AppendDocumentElement(doc, saslPayload, res.Bytes())
+
+	_, err = bson.DocumentEnd(doc)
 	if err != nil {
 		return nil, err
 	}
 
 	conn.SetSASLContext(ctx)
 
-	return nil, nil
+	return doc, nil
 }
 
 // ExecuteSaslContinue handles SASLContinue command.
-func (server *Server) ExecuteSaslContinue(*Conn, *Command) (bson.Document, error) {
-	return nil, nil
+func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Document, error) {
+	ctx := conn.SASLContext()
+	if ctx == nil {
+		return nil, NewErrorCommand(cmd)
+	}
+
+	var reqPayload []byte
+	for _, elem := range cmd.Elements {
+		key := elem.Key()
+		switch key {
+		case saslPayload:
+			reqPayload = elem.Value().Data
+		}
+	}
+
+	res, err := ctx.Next(sasl.Payload(reqPayload))
+	if err != nil {
+		return nil, err
+	}
+
+	doc := bson.DocumentStart()
+
+	doc = bson.AppendDocumentElement(doc, saslPayload, res.Bytes())
+
+	_, err = bson.DocumentEnd(doc)
+	if err != nil {
+		return nil, err
+	}
+
+	conn.SetSASLContext(nil)
+
+	return doc, nil
 }
