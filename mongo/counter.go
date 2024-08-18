@@ -30,6 +30,13 @@ func NewCounter() *Counter {
 	}
 }
 
+// NewCounterWith returns a new counter with the specified count.
+func NewCounterWith(count int32) *Counter {
+	return &Counter{
+		count: count,
+	}
+}
+
 // Inc increments the counter and returns the new value.
 func (counter *Counter) Inc() int32 {
 	if counter.count == math.MaxInt32 {
