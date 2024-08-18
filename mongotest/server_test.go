@@ -132,12 +132,13 @@ func TestSASLServer(t *testing.T) {
 		return
 	}
 
-	cred := options.Credential{
-		Username: TestUsername,
-		Password: TestPassword,
-	}
+	// cred := options.Credential{
+	// 	Username: TestUsername,
+	// 	Password: TestPassword,
+	// }
 
-	clientOptions := options.Client().ApplyURI(testTLSDBURL).SetTLSConfig(tlsConfig).SetAuth(cred)
+	clientOptions := options.Client().ApplyURI(testTLSDBURL).SetTLSConfig(tlsConfig)
+	// clientOptions.SetAuth(cred)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
