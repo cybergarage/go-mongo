@@ -14,9 +14,13 @@
 
 package mongo
 
+import (
+	"math"
+)
+
 // Counter is a counter.
 type Counter struct {
-	count uint32
+	count int32
 }
 
 // NewCounter returns a new counter.
@@ -27,8 +31,8 @@ func NewCounter() *Counter {
 }
 
 // Inc increments the counter and returns the new value.
-func (counter *Counter) Inc() uint32 {
-	if counter.count == ^uint32(0) {
+func (counter *Counter) Inc() int32 {
+	if counter.count == math.MaxInt32 {
 		counter.count = 0
 	}
 	counter.count++
