@@ -15,6 +15,8 @@
 package mongo
 
 import (
+	"strconv"
+
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-sasl/sasl"
 )
@@ -52,7 +54,7 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		return nil, err
 	}
 
-	// Response to the client
+	// Start the SASL context
 
 	opts := []sasl.Option{
 		server.Authenticators(),
@@ -68,7 +70,22 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		return nil, err
 	}
 
+	conn.SetSASLContext(ctx)
+
+	// Response to the client
+
 	doc := bson.DocumentStart()
+
+	mechsDoc := bson.ArrayStart()
+	for n, mech := range server.Mechanisms() {
+		idxKey := strconv.Itoa(n)
+		mechsDoc = bson.AppendStringElement(mechsDoc, idxKey, mech.Name())
+	}
+	mechsDoc, err = bson.ArrayEnd(mechsDoc)
+	if err != nil {
+		return nil, err
+	}
+	doc = bson.AppendDocumentElement(doc, saslMechanism, mechsDoc)
 
 	conversationID := server.saslCounter.Inc()
 	ctx.SetValue(saslConversationId, conversationID)
@@ -80,8 +97,6 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 	if err != nil {
 		return nil, err
 	}
-
-	conn.SetSASLContext(ctx)
 
 	return doc, nil
 }
