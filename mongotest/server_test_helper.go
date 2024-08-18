@@ -76,6 +76,7 @@ func TestTutorialCRUDOperations(t *testing.T, client *mongo.Client) {
 				insertResult, err := collection.InsertOne(context.TODO(), trainer)
 				if err != nil {
 					t.Error(err)
+					return
 				}
 				t.Log("Inserted a single document: ", insertResult.InsertedID)
 			})
@@ -104,6 +105,7 @@ func TestTutorialCRUDOperations(t *testing.T, client *mongo.Client) {
 				err = collection.FindOne(context.TODO(), filter).Decode(&result)
 				if err != nil {
 					t.Error(err)
+					return
 				}
 
 				t.Logf("Found a single document: %+v\n", result)
@@ -131,6 +133,7 @@ func TestTutorialCRUDOperations(t *testing.T, client *mongo.Client) {
 			updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
 			if err != nil {
 				t.Error(err)
+				return
 			}
 			t.Logf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 		})
@@ -160,6 +163,7 @@ func TestTutorialCRUDOperations(t *testing.T, client *mongo.Client) {
 				err = collection.FindOne(context.TODO(), filter).Decode(&result)
 				if err != nil {
 					t.Error(err)
+					return
 				}
 
 				t.Logf("Found a single document: %+v\n", result)
@@ -194,6 +198,7 @@ func TestTutorialCRUDOperations(t *testing.T, client *mongo.Client) {
 				deleteResult, err := collection.DeleteMany(context.TODO(), filter)
 				if err != nil {
 					t.Error(err)
+					return
 				}
 
 				t.Logf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
