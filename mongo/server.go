@@ -22,7 +22,6 @@ import (
 	"strconv"
 
 	"github.com/cybergarage/go-logger/log"
-	"github.com/cybergarage/go-mongo/mongo/auth"
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
@@ -42,7 +41,6 @@ type Server struct {
 	*TLSConf
 	tlsConfig *tls.Config
 	tracer.Tracer
-	*auth.AuthManager
 	Addr                 string
 	Port                 int
 	messageListener      MessageListener
@@ -63,7 +61,6 @@ func NewServer() *Server {
 		TLSConf:              NewTLSConf(),
 		tlsConfig:            nil,
 		Tracer:               tracer.NullTracer,
-		AuthManager:          auth.NewAuthManager(),
 		Addr:                 "",
 		Port:                 DefaultPort,
 		messageListener:      nil,
