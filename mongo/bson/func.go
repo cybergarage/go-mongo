@@ -62,7 +62,7 @@ func AppendDateTimeElement(dst []byte, key string, value int64) []byte {
 }
 
 // AppendDocumentElement appends a document to dst and return the extended buffer.
-func AppendDocumentElement(dst []byte, key string, value Document) []byte {
+func AppendDocumentElement(dst []byte, key string, value []byte) []byte {
 	return bsoncore.AppendDocumentElement(dst, key, value)
 }
 
