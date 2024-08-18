@@ -52,6 +52,7 @@ type Server struct {
 	*BaseMessageHandler
 	*BaseCommandExecutor
 	*sasl.Server
+	saslCounter *Counter
 }
 
 // NewServer returns a new server instance.
@@ -72,6 +73,7 @@ func NewServer() *Server {
 		BaseMessageHandler:   NewBaseMessageHandler(),
 		BaseCommandExecutor:  NewBaseCommandExecutor(),
 		Server:               sasl.NewServer(),
+		saslCounter:          NewCounter(),
 	}
 
 	server.SetMessageHandler(server)
