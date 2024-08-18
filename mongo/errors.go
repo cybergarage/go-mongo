@@ -11,6 +11,7 @@ import (
 
 var ErrQuery = errors.New("query error")
 var ErrQueryNotSupported = errors.New("query not supported")
+var ErrCommand = errors.New("invalid command")
 
 const (
 	errorLostConnection                    = "lost connection to %s:%d"
@@ -28,4 +29,8 @@ func NewQueryError(q *Query) error {
 
 func NewNotSupported(q *Query) error {
 	return fmt.Errorf("%w (%v)", ErrQueryNotSupported, q)
+}
+
+func NewErrorCommand(cmd *Command) error {
+	return fmt.Errorf("%w (%v)", ErrCommand, cmd)
 }
