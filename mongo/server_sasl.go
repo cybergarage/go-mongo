@@ -39,13 +39,21 @@ const (
 func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document, error) {
 	var reqMech string
 	var reqPayload []byte
+	var ok bool
 	for _, elem := range cmd.Elements {
 		key := elem.Key()
 		switch key {
 		case saslMechanism:
-			reqMech = elem.Value().StringValue()
+			reqMech, ok = elem.Value().StringValueOK()
+			if !ok {
+				return nil, NewErrorCommand(cmd)
+			}
 		case saslPayload:
-			reqPayload = elem.Value().Data
+			var t byte
+			t, reqPayload, ok = elem.Value().BinaryOK()
+			if !ok || t != 0 {
+				return nil, NewErrorCommand(cmd)
+			}
 		}
 	}
 
@@ -110,13 +118,21 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 
 	var clientConversationID int32
 	var reqPayload []byte
+	var ok bool
 	for _, elem := range cmd.Elements {
 		key := elem.Key()
 		switch key {
 		case saslConversationId:
-			clientConversationID = elem.Value().Int32()
+			clientConversationID, ok = elem.Value().Int32OK()
+			if !ok {
+				return nil, NewErrorCommand(cmd)
+			}
 		case saslPayload:
-			reqPayload = elem.Value().Data
+			var t byte
+			t, reqPayload, ok = elem.Value().BinaryOK()
+			if !ok || t != 0 {
+				return nil, NewErrorCommand(cmd)
+			}
 		}
 	}
 
