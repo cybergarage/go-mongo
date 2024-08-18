@@ -15,6 +15,7 @@
 package mongo
 
 import (
+	"math"
 	"testing"
 )
 
@@ -29,6 +30,11 @@ func TestCounter(t *testing.T) {
 	}
 
 	if counter.Inc() != 2 {
+		t.Error("Counter.Inc() is failed")
+	}
+
+	counter = NewCounterWith(math.MaxInt32)
+	if counter.Inc() != 1 {
 		t.Error("Counter.Inc() is failed")
 	}
 }
