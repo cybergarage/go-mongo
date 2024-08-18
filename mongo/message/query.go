@@ -78,7 +78,7 @@ func (q *Query) GetConditions() []bson.Document {
 
 // HasConditions returns true if the query has conditions.
 func (q *Query) HasConditions() bool {
-	if q.Conditions == nil || len(q.Conditions) == 0 {
+	if len(q.Conditions) == 0 {
 		return false
 	}
 	for _, cond := range q.GetConditions() {
