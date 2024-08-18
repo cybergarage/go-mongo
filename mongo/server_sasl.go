@@ -28,7 +28,7 @@ const (
 	saslOptions                  = "options"
 	saslSkipEmptyExchange        = "skipEmptyExchange"
 	saslContinue                 = "saslContinue"
-	conversationId               = "conversationId" // nolint:stylecheck
+	saslConversationId           = "conversationId" // nolint:stylecheck
 	saslDone                     = "saslDone"
 	saslSpececulativAuthenticate = "speculativeAuthenticate"
 )
@@ -52,6 +52,8 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		return nil, err
 	}
 
+	// Response to the client
+
 	opts := []sasl.Option{
 		server.Authenticators(),
 	}
@@ -67,6 +69,10 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 	}
 
 	doc := bson.DocumentStart()
+
+	conversationID := server.saslCounter.Inc()
+	ctx.SetValue(saslConversationId, conversationID)
+	doc = bson.AppendInt32Element(doc, saslConversationId, conversationID)
 
 	doc = bson.AppendDocumentElement(doc, saslPayload, res.Bytes())
 
@@ -87,14 +93,34 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 		return nil, NewErrorCommand(cmd)
 	}
 
+	var clientConversationID int32
 	var reqPayload []byte
 	for _, elem := range cmd.Elements {
 		key := elem.Key()
 		switch key {
+		case saslConversationId:
+			clientConversationID = elem.Value().Int32()
 		case saslPayload:
 			reqPayload = elem.Value().Data
 		}
 	}
+
+	// Check the conversation ID
+
+	v, ok := ctx.Value(saslConversationId)
+	if !ok {
+		return nil, NewErrorCommand(cmd)
+	}
+	conversationID, ok := v.(int32)
+	if !ok {
+		return nil, NewErrorCommand(cmd)
+	}
+
+	if clientConversationID != conversationID {
+		return nil, NewErrorCommand(cmd)
+	}
+
+	// Response to the client
 
 	res, err := ctx.Next(sasl.Payload(reqPayload))
 	if err != nil {
@@ -103,6 +129,7 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 
 	doc := bson.DocumentStart()
 
+	doc = bson.AppendInt32Element(doc, saslConversationId, conversationID)
 	doc = bson.AppendDocumentElement(doc, saslPayload, res.Bytes())
 
 	_, err = bson.DocumentEnd(doc)
