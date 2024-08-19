@@ -165,6 +165,12 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 			if err != nil {
 				return nil, err
 			}
+		case *Dictionary:
+			dictBytes, err := v.BSONBytes()
+			if err != nil {
+				return nil, err
+			}
+			elementBytes = AppendDocumentElement(elementBytes, key, dictBytes)
 		case nil:
 			elementBytes = AppendNullElement(elementBytes, key)
 		default:
