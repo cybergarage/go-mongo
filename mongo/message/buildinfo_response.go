@@ -62,14 +62,14 @@ func (res *Response) SetVersion(ver string) {
 	// version
 	res.SetStringElement(version, ver)
 	// versionArray
-	verInts := make([]int32, 0)
+	vers := make([]any, 0)
 	verStrs := strings.Split(ver, ".")
 	for _, verStr := range verStrs {
 		verInt, err := strconv.ParseInt(verStr, 10, 32)
 		if err != nil {
 			continue
 		}
-		verInts = append(verInts, int32(verInt))
+		vers = append(vers, int32(verInt))
 	}
-	res.SetInt32ArrayElements(versionArray, verInts)
+	res.SetArrayElements(versionArray, vers)
 }
