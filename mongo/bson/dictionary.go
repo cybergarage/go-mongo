@@ -151,7 +151,7 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 		case Document:
 			elementBytes = AppendDocumentElement(elementBytes, key, v)
 		case []byte:
-			elementBytes = AppendDocumentElement(elementBytes, key, v)
+			elementBytes = AppendBinaryElement(elementBytes, key, 0, v)
 		case []any:
 			var arrayIndex int32
 			arrayIndex, elementBytes = bsoncore.AppendArrayElementStart(elementBytes, key)
