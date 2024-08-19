@@ -31,25 +31,30 @@ const (
 )
 
 // NewDefaultBuildInfoResponse returns a default response instance.
-func NewDefaultBuildInfoResponse() *Response {
+func NewDefaultBuildInfoResponse() (*Response, error) {
 	defaultElements := map[string]interface{}{
 		maxBsonObjectSize: int32(DefaultMaxBsonObjectSize),
 	}
 
-	res := NewResponseWithElements(defaultElements)
+	res, err := NewResponseWithElements(defaultElements)
+	if err != nil {
+		return nil, err
+	}
 	res.SetVersion(DefaultCompatibleVersion)
 	res.SetStatus(true)
 
-	return res
+	return res, nil
 }
 
 // NewBuildInfoResponseWithConfig returns a response instance with the specified configuration.
-func NewBuildInfoResponseWithConfig(config Config) *Response {
-	res := NewDefaultBuildInfoResponse()
+func NewBuildInfoResponseWithConfig(config Config) (*Response, error) {
+	res, err := NewDefaultBuildInfoResponse()
+	if err != nil {
+		return nil, err
+	}
 	res.SetVersion(config.Version())
 	res.SetStatus(true)
-
-	return res
+	return res, nil
 }
 
 // SetVersion sets a version string and array of the specified version string.

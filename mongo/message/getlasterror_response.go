@@ -21,7 +21,7 @@ const (
 )
 
 // NewDefaultLastErrorResponse returns a default response instance.
-func NewDefaultLastErrorResponse() *Response {
+func NewDefaultLastErrorResponse() (*Response, error) {
 	defaultElements := map[string]interface{}{
 		"err":        nil,
 		"n":          int32(0),
@@ -30,8 +30,11 @@ func NewDefaultLastErrorResponse() *Response {
 		writtenTo:    nil,
 	}
 
-	res := NewResponseWithElements(defaultElements)
+	res, err := NewResponseWithElements(defaultElements)
+	if err != nil {
+		return nil, err
+	}
 	res.SetStatus(true)
 
-	return res
+	return res, nil
 }

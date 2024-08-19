@@ -102,7 +102,10 @@ func (executor *BaseCommandExecutor) ExecuteCommand(conn *Conn, cmd *Command) (b
 
 // ExecuteIsMaster returns information about this member’s role in the replica set, including whether it is the master.
 func (executor *BaseCommandExecutor) ExecuteIsMaster(conn *Conn, cmd *Command) (bson.Document, error) {
-	reply := message.NewDefaultIsMasterResponse()
+	reply, err := message.NewDefaultIsMasterResponse()
+	if err != nil {
+		return nil, err
+	}
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err
@@ -112,7 +115,10 @@ func (executor *BaseCommandExecutor) ExecuteIsMaster(conn *Conn, cmd *Command) (
 
 // ExecuteBuildInfo returns statistics about the MongoDB build.
 func (executor *BaseCommandExecutor) ExecuteBuildInfo(conn *Conn, cmd *Command) (bson.Document, error) {
-	reply := message.NewDefaultBuildInfoResponse()
+	reply, err := message.NewDefaultBuildInfoResponse()
+	if err != nil {
+		return nil, err
+	}
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err
@@ -122,7 +128,10 @@ func (executor *BaseCommandExecutor) ExecuteBuildInfo(conn *Conn, cmd *Command) 
 
 // ExecuteGetLastError returns statistics about the MongoDB build.
 func (executor *BaseCommandExecutor) ExecuteGetLastError(conn *Conn, cmd *Command) (bson.Document, error) {
-	reply := message.NewDefaultLastErrorResponse()
+	reply, err := message.NewDefaultLastErrorResponse()
+	if err != nil {
+		return nil, err
+	}
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err

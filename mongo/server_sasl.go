@@ -15,9 +15,8 @@
 package mongo
 
 import (
-	"strconv"
-
 	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-sasl/sasl"
 )
 
@@ -73,7 +72,7 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		return nil, err
 	}
 
-	res, err := ctx.Next(sasl.Payload(reqPayload))
+	mechRes, err := ctx.Next(sasl.Payload(reqPayload))
 	if err != nil {
 		return nil, err
 	}
@@ -82,31 +81,29 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 
 	// Response to the client
 
-	doc := bson.DocumentStart()
-
-	mechsDoc := bson.ArrayStart()
-	for n, mech := range server.Mechanisms() {
-		idxKey := strconv.Itoa(n)
-		mechsDoc = bson.AppendStringElement(mechsDoc, idxKey, mech.Name())
+	mechs := []any{}
+	for _, mech := range server.Mechanisms() {
+		mechs = append(mechs, mech.Name())
 	}
-	mechsDoc, err = bson.ArrayEnd(mechsDoc)
-	if err != nil {
-		return nil, err
-	}
-	doc = bson.AppendDocumentElement(doc, saslSupportedMechs, mechsDoc)
 
 	conversationID := server.saslCounter.Inc()
-	ctx.SetValue(saslConversationId, conversationID)
-	doc = bson.AppendInt32Element(doc, saslConversationId, conversationID)
+	spec := map[string]any{
+		saslConversationId: conversationID,
+		saslPayload:        mechRes.Bytes(),
+	}
 
-	doc = bson.AppendDocumentElement(doc, saslPayload, res.Bytes())
+	firstMsgElements := map[string]any{
+		saslSupportedMechs:           mechs,
+		saslSpececulativAuthenticate: spec,
+	}
 
-	_, err = bson.DocumentEnd(doc)
+	resMsg, err := message.NewResponseWithElements(firstMsgElements)
 	if err != nil {
 		return nil, err
 	}
+	resMsg.SetStatus(true)
 
-	return doc, nil
+	return resMsg.BSONBytes()
 }
 
 // ExecuteSaslContinue handles SASLContinue command.
@@ -153,22 +150,28 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 
 	// Response to the client
 
-	res, err := ctx.Next(sasl.Payload(reqPayload))
+	mechRes, err := ctx.Next(sasl.Payload(reqPayload))
 	if err != nil {
 		return nil, err
 	}
 
-	doc := bson.DocumentStart()
+	finalMsgElements := map[string]any{
+		saslConversationId: conversationID,
+		saslPayload:        mechRes.Bytes(),
+	}
 
-	doc = bson.AppendInt32Element(doc, saslConversationId, conversationID)
-	doc = bson.AppendDocumentElement(doc, saslPayload, res.Bytes())
+	resMsg, err := message.NewResponseWithElements(finalMsgElements)
+	if err != nil {
+		return nil, err
+	}
+	resMsg.SetStatus(true)
 
-	_, err = bson.DocumentEnd(doc)
+	res, err := resMsg.BSONBytes()
 	if err != nil {
 		return nil, err
 	}
 
 	conn.SetSASLContext(nil)
 
-	return doc, nil
+	return res, nil
 }

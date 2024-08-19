@@ -41,7 +41,7 @@ const (
 )
 
 // NewDefaultIsMasterResponse returns a default response instance.
-func NewDefaultIsMasterResponse() *Response {
+func NewDefaultIsMasterResponse() (*Response, error) {
 	defaultElements := map[string]interface{}{
 		IsMaster:                     true,
 		maxBsonObjectSize:            int32(DefaultMaxBsonObjectSize),
@@ -54,14 +54,17 @@ func NewDefaultIsMasterResponse() *Response {
 		readOnly:                     false,
 	}
 
-	res := NewResponseWithElements(defaultElements)
+	res, err := NewResponseWithElements(defaultElements)
+	if err != nil {
+		return nil, err
+	}
 	res.SetStatus(true)
 
-	return res
+	return res, nil
 }
 
 // NewIsMasterResponseWithConfig returns a response instance with the specified configuration.
-func NewIsMasterResponseWithConfig(config ServerConfig) *Response {
+func NewIsMasterResponseWithConfig(config ServerConfig) (*Response, error) {
 	defaultElements := map[string]interface{}{
 		IsMaster:                     config.IsMaster(),
 		maxBsonObjectSize:            config.MaxBsonObjectSize(),
@@ -74,8 +77,11 @@ func NewIsMasterResponseWithConfig(config ServerConfig) *Response {
 		readOnly:                     config.IsReadOnly(),
 	}
 
-	res := NewResponseWithElements(defaultElements)
+	res, err := NewResponseWithElements(defaultElements)
+	if err != nil {
+		return nil, err
+	}
 	res.SetStatus(true)
 
-	return res
+	return res, nil
 }
