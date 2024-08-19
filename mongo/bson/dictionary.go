@@ -26,13 +26,13 @@ type Datetime int64
 
 // Dictionary represents a simple BSON document.
 type Dictionary struct {
-	elements map[string]interface{}
+	elements map[string]any
 }
 
 // NewDictionary returns a new dictionary instance.
 func NewDictionary() *Dictionary {
 	dict := &Dictionary{
-		elements: map[string]interface{}{},
+		elements: map[string]any{},
 	}
 	return dict
 }
@@ -82,8 +82,19 @@ func (dict *Dictionary) SetInt32ArrayElements(key string, elements []int32) {
 	dict.elements[key] = elements
 }
 
+// SetDictionaryElements sets a dictionary elements.
+func (dict *Dictionary) SetDictionaryElements(key string, elements map[string]any) error {
+	elemDict := NewDictionary()
+	err := elemDict.SetElements(elements)
+	if err != nil {
+		return err
+	}
+	dict.elements[key] = elemDict
+	return nil
+}
+
 // SetElements sets elements.
-func (dict *Dictionary) SetElements(elements map[string]interface{}) error {
+func (dict *Dictionary) SetElements(elements map[string]any) error {
 	for key, element := range elements {
 		switch val := element.(type) {
 		case int32:
@@ -104,6 +115,10 @@ func (dict *Dictionary) SetElements(elements map[string]interface{}) error {
 			dict.SetNullElement(key)
 		case []int32:
 			dict.SetInt32ArrayElements(key, val)
+		case map[string]any:
+			if err := dict.SetDictionaryElements(key, val); err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf(errorDictionaryNotSupportedType, key, element)
 		}
