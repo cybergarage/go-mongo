@@ -25,7 +25,10 @@ import (
 
 // ExecuteIsMaster displays information about this member’s role in the replica set, including whether it is the master.
 func (server *Server) ExecuteIsMaster(conn *Conn, cmd *Command) (bson.Document, error) {
-	reply := message.NewIsMasterResponseWithConfig(server)
+	reply, err := message.NewIsMasterResponseWithConfig(server)
+	if err != nil {
+		return nil, err
+	}
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err
@@ -35,7 +38,10 @@ func (server *Server) ExecuteIsMaster(conn *Conn, cmd *Command) (bson.Document, 
 
 // ExecuteBuildInfo returns statistics about the MongoDB build.
 func (server *Server) ExecuteBuildInfo(conn *Conn, cmd *Command) (bson.Document, error) {
-	reply := message.NewBuildInfoResponseWithConfig(server)
+	reply, err := message.NewBuildInfoResponseWithConfig(server)
+	if err != nil {
+		return nil, err
+	}
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err

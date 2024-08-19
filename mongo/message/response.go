@@ -44,10 +44,13 @@ func NewResponse() *Response {
 }
 
 // NewResponseWithElements returns a new response instance.
-func NewResponseWithElements(elements map[string]interface{}) *Response {
+func NewResponseWithElements(elements map[string]any) (*Response, error) {
 	res := NewResponse()
-	res.SetElements(elements)
-	return res
+	err := res.SetElements(elements)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 // NewResponseWithStatus returns a simple response which has only a status element.
