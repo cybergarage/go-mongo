@@ -93,7 +93,7 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 	if err != nil {
 		return nil, err
 	}
-	doc = bson.AppendDocumentElement(doc, saslMechanism, mechsDoc)
+	doc = bson.AppendDocumentElement(doc, saslSupportedMechs, mechsDoc)
 
 	conversationID := server.saslCounter.Inc()
 	ctx.SetValue(saslConversationId, conversationID)
