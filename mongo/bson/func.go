@@ -66,6 +66,11 @@ func AppendDocumentElement(dst []byte, key string, value []byte) []byte {
 	return bsoncore.AppendDocumentElement(dst, key, value)
 }
 
+// AppendBinaryElement appends a binary element to dst and return the extended buffer.
+func AppendBinaryElement(dst []byte, key string, subType byte, data []byte) []byte {
+	return bsoncore.AppendBinaryElement(dst, key, subType, data)
+}
+
 // AppendNullElement will append a BSON null element using key to dst and return the extended buffer.
 func AppendNullElement(dst []byte, key string) []byte {
 	return bsoncore.AppendNullElement(dst, key)
