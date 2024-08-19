@@ -90,6 +90,7 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 	spec := map[string]any{
 		saslConversationId: conversationID,
 		saslPayload:        mechRes.Bytes(),
+		saslDone:           true,
 	}
 
 	firstMsgElements := map[string]any{
@@ -101,7 +102,6 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 	if err != nil {
 		return nil, err
 	}
-	resMsg.SetBooleanElement(saslDone, true)
 	resMsg.SetStatus(true)
 
 	return resMsg.BSONBytes()
@@ -159,13 +159,13 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 	finalMsgElements := map[string]any{
 		saslConversationId: conversationID,
 		saslPayload:        mechRes.Bytes(),
+		saslDone:           true,
 	}
 
 	resMsg, err := message.NewResponseWithElements(finalMsgElements)
 	if err != nil {
 		return nil, err
 	}
-	resMsg.SetBooleanElement(saslDone, true)
 	resMsg.SetStatus(true)
 
 	res, err := resMsg.BSONBytes()
