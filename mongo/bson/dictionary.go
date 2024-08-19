@@ -62,6 +62,11 @@ func (dict *Dictionary) SetStringElement(key string, element string) {
 	dict.elements[key] = element
 }
 
+// SetBytesElement sets a byte array element.
+func (dict *Dictionary) SetBytesElement(key string, element []byte) {
+	dict.elements[key] = element
+}
+
 // SetDatetimeElement sets a datetime element.
 func (dict *Dictionary) SetDatetimeElement(key string, element Datetime) {
 	dict.elements[key] = element
@@ -109,10 +114,8 @@ func (dict *Dictionary) SetElements(elements map[string]any) error {
 			dict.SetDoubleElement(key, v)
 		case Datetime:
 			dict.SetDatetimeElement(key, v)
-		case Document:
-			dict.SetDocumentElement(key, v)
 		case []byte:
-			dict.SetDocumentElement(key, v)
+			dict.SetBytesElement(key, v)
 		case []any:
 			dict.SetArrayElements(key, v)
 		case map[string]any:
@@ -148,8 +151,6 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 			elementBytes = AppendDoubleElement(elementBytes, key, v)
 		case Datetime:
 			elementBytes = AppendDateTimeElement(elementBytes, key, int64(v))
-		case Document:
-			elementBytes = AppendDocumentElement(elementBytes, key, v)
 		case []byte:
 			elementBytes = AppendBinaryElement(elementBytes, key, 0, v)
 		case []any:
