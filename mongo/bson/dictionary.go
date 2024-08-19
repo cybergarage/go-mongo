@@ -77,8 +77,8 @@ func (dict *Dictionary) SetNullElement(key string) {
 	dict.elements[key] = nil
 }
 
-// SetInt32ArrayElements sets an interger array element.
-func (dict *Dictionary) SetInt32ArrayElements(key string, elements []int32) {
+// SetArrayElements sets an array elements.
+func (dict *Dictionary) SetArrayElements(key string, elements []any) {
 	dict.elements[key] = elements
 }
 
@@ -96,29 +96,31 @@ func (dict *Dictionary) SetDictionaryElements(key string, elements map[string]an
 // SetElements sets elements.
 func (dict *Dictionary) SetElements(elements map[string]any) error {
 	for key, element := range elements {
-		switch val := element.(type) {
+		switch v := element.(type) {
 		case int32:
-			dict.SetInt32Element(key, val)
+			dict.SetInt32Element(key, v)
 		case int64:
-			dict.SetInt64Element(key, val)
+			dict.SetInt64Element(key, v)
 		case bool:
-			dict.SetBooleanElement(key, val)
+			dict.SetBooleanElement(key, v)
 		case string:
-			dict.SetStringElement(key, val)
+			dict.SetStringElement(key, v)
 		case float64:
-			dict.SetDoubleElement(key, val)
+			dict.SetDoubleElement(key, v)
 		case Datetime:
-			dict.SetDatetimeElement(key, val)
+			dict.SetDatetimeElement(key, v)
 		case Document:
-			dict.SetDocumentElement(key, val)
-		case nil:
-			dict.SetNullElement(key)
-		case []int32:
-			dict.SetInt32ArrayElements(key, val)
+			dict.SetDocumentElement(key, v)
+		case []byte:
+			dict.SetDocumentElement(key, v)
+		case []any:
+			dict.SetArrayElements(key, v)
 		case map[string]any:
-			if err := dict.SetDictionaryElements(key, val); err != nil {
+			if err := dict.SetDictionaryElements(key, v); err != nil {
 				return err
 			}
+		case nil:
+			dict.SetNullElement(key)
 		default:
 			return fmt.Errorf(errorDictionaryNotSupportedType, key, element)
 		}
@@ -133,35 +135,40 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 	var err error
 	elementBytes := make([]byte, 0)
 	for key, element := range dict.elements {
-		switch val := element.(type) {
+		switch v := element.(type) {
 		case int32:
-			elementBytes = AppendInt32Element(elementBytes, key, val)
+			elementBytes = AppendInt32Element(elementBytes, key, v)
 		case int64:
-			elementBytes = AppendInt64Element(elementBytes, key, val)
+			elementBytes = AppendInt64Element(elementBytes, key, v)
 		case bool:
-			elementBytes = AppendBooleanElement(elementBytes, key, val)
+			elementBytes = AppendBooleanElement(elementBytes, key, v)
 		case string:
-			elementBytes = AppendStringElement(elementBytes, key, val)
+			elementBytes = AppendStringElement(elementBytes, key, v)
 		case float64:
-			elementBytes = AppendDoubleElement(elementBytes, key, val)
+			elementBytes = AppendDoubleElement(elementBytes, key, v)
 		case Datetime:
-			elementBytes = AppendDateTimeElement(elementBytes, key, int64(val))
+			elementBytes = AppendDateTimeElement(elementBytes, key, int64(v))
 		case Document:
-			elementBytes = AppendDocumentElement(elementBytes, key, val)
-		case nil:
-			elementBytes = AppendNullElement(elementBytes, key)
-		case []int32:
+			elementBytes = AppendDocumentElement(elementBytes, key, v)
+		case []byte:
+			elementBytes = AppendDocumentElement(elementBytes, key, v)
+		case []any:
 			var arrayIndex int32
 			arrayIndex, elementBytes = bsoncore.AppendArrayElementStart(elementBytes, key)
-			for n, v := range val {
-				elementBytes = AppendInt32Element(elementBytes, strconv.Itoa(n), v)
+			for n, iv := range v {
+				elementBytes, err = AppendInterfaceElement(elementBytes, strconv.Itoa(n), iv)
+				if err != nil {
+					return nil, err
+				}
 			}
 			elementBytes, err = bsoncore.AppendArrayEnd(elementBytes, arrayIndex)
 			if err != nil {
 				return nil, err
 			}
+		case nil:
+			elementBytes = AppendNullElement(elementBytes, key)
 		default:
-			return nil, fmt.Errorf(errorDictionaryNotSupportedType, key, val)
+			return nil, fmt.Errorf(errorDictionaryNotSupportedType, key, v)
 		}
 	}
 
