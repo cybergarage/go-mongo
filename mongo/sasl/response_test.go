@@ -21,7 +21,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type firstResponse struct {
+type saslResponse struct {
 	ConversationID int    `bson:"conversationId"`
 	Code           int    `bson:"code"`
 	Done           bool   `bson:"done"`
@@ -55,7 +55,8 @@ func TestSASLResponses(t *testing.T) {
 					t.Error(err)
 					return
 				}
-				var saslResp firstResponse
+				var saslResp saslResponse
+				bson.UnmarshalJSON(
 				err = bson.Unmarshal(bsonBytes, &saslResp)
 				if err != nil {
 					t.Errorf("unmarshal error: %s", err)
