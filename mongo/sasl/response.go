@@ -18,7 +18,18 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/message"
 )
 
-func NewServerFirstResponse() (*message.Response, error) {
+// NewServerFirstResponse creates a new server first response.
+func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Response, error) {
 	res := message.NewResponse()
+	finalMsgElements := map[string]any{
+		ConversationId: conversationID,
+		Payload:        payload,
+		Done:           true,
+	}
+	resMsg, err := message.NewResponseWithElements(finalMsgElements)
+	if err != nil {
+		return nil, err
+	}
+	resMsg.SetStatus(true)
 	return res, nil
 }
