@@ -16,7 +16,6 @@ package mongo
 
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
-	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/sasl"
 )
 
@@ -63,8 +62,6 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		return nil, err
 	}
 
-	conn.SetSASLContext(ctx)
-
 	// Response to the client
 
 	mechs := []any{}
@@ -72,25 +69,21 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 		mechs = append(mechs, mech.Name())
 	}
 
-	conversationID := server.saslCounter.Inc()
-	spec := map[string]any{
-		sasl.ConversationId: conversationID,
-		sasl.Payload:        mechRes.Bytes(),
-		sasl.Done:           true,
-	}
+	conversationID := server.SASLConversationCounter.Inc()
 
-	firstMsgElements := map[string]any{
-		sasl.SupportedMechs:           mechs,
-		sasl.SpececulativAuthenticate: spec,
-	}
-
-	resMsg, err := message.NewResponseWithElements(firstMsgElements)
+	resMsg, err := sasl.NewServerFirstResponse(mechs, conversationID, mechRes.Bytes())
 	if err != nil {
 		return nil, err
 	}
-	resMsg.SetStatus(true)
 
-	return resMsg.BSONBytes()
+	resDoc, err := resMsg.BSONBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	conn.SetSASLContext(ctx)
+
+	return resDoc, nil
 }
 
 // ExecuteSaslContinue handles SASLContinue command.
@@ -142,7 +135,7 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 		return nil, err
 	}
 
-	resMsg, err := sasl.NewServerFirstResponse(conversationID, mechRes.Bytes())
+	resMsg, err := sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
 	if err != nil {
 		return nil, err
 	}

@@ -12,36 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongo
+package sasl
 
 import (
-	"math"
+	"github.com/cybergarage/go-sasl/sasl"
 )
 
-// Counter is a counter.
-type Counter struct {
-	count int32
+// Server is a SASL server.
+type Server struct {
+	*sasl.Server
+	SASLConversationCounter *Counter
 }
 
-// NewCounter returns a new counter.
-func NewCounter() *Counter {
-	return &Counter{
-		count: 0,
+// NewServer returns a new server instance.
+func NewServer() *Server {
+	server := &Server{
+		Server:                  sasl.NewServer(),
+		SASLConversationCounter: NewCounter(),
 	}
-}
-
-// NewCounterWith returns a new counter with the specified count.
-func NewCounterWith(count int32) *Counter {
-	return &Counter{
-		count: count,
-	}
-}
-
-// Inc increments the counter and returns the new value.
-func (counter *Counter) Inc() int32 {
-	if counter.count == math.MaxInt32 {
-		counter.count = 0
-	}
-	counter.count++
-	return counter.count
+	return server
 }

@@ -25,7 +25,7 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
-	"github.com/cybergarage/go-sasl/sasl"
+	"github.com/cybergarage/go-mongo/mongo/sasl"
 	"github.com/cybergarage/go-tracing/tracer"
 )
 
@@ -50,7 +50,6 @@ type Server struct {
 	*BaseMessageHandler
 	*BaseCommandExecutor
 	*sasl.Server
-	saslCounter *Counter
 }
 
 // NewServer returns a new server instance.
@@ -70,7 +69,6 @@ func NewServer() *Server {
 		BaseMessageHandler:   NewBaseMessageHandler(),
 		BaseCommandExecutor:  NewBaseCommandExecutor(),
 		Server:               sasl.NewServer(),
-		saslCounter:          NewCounter(),
 	}
 
 	server.SetMessageHandler(server)
