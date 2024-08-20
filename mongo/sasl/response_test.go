@@ -15,8 +15,61 @@
 package sasl
 
 import (
+	"fmt"
 	"testing"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
+type firstResponse struct {
+	ConversationID int    `bson:"conversationId"`
+	Code           int    `bson:"code"`
+	Done           bool   `bson:"done"`
+	Payload        []byte `bson:"payload"`
+}
+
 func TestSASLMessages(t *testing.T) {
+	t.Run("first", func(t *testing.T) {
+
+		tests := []struct {
+			conversationID int32
+			payload        string
+		}{
+			{1, "abc"},
+		}
+
+		for _, test := range tests {
+			t.Run(fmt.Sprintf("%d %s", test.conversationID, test.payload), func(t *testing.T) {
+				res, err := NewServerFirstResponse(test.conversationID, []byte(test.payload))
+				if err != nil {
+					t.Error(err)
+					return
+				}
+				if res == nil {
+					t.Error("NewServerFirstResponse is nil")
+					return
+				}
+				bsonBytes, err := res.BSONBytes()
+				if err != nil {
+					t.Error(err)
+					return
+				}
+				var saslResp firstResponse
+				err = bson.Unmarshal(bsonBytes, &saslResp)
+				if err != nil {
+					t.Errorf("unmarshal error: %s", err)
+					return
+				}
+				if saslResp.ConversationID != int(test.conversationID) {
+					t.Errorf("conversationID error: %d != %d", saslResp.ConversationID, test.conversationID)
+					return
+				}
+				if string(saslResp.Payload) != test.payload {
+					t.Errorf("payload error: %s != %s", string(saslResp.Payload), test.payload)
+					return
+				}
+			})
+		}
+	})
+
 }
