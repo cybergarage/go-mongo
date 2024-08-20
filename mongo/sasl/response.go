@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package message
+package sasl
 
-func NewServerFirstResponse() (*Response, error) {
-	res := NewResponse()
+import (
+	"github.com/cybergarage/go-mongo/mongo/message"
+)
+
+func NewServerFirstResponse() (*message.Response, error) {
+	res := message.NewResponse()
 	return res, nil
 }
