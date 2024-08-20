@@ -17,21 +17,8 @@ package mongo
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
+	monogo_sasl "github.com/cybergarage/go-mongo/mongo/sasl"
 	"github.com/cybergarage/go-sasl/sasl"
-)
-
-const (
-	saslSupportedMechs           = "saslSupportedMechs"
-	saslStart                    = "saslStart"
-	saslMechanism                = "mechanism"
-	saslPayload                  = "payload"
-	saslAutoAuthorize            = "autoAuthorize"
-	saslOptions                  = "options"
-	saslSkipEmptyExchange        = "skipEmptyExchange"
-	saslContinue                 = "saslContinue"
-	saslConversationId           = "conversationId" // nolint:stylecheck
-	saslDone                     = "done"
-	saslSpececulativAuthenticate = "speculativeAuthenticate"
 )
 
 // ExecuteSaslStart handles SASLStart command.
@@ -42,12 +29,12 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 	for _, elem := range cmd.Elements {
 		key := elem.Key()
 		switch key {
-		case saslMechanism:
+		case monogo_sasl.Mechanism:
 			reqMech, ok = elem.Value().StringValueOK()
 			if !ok {
 				return nil, NewErrorCommand(cmd)
 			}
-		case saslPayload:
+		case monogo_sasl.Payload:
 			var t byte
 			t, reqPayload, ok = elem.Value().BinaryOK()
 			if !ok || t != 0 {
@@ -88,14 +75,14 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 
 	conversationID := server.saslCounter.Inc()
 	spec := map[string]any{
-		saslConversationId: conversationID,
-		saslPayload:        mechRes.Bytes(),
-		saslDone:           true,
+		monogo_sasl.ConversationId: conversationID,
+		monogo_sasl.Payload:        mechRes.Bytes(),
+		monogo_sasl.Done:           true,
 	}
 
 	firstMsgElements := map[string]any{
-		saslSupportedMechs:           mechs,
-		saslSpececulativAuthenticate: spec,
+		monogo_sasl.SupportedMechs:           mechs,
+		monogo_sasl.SpececulativAuthenticate: spec,
 	}
 
 	resMsg, err := message.NewResponseWithElements(firstMsgElements)
@@ -120,12 +107,12 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 	for _, elem := range cmd.Elements {
 		key := elem.Key()
 		switch key {
-		case saslConversationId:
+		case monogo_sasl.ConversationId:
 			clientConversationID, ok = elem.Value().Int32OK()
 			if !ok {
 				return nil, NewErrorCommand(cmd)
 			}
-		case saslPayload:
+		case monogo_sasl.Payload:
 			var t byte
 			t, reqPayload, ok = elem.Value().BinaryOK()
 			if !ok || t != 0 {
@@ -136,7 +123,7 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 
 	// Check the conversation ID
 
-	v, ok := ctx.Value(saslConversationId)
+	v, ok := ctx.Value(monogo_sasl.ConversationId)
 	if !ok {
 		return nil, NewErrorCommand(cmd)
 	}
@@ -157,9 +144,9 @@ func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Docume
 	}
 
 	finalMsgElements := map[string]any{
-		saslConversationId: conversationID,
-		saslPayload:        mechRes.Bytes(),
-		saslDone:           true,
+		monogo_sasl.ConversationId: conversationID,
+		monogo_sasl.Payload:        mechRes.Bytes(),
+		monogo_sasl.Done:           true,
 	}
 
 	resMsg, err := message.NewResponseWithElements(finalMsgElements)
