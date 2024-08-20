@@ -40,7 +40,7 @@ func TestSASLMessages(t *testing.T) {
 
 		for _, test := range tests {
 			t.Run(fmt.Sprintf("%d %s", test.conversationID, test.payload), func(t *testing.T) {
-				res, err := NewServerFirstResponse(test.conversationID, []byte(test.payload))
+				res, err := NewServerFinalResponse(test.conversationID, []byte(test.payload))
 				if err != nil {
 					t.Error(err)
 					return
