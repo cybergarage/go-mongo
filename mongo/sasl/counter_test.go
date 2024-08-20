@@ -1,4 +1,4 @@
-// Copyright (C) 2019 The go-mongo Authors. All rights reserved.
+// Copyright (C) 2022 The go-mongo Authors All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,36 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongo
+package sasl
 
 import (
 	"math"
+	"testing"
 )
 
-// Counter is a counter.
-type Counter struct {
-	count int32
-}
-
-// NewCounter returns a new counter.
-func NewCounter() *Counter {
-	return &Counter{
-		count: 0,
+func TestCounter(t *testing.T) {
+	counter := NewCounter()
+	if counter == nil {
+		t.Error("NewCounter() is failed")
 	}
-}
 
-// NewCounterWith returns a new counter with the specified count.
-func NewCounterWith(count int32) *Counter {
-	return &Counter{
-		count: count,
+	if counter.Inc() != 1 {
+		t.Error("Counter.Inc() is failed")
 	}
-}
 
-// Inc increments the counter and returns the new value.
-func (counter *Counter) Inc() int32 {
-	if counter.count == math.MaxInt32 {
-		counter.count = 0
+	if counter.Inc() != 2 {
+		t.Error("Counter.Inc() is failed")
 	}
-	counter.count++
-	return counter.count
+
+	counter = NewCounterWith(math.MaxInt32)
+	if counter.Inc() != 1 {
+		t.Error("Counter.Inc() is failed")
+	}
 }
