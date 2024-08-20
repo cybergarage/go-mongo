@@ -1,4 +1,4 @@
-// Copyright (C) 2019 The go-mongo Authors. All rights reserved.
+// Copyright (C) 2022 The go-mongo Authors All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package message
+package sasl
 
-func NewServerFirstResponse() (*Response, error) {
-	res := NewResponse()
-	return res, nil
+import (
+	"testing"
+)
+
+func TestSASLMessages(t *testing.T) {
 }
