@@ -19,7 +19,28 @@ import (
 )
 
 // NewServerFirstResponse creates a new server first response.
-func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Response, error) {
+func NewServerFirstResponse(mechs []any, conversationID int32, payload []byte) (*message.Response, error) {
+	spec := map[string]any{
+		ConversationId: conversationID,
+		Payload:        payload,
+		Done:           true,
+	}
+
+	firstMsgElements := map[string]any{
+		SupportedMechs:           mechs,
+		SpececulativAuthenticate: spec,
+	}
+
+	resMsg, err := message.NewResponseWithElements(firstMsgElements)
+	if err != nil {
+		return nil, err
+	}
+	resMsg.SetStatus(true)
+	return resMsg, nil
+}
+
+// NewServerFinalResponse creates a new server first response.
+func NewServerFinalResponse(conversationID int32, payload []byte) (*message.Response, error) {
 	res := message.NewResponse()
 	finalMsgElements := map[string]any{
 		ConversationId: conversationID,
