@@ -53,6 +53,12 @@ EXAMPLES_PKGS=\
 EXAMPLE_BINARIES=\
 	${EXAMPLES_DEAMON_ROOT}
 
+BIN_ROOT=cmd
+BIN_PKG_ROOT=${GIT_ROOT}${MODULE_NAME}/${BIN_ROOT}
+BIN_SRC_DIR=${BIN_ROOT}
+BIN_BINARIES=\
+	${BIN_PKG_ROOT}/mongohexdump
+
 TEST_ROOT=${PKG_NAME}test
 TEST_PKG_NAME=${TEST_ROOT}
 TEST_PKG_ROOT=${GIT_ROOT}${MODULE_NAME}/${TEST_PKG_NAME}
@@ -73,14 +79,17 @@ ALL_SRCS=\
 ALL_ROOTS=\
 	${MODULE_ROOT} \
 	${TEST_ROOT} \
-	${EXAMPLES_ROOT}
+	${EXAMPLES_ROOT} \
+	${BIN_ROOT}
 
 ALL_PKGS=\
 	${MODULE_PKGS} \
 	${TEST_PKGS} \
 	${EXAMPLES_PKGS}
 
-BINARIES=${EXAMPLE_BINARIES}
+BINARIES=\
+	${EXAMPLE_BINARIES} \
+	${BIN_BINARIES}
 
 .PHONY: version clean format vet lint
 
@@ -104,7 +113,7 @@ lint: vet
 test: lint
 	go test -v -cover -p=1 ${ALL_PKGS}
 
-install: test
+install:
 	go install -v -gcflags=${GCFLAGS} ${BINARIES}
 
 build: test
