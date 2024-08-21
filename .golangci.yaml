@@ -42,15 +42,15 @@ linters:
     - exhaustive
     - forbidigo
     - depguard
+    - inamedparam
     - musttag
     - unconvert
+    - perfsprint
     - gochecknoinits
     - containedctx
     - asasalint
-    - inamedparam # Deprecated
-    - perfsprint # Deprecated
-    - mnd # Deprecated
-    - err113 # Deprecated
+    - mnd
+    - err113
     - deadcode # Deprecated
     - exhaustivestruct # Deprecated
     - golint # Deprecated
