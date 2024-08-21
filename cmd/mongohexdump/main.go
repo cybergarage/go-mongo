@@ -33,6 +33,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cybergarage/go-mongo/mongo/protocol"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/bsonrw"
 )
@@ -60,11 +61,18 @@ func main() {
 
 	bsonFilename := args[0]
 
-	bsonBytes, err := os.ReadFile(bsonFilename)
+	protocolBytes, err := os.ReadFile(bsonFilename)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
+
+	if len(protocolBytes) <= protocol.HeaderSize {
+		println("Invalid BSON file size")
+		os.Exit(1)
+	}
+
+	bsonBytes := protocolBytes[protocol.HeaderSize:]
 
 	decoder, err := bson.NewDecoder(bsonrw.NewBSONDocumentReader(bsonBytes))
 	if err != nil {
