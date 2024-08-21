@@ -19,7 +19,7 @@ monghexdump is a dump utility for MongoDB packet hexdump file.
 	 monghexdump
 
 	SYNOPSIS
-	 monghexdump FILE
+	 monghexdump <BSON File>
 
 	RETURN VALUE
 	  Return EXIT_SUCCESS or EXIT_FAILURE
@@ -28,8 +28,13 @@ monghexdump is a dump utility for MongoDB packet hexdump file.
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"os"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsonrw"
 )
 
 const (
@@ -38,7 +43,7 @@ const (
 
 func usages() {
 	println("Usage:")
-	println("  " + ProgramName + " [OPTIONS] FILE")
+	println("  " + ProgramName + " FILE")
 	println("")
 	println("Return Value:")
 	println("  Return EXIT_SUCCESS or EXIT_FAILURE")
@@ -53,6 +58,34 @@ func main() {
 		usages()
 	}
 
-	// pcapFilename := args[0]
+	bsonFilename := args[0]
+
+	bsonBytes, err := os.ReadFile(bsonFilename)
+	if err != nil {
+		println(err.Error())
+		os.Exit(1)
+	}
+
+	decoder, err := bson.NewDecoder(bsonrw.NewBSONDocumentReader(bsonBytes))
+	if err != nil {
+		println(err.Error())
+		os.Exit(1)
+	}
+
+	var result bson.M
+	err = decoder.Decode(&result)
+	if err != nil {
+		fmt.Println("Error decoding BSON:", err)
+		return
+	}
+
+	jsonBytes, err := json.MarshalIndent(result, "", "  ")
+	if err != nil {
+		fmt.Println("Error marshalling to JSON:", err)
+		return
+	}
+
+	fmt.Println(string(jsonBytes))
+
 	os.Exit(0)
 }
