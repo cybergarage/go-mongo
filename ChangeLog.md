@@ -5,7 +5,8 @@
 - Add createIndex interface
 - Add authrization interfaces
 
-## v1.2.0 (2024-08-XX)
+## v1.2.0 (2024-08-22)
+- Update SASL authentication interfaces
 - Update protocol.Message and message.Query interface
 - Add a wire protocol utility (wirehexdump)
 
