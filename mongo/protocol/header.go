@@ -110,8 +110,8 @@ func (header *Header) ParseBytes(msg []byte) error {
 	return nil
 }
 
-// GetBodySize returns body size excluding header.
-func (header *Header) GetBodySize() int32 {
+// BodySize returns body size excluding header.
+func (header *Header) BodySize() int32 {
 	return header.messageLength - HeaderSize
 }
 

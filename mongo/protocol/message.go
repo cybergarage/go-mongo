@@ -44,6 +44,8 @@ type Message interface {
 	OpCode() OpCode
 	// Size returns the message size including the header.
 	Size() int32
+	// BodySize returns the message size excluding the header.
+	BodySize() int32
 	// Bytes returns the binary description of BSON format.
 	Bytes() []byte
 	// String returns the string description.
