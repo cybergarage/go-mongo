@@ -26,19 +26,19 @@ const (
 
 // Header represents a standard header of MongoDB wire protocol.
 type Header struct {
-	MessageLength int32  // total message size, including this
-	RequestID     int32  // identifier for this message
-	ResponseTo    int32  // requestID from the original request
-	OpCode        OpCode // request type
+	messageLength int32  // total message size, including this
+	requestID     int32  // identifier for this message
+	responseTo    int32  // requestID from the original request
+	opCode        OpCode // request type
 }
 
 // NewHeader returns a new header instance.
 func NewHeader() *Header {
 	header := &Header{
-		MessageLength: 0,
-		RequestID:     0,
-		ResponseTo:    0,
-		OpCode:        0,
+		messageLength: 0,
+		requestID:     0,
+		responseTo:    0,
+		opCode:        0,
 	}
 	return header
 }
@@ -46,10 +46,10 @@ func NewHeader() *Header {
 // NewHeaderWithOpCode returns a new header instance with the specified opcode.
 func NewHeaderWithOpCode(opcode OpCode) *Header {
 	header := &Header{
-		MessageLength: 0,
-		RequestID:     0,
-		ResponseTo:    0,
-		OpCode:        opcode,
+		messageLength: 0,
+		requestID:     0,
+		responseTo:    0,
+		opCode:        opcode,
 	}
 	return header
 }
@@ -62,37 +62,37 @@ func NewHeaderWithBytes(msg []byte) (*Header, error) {
 
 // SetMessageLength sets a message length.
 func (header *Header) SetMessageLength(l int32) {
-	header.MessageLength = l
+	header.messageLength = l
 }
 
-// GetMessageLength gets the message length.
-func (header *Header) GetMessageLength() int32 {
-	return header.MessageLength
+// MessageLength gets the message length.
+func (header *Header) MessageLength() int32 {
+	return header.messageLength
 }
 
 // SetRequestID sets a message identifier.
 func (header *Header) SetRequestID(id int32) {
-	header.RequestID = id
+	header.requestID = id
 }
 
-// GetRequestID gets the message identifier.
-func (header *Header) GetRequestID() int32 {
-	return header.RequestID
+// RequestID gets the message identifier.
+func (header *Header) RequestID() int32 {
+	return header.requestID
 }
 
 // SetResponseTo sets a response message identifier.
 func (header *Header) SetResponseTo(id int32) {
-	header.ResponseTo = id
+	header.responseTo = id
 }
 
-// GetResponseTo gets the response message identifier.
-func (header *Header) GetResponseTo() int32 {
-	return header.ResponseTo
+// ResponseTo gets the response message identifier.
+func (header *Header) ResponseTo() int32 {
+	return header.responseTo
 }
 
-// GetOpCode returns a response identifier.
-func (header *Header) GetOpCode() OpCode {
-	return header.OpCode
+// OpCode returns a response identifier.
+func (header *Header) OpCode() OpCode {
+	return header.opCode
 }
 
 // ParseBytes parses the specified bytes.
@@ -102,7 +102,7 @@ func (header *Header) ParseBytes(msg []byte) error {
 	}
 
 	var ok bool
-	header.MessageLength, header.RequestID, header.ResponseTo, header.OpCode, _, ok = ReadHeader(msg)
+	header.messageLength, header.requestID, header.responseTo, header.opCode, _, ok = ReadHeader(msg)
 	if !ok {
 		return fmt.Errorf(errorInvalidMessageHeader, hex.EncodeToString(msg[:4]))
 	}
@@ -112,20 +112,20 @@ func (header *Header) ParseBytes(msg []byte) error {
 
 // GetBodySize returns body size excluding header.
 func (header *Header) GetBodySize() int32 {
-	return header.MessageLength - HeaderSize
+	return header.messageLength - HeaderSize
 }
 
 // Bytes returns the binary description.
 func (header *Header) Bytes() []byte {
 	dst := make([]byte, 0)
-	dst = AppendHeader(dst, header.MessageLength, header.RequestID, header.ResponseTo, header.OpCode)
+	dst = AppendHeader(dst, header.messageLength, header.requestID, header.responseTo, header.opCode)
 	return dst
 }
 
 // String returns the string description.
 func (header *Header) String() string {
 	return fmt.Sprintf("%d",
-		header.OpCode)
+		header.opCode)
 }
 
 // ReadHeader reads a wire message header from src.
