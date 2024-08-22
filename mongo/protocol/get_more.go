@@ -16,6 +16,8 @@ package protocol
 
 import (
 	"fmt"
+
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 // GetMore represents a OP_GET_MORE of MongoDB wire protocol.
@@ -60,6 +62,11 @@ func NewGetMoreWithHeaderAndBody(header *Header, body []byte) (*GetMore, error) 
 	}
 
 	return op, nil
+}
+
+// Documents returns the BSON documents.
+func (op *GetMore) Documents() []bson.Document {
+	return []bson.Document{}
 }
 
 // Size returns the message size including the header.

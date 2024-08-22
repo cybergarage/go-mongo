@@ -61,6 +61,11 @@ func NewQuery() *Query {
 	return q
 }
 
+// GetDocuments returns the query conditions.
+func (q *Query) GetDocuments() []bson.Document {
+	return q.Documents
+}
+
 // GetType returns the section type.
 func (q *Query) GetType() string {
 	return q.Type
@@ -91,11 +96,6 @@ func (q *Query) HasConditions() bool {
 		}
 	}
 	return false
-}
-
-// GetDocuments returns the search conditions.
-func (q *Query) GetDocuments() []bson.Document {
-	return q.Documents
 }
 
 // GetOperator returns the operator string.

@@ -45,7 +45,7 @@ type Reply struct {
 	CursorID       int64           // cursor id if client needs to do get more's
 	StartingFrom   int32           // where in the cursor this reply is starting
 	NumberReturned int32           // number of documents in the reply
-	Documents      []bson.Document // documents
+	documents      []bson.Document // documents
 }
 
 // NewReply returns a new reply instance.
@@ -56,7 +56,7 @@ func NewReply() *Reply {
 		CursorID:       0,
 		StartingFrom:   0,
 		NumberReturned: 0,
-		Documents:      make([]bson.Document, 0),
+		documents:      make([]bson.Document, 0),
 	}
 
 	return op
@@ -66,7 +66,7 @@ func NewReply() *Reply {
 func NewReplyWithDocuments(docs []bson.Document) *Reply {
 	op := NewReply()
 	op.NumberReturned = int32(len(docs))
-	op.Documents = docs
+	op.documents = docs
 	op.SetMessageLength(op.Size())
 	return op
 }
@@ -109,7 +109,7 @@ func NewReplyWithHeaderAndBody(header *Header, body []byte) (*Reply, error) {
 		CursorID:       cursorID,
 		StartingFrom:   startingFrom,
 		NumberReturned: numberReturned,
-		Documents:      documents,
+		documents:      documents,
 	}
 
 	return op, nil
@@ -120,10 +120,15 @@ func (op *Reply) SetResponseFlags(flag ReplyFlag) {
 	op.ReplyFlags = flag
 }
 
+// Documents returns the BSON documents.
+func (op *Reply) Documents() []bson.Document {
+	return op.documents
+}
+
 // Size returns the message size including the header.
 func (op *Reply) Size() int32 {
 	bodySize := 4 + 8 + 4 + 4
-	for _, document := range op.Documents {
+	for _, document := range op.documents {
 		bodySize += len(document)
 	}
 	return int32(HeaderSize + bodySize)
@@ -136,7 +141,7 @@ func (op *Reply) Bytes() []byte {
 	dst = AppendInt64(dst, op.CursorID)
 	dst = AppendInt32(dst, op.StartingFrom)
 	dst = AppendInt32(dst, op.NumberReturned)
-	for _, document := range op.Documents {
+	for _, document := range op.documents {
 		dst = AppendDocument(dst, document)
 	}
 	return dst
@@ -152,7 +157,7 @@ func (op *Reply) String() string {
 		op.NumberReturned,
 	)
 
-	for _, document := range op.Documents {
+	for _, document := range op.documents {
 		str += fmt.Sprintf("%s ", document.String())
 	}
 

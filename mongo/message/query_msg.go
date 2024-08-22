@@ -27,11 +27,11 @@ func NewQueryWithMessage(msg *protocol.Msg) (*Query, error) {
 
 // ParseMsg parses the specified OP_MSG.
 func (q *Query) ParseMsg(msg *protocol.Msg) error {
-	err := q.parseBodyDocument(msg.GetBody())
+	err := q.parseBodyDocument(msg.Body())
 	if err != nil {
 		return err
 	}
-	err = q.parseDocuments(msg.GetDocuments())
+	err = q.parseDocuments(msg.Documents())
 	if err != nil {
 		return err
 	}

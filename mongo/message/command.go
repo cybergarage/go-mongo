@@ -83,14 +83,14 @@ func NewCommandWithQuery(q *protocol.Query) (*Command, error) {
 
 // NewCommandWithMsg returns a new command instance with the specified BSON document.
 func NewCommandWithMsg(msg *protocol.Msg) (*Command, error) {
-	cmd, err := NewCommandWithDocument(msg.GetBody())
+	cmd, err := NewCommandWithDocument(msg.Body())
 	if err != nil {
 		return nil, err
 	}
 
 	isAdmin := false
 
-	bodyDoc := msg.GetBody()
+	bodyDoc := msg.Body()
 	dbVal, err := bodyDoc.LookupErr("$db")
 	if err == nil {
 		dbStr, ok := dbVal.StringValueOK()
