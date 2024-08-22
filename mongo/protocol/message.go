@@ -34,14 +34,14 @@ type Message interface {
 	SetRequestID(id int32)
 	// SetResponseTo sets a response message identifier.
 	SetResponseTo(id int32)
-	// GetMessageLength returns the message length.
-	GetMessageLength() int32
-	// GetRequestID returns the message identifier.
-	GetRequestID() int32
-	// GetResponseTo returns the response message identifier.
-	GetResponseTo() int32
-	// GetOpCode returns the operation code.
-	GetOpCode() OpCode
+	// MessageLength returns the message length.
+	MessageLength() int32
+	// RequestID returns the message identifier.
+	RequestID() int32
+	// ResponseTo returns the response message identifier.
+	ResponseTo() int32
+	// OpCode returns the operation code.
+	OpCode() OpCode
 	// Size returns the message size including the header.
 	Size() int32
 	// Bytes returns the binary description of BSON format.
@@ -52,7 +52,7 @@ type Message interface {
 
 // NewMessageWithHeaderAndBytes returns a parsed message of the specified header and body bytes.
 func NewMessageWithHeaderAndBytes(header *Header, body []byte) (Message, error) {
-	switch header.OpCode {
+	switch header.opCode {
 	case OpUpdate:
 		return NewUpdateWithHeaderAndBody(header, body)
 	case OpInsert:
@@ -71,7 +71,7 @@ func NewMessageWithHeaderAndBytes(header *Header, body []byte) (Message, error) 
 		return NewReplyWithHeaderAndBody(header, body)
 	default:
 	}
-	return nil, fmt.Errorf(errorInvalidMessageOpCode, header.OpCode)
+	return nil, fmt.Errorf(errorInvalidMessageOpCode, header.opCode)
 }
 
 // NewMessageWithBytes returns a parsed message of the specified bytes.

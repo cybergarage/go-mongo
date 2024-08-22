@@ -254,7 +254,7 @@ func (server *Server) receive(conn net.Conn, tlsState *tls.ConnectionState) erro
 		if err != nil {
 			// FIXME : Check MongoDB implementation, and update to return a more standard error response
 			badReply, _ := message.NewBadResponse().BSONBytes()
-			switch reqMsg.GetOpCode() {
+			switch reqMsg.OpCode() {
 			case protocol.OpMsg:
 				resMsg = protocol.NewMsgWithBody(badReply)
 			default:
@@ -263,7 +263,7 @@ func (server *Server) receive(conn net.Conn, tlsState *tls.ConnectionState) erro
 		}
 
 		resMsg.SetRequestID(server.nextMessageRequestID())
-		resMsg.SetResponseTo(reqMsg.GetRequestID())
+		resMsg.SetResponseTo(reqMsg.RequestID())
 
 		loopSpan.StartSpan("response")
 		err = server.responseMessage(conn, resMsg)
@@ -352,7 +352,7 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 
 	var err error
 
-	switch reqMsg.GetOpCode() {
+	switch reqMsg.OpCode() {
 	case protocol.OpUpdate:
 		conn.StartSpan("OpUpdate")
 		defer conn.FinishSpan()
@@ -389,7 +389,7 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 		msg, _ := reqMsg.(*OpMsg)
 		resDoc, err = server.MessageHandler.OpMsg(conn, msg)
 	default:
-		err = fmt.Errorf(errorMessageHandeUnknownOpCode, reqMsg.GetOpCode())
+		err = fmt.Errorf(errorMessageHandeUnknownOpCode, reqMsg.OpCode())
 	}
 
 	if err != nil {
@@ -398,7 +398,7 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 
 	var resMsg protocol.Message
 
-	switch reqMsg.GetOpCode() {
+	switch reqMsg.OpCode() {
 	case protocol.OpMsg:
 		resMsg = protocol.NewMsgWithBody(resDoc)
 	case protocol.OpQuery:

@@ -28,7 +28,7 @@ type BaseMessageHandler struct {
 }
 
 func newBaseMessageHandlerNotImplementedError(msg OpMessage) error {
-	return fmt.Errorf(errorMessageHanderNotSupported, msg.GetOpCode())
+	return fmt.Errorf(errorMessageHanderNotSupported, msg.OpCode())
 }
 
 // NewBaseMessageHandler returns a complete null handler for MessageHandler.
