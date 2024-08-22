@@ -28,14 +28,11 @@ monghexdump is a dump utility for MongoDB packet hexdump file.
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/cybergarage/go-mongo/mongo/protocol"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/bsonrw"
 )
 
 const (
@@ -67,33 +64,39 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(protocolBytes) <= protocol.HeaderSize {
-		println("Invalid BSON file size")
-		os.Exit(1)
-	}
-
-	bsonBytes := protocolBytes[protocol.HeaderSize:]
-
-	decoder, err := bson.NewDecoder(bsonrw.NewBSONDocumentReader(bsonBytes))
+	header, err := protocol.NewHeaderWithBytes(protocolBytes)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 
-	var result bson.M
-	err = decoder.Decode(&result)
+	msgBytes := protocolBytes[protocol.HeaderSize:]
+	_, err = protocol.NewMessageWithHeaderAndBytes(header, msgBytes)
 	if err != nil {
-		fmt.Println("Error decoding BSON:", err)
-		return
+		log.Fatalf(err.Error())
+		println(err.Error())
 	}
 
-	jsonBytes, err := json.MarshalIndent(result, "", "  ")
-	if err != nil {
-		fmt.Println("Error marshalling to JSON:", err)
-		return
-	}
+	// decoder, err := bson.NewDecoder(bsonrw.NewBSONDocumentReader(bsonBytes))
+	// if err != nil {
+	// 	println(err.Error())
+	// 	os.Exit(1)
+	// }
 
-	fmt.Println(string(jsonBytes))
+	// var result bson.M
+	// err = decoder.Decode(&result)
+	// if err != nil {
+	// 	fmt.Println("Error decoding BSON:", err)
+	// 	return
+	// }
+
+	// jsonBytes, err := json.MarshalIndent(result, "", "  ")
+	// if err != nil {
+	// 	fmt.Println("Error marshalling to JSON:", err)
+	// 	return
+	// }
+
+	// fmt.Println(string(jsonBytes))
 
 	os.Exit(0)
 }
