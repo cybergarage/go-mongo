@@ -1,9 +1,13 @@
 # Changelog
 
-## v1.2.x (2023-xx-xx)
+## v1.3.x (2023-xx-xx)
 - Update executor interfaces for major MongoDB commands
 - Add createIndex interface
 - Add authrization interfaces
+
+## v1.2.0 (2024-08-XX)
+- Update protocol.Message and message.Query interface
+- Add a wire protocol utility (wirehexdump)
 
 ## v1.1.4 (2024-06-29)
 - Added connection manager
