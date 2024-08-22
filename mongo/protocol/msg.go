@@ -41,9 +41,9 @@ type SectionType = wiremessage.SectionType
 type Msg struct {
 	*Header                   // A standard wire protocol header
 	FlagBits    MsgFlag       // message flags
-	Body        bson.Document // Body
-	DocumentIDs []string
-	Documents   []bson.Document // Document Sequence
+	body        bson.Document // Body
+	documentIDs []string
+	documents   []bson.Document // Document Sequence
 	Checksum    uint32          // optional CRC-32C checksum
 }
 
@@ -52,9 +52,9 @@ func NewMsg() *Msg {
 	op := &Msg{
 		Header:      NewHeaderWithOpCode(OpMsg),
 		FlagBits:    0,
-		Body:        nil,
-		DocumentIDs: make([]string, 0),
-		Documents:   make([]bson.Document, 0),
+		body:        nil,
+		documentIDs: make([]string, 0),
+		documents:   make([]bson.Document, 0),
 		Checksum:    0,
 	}
 	op.SetMessageLength(op.Size())
@@ -64,7 +64,7 @@ func NewMsg() *Msg {
 // NewMsgWithBody returns a new msg instance with the specified body document.
 func NewMsgWithBody(body bson.Document) *Msg {
 	op := NewMsg()
-	op.Body = body
+	op.body = body
 	op.SetMessageLength(op.Size())
 	return op
 }
@@ -118,9 +118,9 @@ func NewMsgWithHeaderAndBody(header *Header, body []byte) (*Msg, error) {
 	op := &Msg{
 		Header:      header,
 		FlagBits:    MsgFlag(flagBits),
-		Body:        docBody,
-		DocumentIDs: documentIDs,
-		Documents:   documents,
+		body:        docBody,
+		documentIDs: documentIDs,
+		documents:   documents,
 		Checksum:    checksum,
 	}
 
@@ -129,40 +129,40 @@ func NewMsgWithHeaderAndBody(header *Header, body []byte) (*Msg, error) {
 
 // SetBody sets the specified body.
 func (op *Msg) SetBody(doc bson.Document) {
-	op.Body = doc
+	op.body = doc
 	op.SetMessageLength(op.Size())
 }
 
 // AddDocument adds a document with the ID.
 func (op *Msg) AddDocument(docID string, doc bson.Document) {
-	op.DocumentIDs = append(op.DocumentIDs, docID)
-	op.Documents = append(op.Documents, doc)
+	op.documentIDs = append(op.documentIDs, docID)
+	op.documents = append(op.documents, doc)
 }
 
 // AddDocuments adds documents with the IDs.
 func (op *Msg) AddDocuments(docIDs []string, docs []bson.Document) {
-	op.DocumentIDs = append(op.DocumentIDs, docIDs...)
-	op.Documents = append(op.Documents, docs...)
+	op.documentIDs = append(op.documentIDs, docIDs...)
+	op.documents = append(op.documents, docs...)
 }
 
-// GetBody returns the body document.
-func (op *Msg) GetBody() bson.Document {
-	return op.Body
+// Body returns the body document.
+func (op *Msg) Body() bson.Document {
+	return op.body
 }
 
-// GetDocuments returns the sequence documents.
-func (op *Msg) GetDocuments() []bson.Document {
-	return op.Documents
+// Documents returns the sequence documents.
+func (op *Msg) Documents() []bson.Document {
+	return op.documents
 }
 
 // Size returns the message size including the header.
 func (op *Msg) Size() int32 {
 	bodySize := 4
-	if op.Body != nil {
-		bodySize += 1 + len(op.Body)
+	if op.body != nil {
+		bodySize += 1 + len(op.body)
 	}
-	for n, doc := range op.Documents {
-		bodySize += 1 + (len(op.DocumentIDs[n]) + 1) + len(doc)
+	for n, doc := range op.documents {
+		bodySize += 1 + (len(op.documentIDs[n]) + 1) + len(doc)
 	}
 	if (op.FlagBits & checksumPresent) != 0 {
 		bodySize += 4
@@ -174,13 +174,13 @@ func (op *Msg) Size() int32 {
 func (op *Msg) Bytes() []byte {
 	dst := op.Header.Bytes()
 	dst = AppendInt32(dst, int32(op.FlagBits))
-	if op.Body != nil {
+	if op.body != nil {
 		dst = AppendByte(dst, byte(sectionTypeBody))
-		dst = AppendDocument(dst, op.Body)
+		dst = AppendDocument(dst, op.body)
 	}
-	for n, doc := range op.Documents {
+	for n, doc := range op.documents {
 		dst = AppendByte(dst, byte(sectionTypeDocumentSequence))
-		dst = AppendCString(dst, op.DocumentIDs[n])
+		dst = AppendCString(dst, op.documentIDs[n])
 		dst = AppendDocument(dst, doc)
 	}
 	// if (op.FlagBits & checksumPresent) != 0 {
@@ -196,11 +196,11 @@ func (op *Msg) String() string {
 		op.FlagBits,
 	)
 
-	if op.Body != nil {
-		str += fmt.Sprintf("%s ", op.Body.String())
+	if op.body != nil {
+		str += fmt.Sprintf("%s ", op.body.String())
 	}
-	for n, doc := range op.Documents {
-		str += fmt.Sprintf("%s : %s ", op.DocumentIDs[n], doc.String())
+	for n, doc := range op.documents {
+		str += fmt.Sprintf("%s : %s ", op.documentIDs[n], doc.String())
 	}
 
 	if (op.FlagBits & checksumPresent) != 0 {

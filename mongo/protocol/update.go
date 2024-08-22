@@ -71,6 +71,11 @@ func NewUpdateWithHeaderAndBody(header *Header, body []byte) (*Update, error) {
 	return op, nil
 }
 
+// Documents returns the BSON documents.
+func (op *Update) Documents() []bson.Document {
+	return []bson.Document{op.Selector, op.Update}
+}
+
 // Size returns the message size including the header.
 func (op *Update) Size() int32 {
 	bodySize := 4 + (len(op.FullCollectionName) + 1) + 4 + len(op.Selector) + len(op.Update)

@@ -57,6 +57,11 @@ func NewInsertWithHeaderAndBody(header *Header, body []byte) (*Insert, error) {
 	return op, nil
 }
 
+// Documents returns the BSON documents.
+func (op *Insert) Documents() []bson.Document {
+	return []bson.Document{op.Document}
+}
+
 // Size returns the message size including the header.
 func (op *Insert) Size() int32 {
 	bodySize := 4 + (len(op.FullCollectionName) + 1) + len(op.Document)

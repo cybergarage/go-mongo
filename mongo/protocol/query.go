@@ -86,6 +86,11 @@ func (op *Query) GetQuery() bson.Document {
 	return op.Query
 }
 
+// Documents returns the BSON documents.
+func (op *Query) Documents() []bson.Document {
+	return []bson.Document{op.Query}
+}
+
 // Size returns the message size including the header.
 func (op *Query) Size() int32 {
 	bodySize := 4 + (len(op.FullCollectionName) + 1) + 4 + 4 + len(op.Query)

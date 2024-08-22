@@ -16,6 +16,8 @@ package protocol
 
 import (
 	"fmt"
+
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 // Message represents a message of MongoDB Wire
@@ -46,6 +48,8 @@ type Message interface {
 	Size() int32
 	// BodySize returns the message size excluding the header.
 	BodySize() int32
+	// Documents returns the BSON documents.
+	Documents() []bson.Document
 	// Bytes returns the binary description of BSON format.
 	Bytes() []byte
 	// String returns the string description.

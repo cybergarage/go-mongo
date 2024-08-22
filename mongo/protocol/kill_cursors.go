@@ -16,6 +16,8 @@ package protocol
 
 import (
 	"fmt"
+
+	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
 // KillCursors represents a OP_KILL_CURSORS of MongoDB wire protocol.
@@ -53,6 +55,11 @@ func NewKillCursorsWithHeaderAndBody(header *Header, body []byte) (*KillCursors,
 	}
 
 	return op, nil
+}
+
+// Documents returns the BSON documents.
+func (op *KillCursors) Documents() []bson.Document {
+	return []bson.Document{}
 }
 
 // Size returns the message size including the header.

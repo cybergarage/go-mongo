@@ -64,6 +64,11 @@ func NewDeleteWithHeaderAndBody(header *Header, body []byte) (*Delete, error) {
 	return op, nil
 }
 
+// Documents returns the BSON documents.
+func (op *Delete) Documents() []bson.Document {
+	return []bson.Document{op.Selector}
+}
+
 // Size returns the message size including the header.
 func (op *Delete) Size() int32 {
 	bodySize := 4 + (len(op.FullCollectionName) + 1) + 4 + len(op.Selector)
