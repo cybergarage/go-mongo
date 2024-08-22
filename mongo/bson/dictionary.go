@@ -172,6 +172,8 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 				return nil, err
 			}
 			elementBytes = AppendDocumentElement(elementBytes, key, dictBytes)
+		case Document:
+			elementBytes = AppendDocumentElement(elementBytes, key, v)
 		case nil:
 			elementBytes = AppendNullElement(elementBytes, key)
 		default:
