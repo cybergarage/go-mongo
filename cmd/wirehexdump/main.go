@@ -80,6 +80,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	fmt.Printf("Header : %s\n", header.String())
+
 	for _, doc := range msg.Documents() {
 		decoder, err := bson.NewDecoder(bsonrw.NewBSONDocumentReader(doc))
 		if err != nil {
