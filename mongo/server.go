@@ -317,7 +317,7 @@ func (server *Server) readMessage(conn net.Conn) (protocol.Message, error) {
 		return nil, err
 	}
 
-	bodyBytes := make([]byte, header.GetBodySize())
+	bodyBytes := make([]byte, header.BodySize())
 	_, err = conn.Read(bodyBytes)
 	if err != nil {
 		log.Fatalf(err.Error())
