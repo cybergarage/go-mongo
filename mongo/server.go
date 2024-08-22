@@ -400,7 +400,18 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 
 	switch reqMsg.OpCode() {
 	case protocol.OpMsg:
-		resMsg = protocol.NewMsgWithBody(resDoc)
+		msg, _ := reqMsg.(*OpMsg)
+		q, err := message.NewQueryWithMessage(msg)
+		if err != nil {
+			return nil, err
+		}
+		queryType := q.Type()
+		switch queryType {
+		case message.Insert, message.Delete, message.Update, message.Find, message.KillCursors:
+			resMsg = protocol.NewMsgWithBody(resDoc)
+		default:
+			resMsg = protocol.NewReplyWithDocuments(resDocs)
+		}
 	case protocol.OpQuery:
 		replyMsg := protocol.NewReplyWithDocument(resDoc)
 		replyMsg.SetResponseFlags(protocol.AwaitCapable)
