@@ -124,7 +124,10 @@ func (header *Header) Bytes() []byte {
 
 // String returns the string description.
 func (header *Header) String() string {
-	return fmt.Sprintf("%d",
+	return fmt.Sprintf("%d %d %d %d",
+		header.messageLength,
+		header.requestID,
+		header.responseTo,
 		header.opCode)
 }
 
