@@ -45,7 +45,7 @@ const (
 type Command struct {
 	IsAdmin  bool
 	Elements []bson.Element
-	Type     string
+	typ      string
 }
 
 // NewCommandWithDocument returns a new command instance with the specified BSON document.
@@ -64,7 +64,7 @@ func NewCommandWithDocument(doc bson.Document) (*Command, error) {
 	cmd := &Command{
 		IsAdmin:  false,
 		Elements: elements,
-		Type:     cmdType,
+		typ:      cmdType,
 	}
 	return cmd, nil
 }
@@ -111,14 +111,14 @@ func (cmd *Command) IsAdminCommand() bool {
 	return cmd.IsAdmin
 }
 
-// GetType returns a string type.
-func (cmd *Command) GetType() string {
-	return cmd.Type
+// Type returns a string type.
+func (cmd *Command) Type() string {
+	return cmd.typ
 }
 
 // IsType returns true when the command has the specified element, otherwise false.
 func (cmd *Command) IsType(typeString string) bool {
-	return cmd.Type == typeString
+	return cmd.typ == typeString
 }
 
 // String returns the string description.

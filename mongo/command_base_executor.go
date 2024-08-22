@@ -75,7 +75,7 @@ func (executor *BaseCommandExecutor) ExecuteCommand(conn *Conn, cmd *Command) (b
 		return resDoc, nil
 	}
 
-	switch cmd.GetType() {
+	switch cmd.Type() {
 	case message.IsMaster:
 		return executor.DatabaseCommandExecutor.ExecuteIsMaster(conn, cmd)
 	case message.BuildInfo:

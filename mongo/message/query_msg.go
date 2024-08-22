@@ -48,15 +48,15 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 		key := element.Key()
 		switch key {
 		case Insert, Delete, Update, Find, KillCursors:
-			q.Type = key
+			q.typ = key
 			col, ok := element.Value().StringValueOK()
 			if ok {
-				q.Collection = col
+				q.collection = col
 			}
 		case DB:
 			db, ok := element.Value().StringValueOK()
 			if ok {
-				q.Database = db
+				q.database = db
 			}
 		case Documents:
 			docs, ok := element.Value().ArrayOK()
@@ -68,14 +68,14 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 				for _, val := range vals {
 					doc, ok := val.DocumentOK()
 					if ok {
-						q.Documents = append(q.Documents, doc)
+						q.documents = append(q.documents, doc)
 					}
 				}
 			}
 		case Filter:
 			doc, ok := element.Value().DocumentOK()
 			if ok {
-				q.Conditions = append(q.Conditions, doc)
+				q.conditions = append(q.conditions, doc)
 			}
 		}
 	}
@@ -85,16 +85,16 @@ func (q *Query) parseBodyDocument(doc bson.Document) error {
 
 // parseDocuments parses the specified BSON document.
 func (q *Query) parseDocuments(docs []bson.Document) error {
-	switch q.Type {
+	switch q.typ {
 	case Insert:
-		q.Documents = append(q.Documents, docs...)
+		q.documents = append(q.documents, docs...)
 	case Delete:
 		for _, doc := range docs {
 			condElem, err := doc.LookupErr("q")
 			if err == nil {
 				cond, ok := condElem.DocumentOK()
 				if ok {
-					q.Conditions = append(q.Conditions, cond)
+					q.conditions = append(q.conditions, cond)
 				}
 			}
 
@@ -102,7 +102,7 @@ func (q *Query) parseDocuments(docs []bson.Document) error {
 			if err == nil {
 				limit, ok := limitElem.Int32OK()
 				if ok {
-					q.Limit = int(limit)
+					q.limit = int(limit)
 				}
 			}
 		}
@@ -136,9 +136,9 @@ func (q *Query) parseDocuments(docs []bson.Document) error {
 			if !ok {
 				continue
 			}
-			q.Operator = ope.Key()
-			q.Conditions = append(q.Conditions, cond)
-			q.Documents = append(q.Documents, opeDoc)
+			q.operator = ope.Key()
+			q.conditions = append(q.conditions, cond)
+			q.documents = append(q.documents, opeDoc)
 		}
 	}
 	return nil
