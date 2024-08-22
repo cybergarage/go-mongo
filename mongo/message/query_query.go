@@ -40,10 +40,10 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 		val := element.Value()
 		switch key {
 		case Insert, Delete, Update, Find:
-			q.Type = key
+			q.typ = key
 			col, ok := val.StringValueOK()
 			if ok {
-				q.Collection = col
+				q.collection = col
 			}
 		case Documents:
 			switch val.Type {
@@ -55,7 +55,7 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 						for _, docElem := range docsElems {
 							doc, ok := docElem.DocumentOK()
 							if ok {
-								q.Documents = append(q.Documents, doc)
+								q.documents = append(q.documents, doc)
 							}
 						}
 					}
@@ -63,7 +63,7 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 			case bsontype.EmbeddedDocument:
 				doc, ok := val.DocumentOK()
 				if ok {
-					q.Documents = append(q.Documents, doc)
+					q.documents = append(q.documents, doc)
 				}
 			}
 		case Filter:
@@ -76,7 +76,7 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 						for _, condElem := range condsElems {
 							cond, ok := condElem.DocumentOK()
 							if ok {
-								q.Conditions = append(q.Conditions, cond)
+								q.conditions = append(q.conditions, cond)
 							}
 						}
 					}
@@ -84,7 +84,7 @@ func (q *Query) ParseQuery(msg *protocol.Query) error {
 			case bsontype.EmbeddedDocument:
 				cond, ok := val.DocumentOK()
 				if ok {
-					q.Conditions = append(q.Conditions, cond)
+					q.conditions = append(q.conditions, cond)
 				}
 			}
 		}

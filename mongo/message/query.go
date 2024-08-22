@@ -38,55 +38,65 @@ const (
 
 // Query represents a message query.
 type Query struct {
-	Database   string
-	Collection string
-	Type       string
-	Conditions []bson.Document
-	Documents  []bson.Document
-	Operator   string
-	Limit      int
+	database   string
+	collection string
+	typ        string
+	conditions []bson.Document
+	documents  []bson.Document
+	operator   string
+	limit      int
 }
 
 // NewQuery returns a new query.
 func NewQuery() *Query {
 	q := &Query{
-		Database:   "",
-		Collection: "",
-		Type:       "",
-		Conditions: make([]bson.Document, 0),
-		Documents:  make([]bson.Document, 0),
-		Operator:   "",
-		Limit:      0,
+		database:   "",
+		collection: "",
+		typ:        "",
+		conditions: make([]bson.Document, 0),
+		documents:  make([]bson.Document, 0),
+		operator:   "",
+		limit:      0,
 	}
 	return q
 }
 
-// GetDocuments returns the query conditions.
-func (q *Query) GetDocuments() []bson.Document {
-	return q.Documents
+// Database returns the database name.
+func (q *Query) Database() string {
+	return q.database
 }
 
-// GetType returns the section type.
-func (q *Query) GetType() string {
-	return q.Type
+// Collection returns the collection name.
+func (q *Query) Collection() string {
+	return q.collection
 }
 
-// GetFullCollectionName returns the full collection name.
-func (q *Query) GetFullCollectionName() string {
-	return fmt.Sprintf("%s.%s", q.Database, q.Collection)
+// Documents returns the query documents.
+func (q *Query) Documents() []bson.Document {
+	return q.documents
 }
 
-// GetConditions returns the search conditions.
-func (q *Query) GetConditions() []bson.Document {
-	return q.Conditions
+// Type returns the query type.
+func (q *Query) Type() string {
+	return q.typ
+}
+
+// FullCollectionName returns the full collection name.
+func (q *Query) FullCollectionName() string {
+	return fmt.Sprintf("%s.%s", q.database, q.collection)
+}
+
+// Conditions returns the search conditions.
+func (q *Query) Conditions() []bson.Document {
+	return q.conditions
 }
 
 // HasConditions returns true if the query has conditions.
 func (q *Query) HasConditions() bool {
-	if len(q.Conditions) == 0 {
+	if len(q.conditions) == 0 {
 		return false
 	}
-	for _, cond := range q.GetConditions() {
+	for _, cond := range q.conditions {
 		condElems, err := cond.Elements()
 		if err != nil {
 			return false
@@ -98,12 +108,12 @@ func (q *Query) HasConditions() bool {
 	return false
 }
 
-// GetOperator returns the operator string.
-func (q *Query) GetOperator() string {
-	return q.Operator
+// Operator returns the operator string.
+func (q *Query) Operator() string {
+	return q.operator
 }
 
-// GetLimit returns the limit value.
-func (q *Query) GetLimit() int {
-	return q.Limit
+// Limit returns the limit value.
+func (q *Query) Limit() int {
+	return q.limit
 }

@@ -65,7 +65,7 @@ func (server *Server) MessageRespond(msg mongo.OpMessage) {
 func (server *Server) Insert(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	nInserted := int32(0)
 
-	docs := q.GetDocuments()
+	docs := q.Documents()
 	for _, doc := range docs {
 		// See : The _id Field - Documents (https://docs.mongodb.com/manual/core/document/)
 		docValue, err := doc.LookupErr("_id")
@@ -106,7 +106,7 @@ func (server *Server) Find(conn *mongo.Conn, q *mongo.Query) ([]bson.Document, e
 
 	for _, doc := range server.documents {
 		isMatched := true
-		for _, cond := range q.GetConditions() {
+		for _, cond := range q.Conditions() {
 			condElems, err := cond.Elements()
 			if err != nil {
 				return nil, mongo.NewQueryError(q)
@@ -139,8 +139,8 @@ func (server *Server) Find(conn *mongo.Conn, q *mongo.Query) ([]bson.Document, e
 func (server *Server) Update(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	nUpdated := 0
 
-	queryDocs := q.GetDocuments()
-	queryConds := q.GetConditions()
+	queryDocs := q.Documents()
+	queryConds := q.Conditions()
 	if len(queryConds) == 0 {
 		return 0, nil
 	}
@@ -148,7 +148,7 @@ func (server *Server) Update(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	for n := (len(server.documents) - 1); 0 <= n; n-- {
 		serverDoc := server.documents[n]
 		isMatched := true
-		for _, cond := range q.GetConditions() {
+		for _, cond := range q.Conditions() {
 			condElems, err := cond.Elements()
 			if err != nil {
 				return 0, mongo.NewQueryError(q)
@@ -215,7 +215,7 @@ func (server *Server) Update(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 func (server *Server) Delete(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	nDeleted := 0
 
-	queryConds := q.GetConditions()
+	queryConds := q.Conditions()
 	if len(queryConds) == 0 {
 		nDeleted := len(server.documents)
 		server.documents = make([]bson.Document, 0)
@@ -225,7 +225,7 @@ func (server *Server) Delete(conn *mongo.Conn, q *mongo.Query) (int32, error) {
 	for n := (len(server.documents) - 1); 0 <= n; n-- {
 		serverDoc := server.documents[n]
 		isMatched := true
-		for _, cond := range q.GetConditions() {
+		for _, cond := range q.Conditions() {
 			condElems, err := cond.Elements()
 			if err != nil {
 				return 0, mongo.NewQueryError(q)

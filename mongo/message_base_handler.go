@@ -70,7 +70,7 @@ func (handler *BaseMessageHandler) OpQuery(conn *Conn, msg *OpQuery) (bson.Docum
 		return nil, err
 	}
 
-	cmdType := cmd.GetType()
+	cmdType := cmd.Type()
 	conn.StartSpan(cmdType)
 	defer conn.FinishSpan()
 
@@ -131,7 +131,7 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 
 	res := message.NewResponse()
 
-	queryType := q.GetType()
+	queryType := q.Type()
 	switch queryType {
 	// For user database commands over OP_MSG from MongoDB v3.6
 	case message.Insert, message.Delete, message.Update, message.Find:
@@ -170,7 +170,7 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 
 // executeQuery executes user database commands (insert, update, find and delete) over OP_MSG and OP_QUERY.
 func (handler *BaseMessageHandler) executeQuery(conn *Conn, q *message.Query, res *message.Response) error {
-	switch q.GetType() {
+	switch q.Type() {
 	case message.Insert:
 		n, err := handler.MessageExecutor.Insert(conn, q)
 		res.SetErrorStatus(err)
@@ -187,7 +187,7 @@ func (handler *BaseMessageHandler) executeQuery(conn *Conn, q *message.Query, re
 	case message.Find:
 		docs, err := handler.MessageExecutor.Find(conn, q)
 		res.SetErrorStatus(err)
-		res.SetCursorDocuments(q.GetFullCollectionName(), docs)
+		res.SetCursorDocuments(q.FullCollectionName(), docs)
 	default:
 		res.SetStatus(false)
 	}
