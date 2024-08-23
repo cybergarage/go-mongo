@@ -67,20 +67,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	header, err := protocol.NewHeaderWithBytes(protocolBytes)
+	msg, err := protocol.NewMessageWithBytes(protocolBytes)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
 
-	msgBytes := protocolBytes[protocol.HeaderSize:]
-	msg, err := protocol.NewMessageWithHeaderAndBytes(header, msgBytes)
-	if err != nil {
-		println(err.Error())
-		os.Exit(1)
-	}
-
-	fmt.Printf("Header : %s\n", header.String())
+	fmt.Printf("Header : %d %d %d %d\n",
+		msg.MessageLength(),
+		msg.RequestID(),
+		msg.ResponseTo(),
+		msg.OpCode(),
+	)
 
 	for _, doc := range msg.Documents() {
 		decoder, err := bson.NewDecoder(bsonrw.NewBSONDocumentReader(doc))
