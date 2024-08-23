@@ -23,7 +23,7 @@ func NewServerFirstResponse(mechs []any, conversationID int32, payload []byte) (
 	spec := map[string]any{
 		ConversationId: conversationID,
 		Payload:        payload,
-		Done:           true,
+		Done:           false,
 	}
 
 	firstMsgElements := map[string]any{
