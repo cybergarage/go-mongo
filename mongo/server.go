@@ -344,7 +344,6 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 	// MessageHandler
 
 	var resDoc bson.Document
-	var resDocs []bson.Document
 
 	if server.MessageHandler == nil {
 		return nil, fmt.Errorf(errorMessageHanderNotImplemented)
@@ -396,8 +395,9 @@ func (server *Server) handleMessage(conn *Conn, reqMsg protocol.Message) (protoc
 		return nil, err
 	}
 
-	var resMsg protocol.Message
+	resDocs := []bson.Document{resDoc}
 
+	var resMsg protocol.Message
 	switch reqMsg.OpCode() {
 	case protocol.OpMsg:
 		msg, _ := reqMsg.(*OpMsg)
