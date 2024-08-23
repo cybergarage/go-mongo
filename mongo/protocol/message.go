@@ -86,5 +86,5 @@ func NewMessageWithBytes(msg []byte) (Message, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewMessageWithHeaderAndBytes(header, msg[:HeaderSize])
+	return NewMessageWithHeaderAndBytes(header, msg[HeaderSize:])
 }
