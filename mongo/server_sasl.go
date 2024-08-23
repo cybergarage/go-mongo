@@ -64,13 +64,8 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 
 	// Response to the client
 
-	mechs := []any{}
-	for _, mech := range server.Mechanisms() {
-		mechs = append(mechs, mech.Name())
-	}
-
+	mechs := []any{mech.Name()}
 	conversationID := server.SASLConversationCounter.Inc()
-
 	resMsg, err := sasl.NewServerFirstResponse(mechs, conversationID, mechRes.Bytes())
 	if err != nil {
 		return nil, err
