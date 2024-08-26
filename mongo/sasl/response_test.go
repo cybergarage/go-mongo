@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	util "github.com/cybergarage/go-mongo/mongo/bson"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -61,12 +62,20 @@ func TestSASLResponses(t *testing.T) {
 					t.Errorf("unmarshal error: %s", err)
 					return
 				}
-				if saslResp.ConversationID != int(test.conversationID) {
-					t.Errorf("conversationID error: %d != %d", saslResp.ConversationID, test.conversationID)
+				if string(saslResp.Payload) != test.payload {
+					if json, err := util.DocumentToJSONString(bsonBytes); err == nil {
+						t.Logf("\n%s", json)
+						t.Logf("\n%v", saslResp)
+					}
+					t.Errorf("payload error: %s != %s", string(saslResp.Payload), test.payload)
 					return
 				}
-				if string(saslResp.Payload) != test.payload {
-					t.Errorf("payload error: %s != %s", string(saslResp.Payload), test.payload)
+				if saslResp.ConversationID != int(test.conversationID) {
+					t.Errorf("conversationID error: %d != %d", saslResp.ConversationID, test.conversationID)
+					if json, err := util.DocumentToJSONString(bsonBytes); err == nil {
+						t.Logf("\n%s", json)
+						t.Logf("\n%v", saslResp)
+					}
 					return
 				}
 			})
