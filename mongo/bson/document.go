@@ -16,7 +16,10 @@ package bson
 
 import (
 	"bytes"
+	"encoding/json"
 
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsonrw"
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 )
 
@@ -31,6 +34,27 @@ func NewDocument() Document {
 // NewDocumentWithBytes returns a document with the specified bytes.
 func NewDocumentWithBytes(src []byte) (Document, error) {
 	return bsoncore.NewDocumentFromReader(bytes.NewReader(src))
+}
+
+// DocumentToJSONString returns the JSON string of the document.
+func DocumentToJSONString(doc Document) (string, error) {
+	decoder, err := bson.NewDecoder(bsonrw.NewBSONDocumentReader(doc))
+	if err != nil {
+		return "", err
+	}
+
+	var result bson.M
+	err = decoder.Decode(&result)
+	if err != nil {
+		return "", err
+	}
+
+	jsonBytes, err := json.MarshalIndent(result, "", "  ")
+	if err != nil {
+		return "", err
+	}
+
+	return string(jsonBytes), nil
 }
 
 // AppendDocumentEnd appends the end of the document.
