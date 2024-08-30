@@ -17,18 +17,15 @@ package mongo
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/sasl"
+	gosasl "github.com/cybergarage/go-sasl/sasl"
 )
 
 // MongoDB : Authentication
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
 
 // SASLSupportedMechs returns the supported SASL mechanisms.
-func (server *Server) SASLSupportedMechs(*Conn, string) ([]string, error) {
-	mechs := []string{}
-	for _, mech := range server.Mechanisms() {
-		mechs = append(mechs, mech.Name())
-	}
-	return mechs, nil
+func (server *Server) SASLSupportedMechs(*Conn, string) ([]gosasl.Mechanism, error) {
+	return server.Mechanisms(), nil
 }
 
 // SASLStart handles SASLStart command.
