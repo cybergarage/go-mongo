@@ -17,14 +17,13 @@ package mongo
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/sasl"
-	gosasl "github.com/cybergarage/go-sasl/sasl"
 )
 
 // MongoDB : Authentication
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
 
 // SASLSupportedMechs returns the supported SASL mechanisms.
-func (server *Server) SASLSupportedMechs(*Conn, string) ([]gosasl.Mechanism, error) {
+func (server *Server) SASLSupportedMechs(*Conn, string) ([]sasl.SASLMechanism, error) {
 	return server.Mechanisms(), nil
 }
 
@@ -57,7 +56,7 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 
 	// Start the SASL context
 
-	opts := []sasl.Option{
+	opts := []sasl.SASLOption{
 		server.Authenticators(),
 	}
 
@@ -66,7 +65,7 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 		return nil, err
 	}
 
-	mechRes, err := ctx.Next(sasl.PayloadOption(reqPayload))
+	mechRes, err := ctx.Next(sasl.SASLPayload(reqPayload))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +133,7 @@ func (server *Server) SASLContinue(conn *Conn, cmd *Command) (bson.Document, err
 
 	// Response to the client
 
-	mechRes, err := ctx.Next(sasl.PayloadOption(reqPayload))
+	mechRes, err := ctx.Next(sasl.SASLPayload(reqPayload))
 	if err != nil {
 		return nil, err
 	}
