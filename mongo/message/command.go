@@ -41,6 +41,7 @@ const (
 	SASLStart     = "saslstart"
 	SASLMechanism = "mechanism"
 	SASLContinue  = "saslcontinue"
+	Hello         = "hello"
 )
 
 // Command represents a query command of MongoDB database command.
