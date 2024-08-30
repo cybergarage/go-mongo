@@ -43,6 +43,7 @@ const (
 	SASLContinue       = "saslcontinue"
 	SASLSupportedMechs = "saslSupportedMechs"
 	Hello              = "hello"
+	HelloOk            = "helloOk"
 )
 
 // Command represents a query command of MongoDB database command.
