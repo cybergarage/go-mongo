@@ -17,6 +17,7 @@ package mongo
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
+	"github.com/cybergarage/go-sasl/sasl"
 )
 
 // Query represents a query of MongoDB database command.
@@ -78,7 +79,7 @@ type WriteOperationExecutor interface {
 // AuthCommandExecutor represents an executor interface for MongoDB authentication commands.
 type AuthCommandExecutor interface {
 	// SASLSupportedMechs returns the supported SASL mechanisms.
-	SASLSupportedMechs(*Conn, string) ([]string, error)
+	SASLSupportedMechs(*Conn, string) ([]sasl.Mechanism, error)
 	// SASLStart handles SASLStart command.
 	SASLStart(*Conn, *Command) (bson.Document, error)
 	// SASLContinue handles SASLContinue command.

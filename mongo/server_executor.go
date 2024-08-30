@@ -40,7 +40,7 @@ func (server *Server) Hello(conn *Conn, cmd *Command) (bson.Document, error) {
 			}
 			supportedMechs := []any{}
 			for _, mech := range mechs {
-				supportedMechs = append(supportedMechs, mech)
+				supportedMechs = append(supportedMechs, mech.Name())
 			}
 			reply.SetArrayElements(message.SASLSupportedMechs, supportedMechs)
 		}
