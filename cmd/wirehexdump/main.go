@@ -71,10 +71,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Header : %d %d %d %d\n",
+	fmt.Printf("Header : %d %d %d %s(%d)\n",
 		msg.MessageLength(),
 		msg.RequestID(),
 		msg.ResponseTo(),
+		msg.OpCode().String(),
 		msg.OpCode(),
 	)
 
