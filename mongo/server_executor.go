@@ -23,8 +23,8 @@ import (
 // DatabaseCommandExecutor
 //////////////////////////////////////////////////
 
-// ExecuteIsMaster displays information about this member’s role in the replica set, including whether it is the master.
-func (server *Server) ExecuteIsMaster(conn *Conn, cmd *Command) (bson.Document, error) {
+// Hello displays information about this member’s role in the replica set, including whether it is the master.
+func (server *Server) Hello(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply, err := message.NewIsMasterResponseWithConfig(server)
 	if err != nil {
 		return nil, err
@@ -36,8 +36,8 @@ func (server *Server) ExecuteIsMaster(conn *Conn, cmd *Command) (bson.Document, 
 	return replyDoc, nil
 }
 
-// ExecuteBuildInfo returns statistics about the MongoDB build.
-func (server *Server) ExecuteBuildInfo(conn *Conn, cmd *Command) (bson.Document, error) {
+// BuildInfo returns statistics about the MongoDB build.
+func (server *Server) BuildInfo(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply, err := message.NewBuildInfoResponseWithConfig(server)
 	if err != nil {
 		return nil, err
