@@ -33,16 +33,15 @@ func TestSASLResponses(t *testing.T) {
 	t.Run("first", func(t *testing.T) {
 
 		tests := []struct {
-			mechs          []any
 			conversationID int32
 			payload        string
 		}{
-			{[]any{"PLAIN"}, 1, "abc"},
+			{1, "abc"},
 		}
 
 		for _, test := range tests {
 			t.Run(fmt.Sprintf("%d %s", test.conversationID, test.payload), func(t *testing.T) {
-				res, err := NewServerFirstResponse(test.mechs, test.conversationID, []byte(test.payload))
+				res, err := NewServerFirstResponse(test.conversationID, []byte(test.payload))
 				if err != nil {
 					t.Error(err)
 					return

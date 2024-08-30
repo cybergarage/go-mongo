@@ -19,7 +19,7 @@ import (
 )
 
 // NewServerFirstResponse creates a new server first response.
-func NewServerFirstResponse(mechs []any, conversationID int32, payload []byte) (*message.Response, error) {
+func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Response, error) {
 	spec := map[string]any{
 		ConversationId: conversationID,
 		Payload:        payload,
@@ -27,7 +27,6 @@ func NewServerFirstResponse(mechs []any, conversationID int32, payload []byte) (
 	}
 
 	firstMsgElements := map[string]any{
-		SupportedMechs:           mechs,
 		SpececulativAuthenticate: spec,
 	}
 
