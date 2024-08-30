@@ -8,6 +8,7 @@
 ## v1.2.0 (2024-08-22)
 - Update SASL authentication interfaces
 - Update protocol.Message and message.Query interface
+- Supoort hello command
 - Add a wire protocol utility (wirehexdump)
 
 ## v1.1.4 (2024-06-29)
