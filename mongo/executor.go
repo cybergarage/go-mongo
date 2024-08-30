@@ -62,17 +62,17 @@ type DatabaseCommandExecutor interface {
 
 // ReplicationCommandExecutor represents an executor interface for MongoDB replication commands.
 type ReplicationCommandExecutor interface {
-	ExecuteIsMaster(*Conn, *Command) (bson.Document, error)
+	Hello(*Conn, *Command) (bson.Document, error)
 }
 
 // DiagnosticCommandExecutor represents an executor interface for MongoDB diagnostic commands.
 type DiagnosticCommandExecutor interface {
-	ExecuteBuildInfo(*Conn, *Command) (bson.Document, error)
+	BuildInfo(*Conn, *Command) (bson.Document, error)
 }
 
 // WriteOperationExecutor represents an executor interface for MongoDB write operation commands.
 type WriteOperationExecutor interface {
-	ExecuteGetLastError(*Conn, *Command) (bson.Document, error)
+	GetLastError(*Conn, *Command) (bson.Document, error)
 }
 
 // AuthCommandExecutor represents an executor interface for MongoDB authentication commands.

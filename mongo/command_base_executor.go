@@ -77,11 +77,11 @@ func (executor *BaseCommandExecutor) ExecuteCommand(conn *Conn, cmd *Command) (b
 
 	switch cmd.Type() {
 	case message.IsMaster:
-		return executor.DatabaseCommandExecutor.ExecuteIsMaster(conn, cmd)
+		return executor.DatabaseCommandExecutor.Hello(conn, cmd)
 	case message.BuildInfo:
-		return executor.DatabaseCommandExecutor.ExecuteBuildInfo(conn, cmd)
+		return executor.DatabaseCommandExecutor.BuildInfo(conn, cmd)
 	case message.GetLastError:
-		return executor.DatabaseCommandExecutor.ExecuteGetLastError(conn, cmd)
+		return executor.DatabaseCommandExecutor.GetLastError(conn, cmd)
 	case message.SASLStart:
 		return executor.AuthCommandExecutor.ExecuteSaslStart(conn, cmd)
 	case message.SASLContinue:
@@ -100,8 +100,8 @@ func (executor *BaseCommandExecutor) ExecuteCommand(conn *Conn, cmd *Command) (b
 // DatabaseCommandExecutor
 //////////////////////////////////////////////////
 
-// ExecuteIsMaster returns information about this member’s role in the replica set, including whether it is the master.
-func (executor *BaseCommandExecutor) ExecuteIsMaster(conn *Conn, cmd *Command) (bson.Document, error) {
+// Hello returns information about this member’s role in the replica set, including whether it is the master.
+func (executor *BaseCommandExecutor) Hello(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply, err := message.NewDefaultIsMasterResponse()
 	if err != nil {
 		return nil, err
@@ -113,8 +113,8 @@ func (executor *BaseCommandExecutor) ExecuteIsMaster(conn *Conn, cmd *Command) (
 	return replyDoc, nil
 }
 
-// ExecuteBuildInfo returns statistics about the MongoDB build.
-func (executor *BaseCommandExecutor) ExecuteBuildInfo(conn *Conn, cmd *Command) (bson.Document, error) {
+// BuildInfo returns statistics about the MongoDB build.
+func (executor *BaseCommandExecutor) BuildInfo(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply, err := message.NewDefaultBuildInfoResponse()
 	if err != nil {
 		return nil, err
@@ -126,8 +126,8 @@ func (executor *BaseCommandExecutor) ExecuteBuildInfo(conn *Conn, cmd *Command) 
 	return replyDoc, nil
 }
 
-// ExecuteGetLastError returns statistics about the MongoDB build.
-func (executor *BaseCommandExecutor) ExecuteGetLastError(conn *Conn, cmd *Command) (bson.Document, error) {
+// GetLastError returns statistics about the MongoDB build.
+func (executor *BaseCommandExecutor) GetLastError(conn *Conn, cmd *Command) (bson.Document, error) {
 	reply, err := message.NewDefaultLastErrorResponse()
 	if err != nil {
 		return nil, err
