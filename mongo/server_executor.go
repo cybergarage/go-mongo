@@ -34,7 +34,11 @@ func (server *Server) Hello(conn *Conn, cmd *Command) (bson.Document, error) {
 		key := elem.Key()
 		switch key {
 		case message.SASLSupportedMechs:
-			mechs, err := server.SASLSupportedMechs(conn, "")
+			collection, ok := elem.Value().StringValueOK()
+			if !ok {
+				collection = ""
+			}
+			mechs, err := server.SASLSupportedMechs(conn, collection)
 			if err != nil {
 				return nil, err
 			}
