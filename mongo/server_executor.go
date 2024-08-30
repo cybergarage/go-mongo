@@ -33,6 +33,13 @@ func (server *Server) Hello(conn *Conn, cmd *Command) (bson.Document, error) {
 	for _, elem := range cmd.Elements {
 		key := elem.Key()
 		switch key {
+		case message.HelloOk:
+			// helloOk Protocol Negotiation
+			// https://github.com/mongodb/mongo/blob/master/src/mongo/db/repl/README.md#hellook-protocol-negotiation
+			ok, _ := elem.Value().BooleanOK()
+			if ok {
+				reply.SetBooleanElement(message.HelloOk, true)
+			}
 		case message.SASLSupportedMechs:
 			collection, ok := elem.Value().StringValueOK()
 			if !ok {
