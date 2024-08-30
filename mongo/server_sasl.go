@@ -19,6 +19,9 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/sasl"
 )
 
+// MongoDB : Authentication
+// https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
+
 // ExecuteSaslStart handles SASLStart command.
 func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document, error) {
 	var reqMech string
