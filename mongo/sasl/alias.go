@@ -18,6 +18,6 @@ import (
 	"github.com/cybergarage/go-sasl/sasl"
 )
 
-type Option = sasl.Option
-
-type PayloadOption = sasl.Payload
+type SASLOption = sasl.Option
+type SASLPayload = sasl.Payload
+type SASLMechanism = sasl.Mechanism
