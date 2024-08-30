@@ -21,6 +21,8 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/protocol"
 )
 
+// See : MongoDB Handshake
+// https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.md
 // See : Database Commands
 // https://docs.mongodb.com/manual/reference/command/
 
