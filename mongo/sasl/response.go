@@ -22,8 +22,6 @@ import (
 // https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.md
 // specifications/source/auth/auth.md at master · mongodb/specifications
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
-// Round Trips to Authenticate a MongoDB Client Connection | ALEX BEVILACQUA
-// https://alexbevi.com/blog/2020/03/03/mongodb-wire-protocol-sasl-authentication/
 
 // NewServerFirstResponse creates a new server first response.
 func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Response, error) {

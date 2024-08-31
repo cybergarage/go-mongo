@@ -19,6 +19,8 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/sasl"
 )
 
+// MongoDB Handshake
+// https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.md
 // MongoDB : Authentication
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
 
