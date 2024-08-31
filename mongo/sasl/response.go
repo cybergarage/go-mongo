@@ -18,6 +18,13 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/message"
 )
 
+// MongoDB Handshake
+// https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.md
+// specifications/source/auth/auth.md at master · mongodb/specifications
+// https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
+// Round Trips to Authenticate a MongoDB Client Connection | ALEX BEVILACQUA
+// https://alexbevi.com/blog/2020/03/03/mongodb-wire-protocol-sasl-authentication/
+
 // NewServerFirstResponse creates a new server first response.
 func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Response, error) {
 	spec := map[string]any{
@@ -26,11 +33,11 @@ func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Resp
 		Done:           false,
 	}
 
-	firstMsgElements := map[string]any{
-		SpececulativAuthenticate: spec,
-	}
+	// firstMsgElements := map[string]any{
+	// 	SpececulativAuthenticate: spec,
+	// }
 
-	resMsg, err := message.NewResponseWithElements(firstMsgElements)
+	resMsg, err := message.NewResponseWithElements(spec /*firstMsgElements*/)
 	if err != nil {
 		return nil, err
 	}
