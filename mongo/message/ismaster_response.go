@@ -30,7 +30,6 @@ const (
 	maxWireVersion               = "maxWireVersion"
 	readOnly                     = "readOnly"
 	compression                  = "compression"
-	saslSupportedMechs           = "saslSupportedMechs"
 
 	DefaultMaxBsonObjectSize            = 16 * 1024 * 1024
 	DefaultMaxMessageSizeBytes          = 48000000

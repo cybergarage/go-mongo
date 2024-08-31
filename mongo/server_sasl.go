@@ -22,6 +22,15 @@ import (
 // MongoDB : Authentication
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
 
+// SASLSupportedMechs returns the supported SASL mechanisms.
+func (server *Server) SASLSupportedMechs(*Conn, string) ([]string, error) {
+	mechs := []string{}
+	for _, mech := range server.Mechanisms() {
+		mechs = append(mechs, mech.Name())
+	}
+	return mechs, nil
+}
+
 // SASLStart handles SASLStart command.
 func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error) {
 	var reqMech string
