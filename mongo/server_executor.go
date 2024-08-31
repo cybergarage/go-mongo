@@ -29,6 +29,23 @@ func (server *Server) Hello(conn *Conn, cmd *Command) (bson.Document, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	for _, elem := range cmd.Elements {
+		key := elem.Key()
+		switch key {
+		case message.SASLSupportedMechs:
+			mechs, err := server.SASLSupportedMechs(conn, "")
+			if err != nil {
+				return nil, err
+			}
+			supportedMechs := []any{}
+			for _, mech := range mechs {
+				supportedMechs = append(supportedMechs, mech)
+			}
+			reply.SetArrayElements(message.SASLSupportedMechs, supportedMechs)
+		}
+	}
+
 	replyDoc, err := reply.BSONBytes()
 	if err != nil {
 		return nil, err
