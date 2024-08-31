@@ -22,8 +22,8 @@ import (
 // MongoDB : Authentication
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
 
-// ExecuteSaslStart handles SASLStart command.
-func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document, error) {
+// SASLStart handles SASLStart command.
+func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error) {
 	var reqMech string
 	var reqPayload []byte
 	var ok bool
@@ -84,8 +84,8 @@ func (server *Server) ExecuteSaslStart(conn *Conn, cmd *Command) (bson.Document,
 	return resDoc, nil
 }
 
-// ExecuteSaslContinue handles SASLContinue command.
-func (server *Server) ExecuteSaslContinue(conn *Conn, cmd *Command) (bson.Document, error) {
+// SASLContinue handles SASLContinue command.
+func (server *Server) SASLContinue(conn *Conn, cmd *Command) (bson.Document, error) {
 	ctx := conn.SASLContext()
 	if ctx == nil {
 		return nil, NewErrorCommand(cmd)

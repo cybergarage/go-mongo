@@ -77,8 +77,8 @@ type WriteOperationExecutor interface {
 
 // AuthCommandExecutor represents an executor interface for MongoDB authentication commands.
 type AuthCommandExecutor interface {
-	// ExecuteSaslStart handles SASLStart command.
-	ExecuteSaslStart(*Conn, *Command) (bson.Document, error)
-	// ExecuteSaslContinue handles SASLContinue command.
-	ExecuteSaslContinue(*Conn, *Command) (bson.Document, error)
+	// SASLStart handles SASLStart command.
+	SASLStart(*Conn, *Command) (bson.Document, error)
+	// SASLContinue handles SASLContinue command.
+	SASLContinue(*Conn, *Command) (bson.Document, error)
 }
