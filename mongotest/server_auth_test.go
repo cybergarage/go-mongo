@@ -30,7 +30,6 @@ type sasleResponse struct {
 
 func TestSASLResponses(t *testing.T) {
 	t.Run("first", func(t *testing.T) {
-
 		tests := []struct {
 			mech string
 			c1   string
@@ -39,6 +38,7 @@ func TestSASLResponses(t *testing.T) {
 			{
 				"SCRAM-SHA-256",
 				"n,,n=test,r=Tle5kok6ColhgwXvl72Syw9whtQXCV3K",
+				// Tle5kok6ColhgwXvl72Syw9whtQXCV3KCNh9jrFMXbvK21UV,s=YlBCelc3V2xPR0hpN21Rag==,i=4096"
 				"c=biws,r=Tle5kok6ColhgwXvl72Syw9whtQXCV3KCNh9jrFMXbvK21UV,p=4txwzovBCq0pFM4J3OA2iG9WBw+ClylRRRqcRwZSEiQ=",
 			},
 		}
@@ -47,7 +47,6 @@ func TestSASLResponses(t *testing.T) {
 
 		for _, test := range tests {
 			t.Run(fmt.Sprintf("%s %s", test.mech, test.c1), func(t *testing.T) {
-
 				mech, err := server.Mechanism(test.mech)
 				if err != nil {
 					t.Error(err)
@@ -56,6 +55,9 @@ func TestSASLResponses(t *testing.T) {
 
 				opts := []sasl.SASLOption{
 					server.Authenticators(),
+					sasl.SASLRandomSequence("CNh9jrFMXbvK21UV"),
+					sasl.SASLIterationCount(4096),
+					sasl.SASLSalt("YlBCelc3V2xPR0hpN21Rag=="),
 				}
 
 				ctx, err := mech.Start(opts...)
@@ -69,9 +71,7 @@ func TestSASLResponses(t *testing.T) {
 					t.Error(err)
 					return
 				}
-
 			})
 		}
 	})
-
 }
