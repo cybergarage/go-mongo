@@ -85,6 +85,7 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 		return nil, err
 	}
 
+	ctx.SetValue(sasl.ConversationId, conversationID)
 	conn.SetSASLContext(ctx)
 
 	return resDoc, nil
