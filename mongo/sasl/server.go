@@ -21,14 +21,19 @@ import (
 // Server is a SASL server.
 type Server struct {
 	*sasl.Server
-	SASLConversationCounter *Counter
+	conversationCounter *Counter
 }
 
 // NewServer returns a new server instance.
 func NewServer() *Server {
 	server := &Server{
-		Server:                  sasl.NewServer(),
-		SASLConversationCounter: NewCounter(),
+		Server:              sasl.NewServer(),
+		conversationCounter: NewCounter(),
 	}
 	return server
+}
+
+// ConversationCounter returns a conversation counter.
+func (server *Server) ConversationCounter() *Counter {
+	return server.conversationCounter
 }
