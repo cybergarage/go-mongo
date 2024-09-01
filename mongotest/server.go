@@ -16,6 +16,7 @@ package mongotest
 
 import (
 	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
+	"github.com/cybergarage/go-mongo/mongo/sasl"
 	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
@@ -36,9 +37,13 @@ func (server *Server) HasCredential(username string) (*cred.Credential, bool) {
 	if username != TestUsername {
 		return nil, false
 	}
+	hashedPassword, err := sasl.MongoPasswordDigest(TestUsername, TestPassword)
+	if err != nil {
+		return nil, false
+	}
 	cred := cred.NewCredential(
 		cred.WithUsername(TestUsername),
-		cred.WithPassword(TestPassword),
+		cred.WithPassword(hashedPassword),
 	)
 	return cred, true
 }
