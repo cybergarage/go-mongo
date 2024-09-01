@@ -16,8 +16,50 @@ package sasl
 
 import (
 	"github.com/cybergarage/go-sasl/sasl"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
-type SASLOption = sasl.Option
-type SASLPayload = sasl.Payload
+// SASLMechanism represents a SASL mechanism.
 type SASLMechanism = sasl.Mechanism
+
+// Option represents a SASL mechanism option.
+type SASLOption = sasl.Option
+
+// Group represents a group option.
+type SASLGroup = sasl.Group
+
+// AuthzID represents an authorization ID option.
+type SASLAuthzID = sasl.AuthzID
+
+// Username represents a username option.
+type SASLUsername = sasl.Username
+
+// Password represents a password option.
+type SASLPassword = sasl.Password
+
+// Token represents a token.
+type SASLToken = sasl.Token
+
+// Email represents an email.
+type SASLEmail = sasl.Email
+
+// Payload represents a payload.
+type SASLPayload = sasl.Payload
+
+// Authenticators represents a list of credential authenticators.
+type SASLAuthenticators = cred.Authenticators
+
+// HashFunc represents a hash function.
+type SASLRandomSequence = sasl.RandomSequence
+
+// IterationCount represents an iteration count.
+type SASLIterationCount = sasl.IterationCount
+
+// HashFunc represents a hash function.
+type SASLHashFunc = sasl.HashFunc
+
+// Challenge represents a challenge.
+type SASLChallenge = sasl.Challenge
+
+// Salt represents a salt.
+type SASLSalt = sasl.Salt
