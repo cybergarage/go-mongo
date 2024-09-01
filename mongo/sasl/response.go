@@ -20,22 +20,28 @@ import (
 
 // MongoDB Handshake
 // https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.md
-// specifications/source/auth/auth.md at master · mongodb/specifications
+// Authentication - MongoDB Specifications
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
+// SASL Mechanisms
+// conversationId: the conversation identifier. This will need to be remembered and used for the duration of the conversation.
+// code: A response code that will indicate failure. This field is not included when the command was successful.
+// done: a boolean value indicating whether or not the conversation has completed.
+// payload: a sequence of bytes or a base64 encoded string (depending on input) to pass into the SASL library to transition the state machine.
 
 // NewServerFirstResponse creates a new server first response.
 func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Response, error) {
-	spec := map[string]any{
+	// Authentication - MongoDB Specifications
+	// https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
+	// CMD = { saslStart: 1, mechanism: <mechanism_name>, payload: BinData(...), autoAuthorize: 1 }
+	// RESP = { conversationId: <number>, code: <code>, done: <boolean>, payload: <payload> }
+
+	firstMsgElements := map[string]any{
 		ConversationId: conversationID,
 		Payload:        payload,
 		Done:           false,
 	}
 
-	// firstMsgElements := map[string]any{
-	// 	SpececulativAuthenticate: spec,
-	// }
-
-	resMsg, err := message.NewResponseWithElements(spec /*firstMsgElements*/)
+	resMsg, err := message.NewResponseWithElements(firstMsgElements)
 	if err != nil {
 		return nil, err
 	}
@@ -45,6 +51,11 @@ func NewServerFirstResponse(conversationID int32, payload []byte) (*message.Resp
 
 // NewServerFinalResponse creates a new server first response.
 func NewServerFinalResponse(conversationID int32, payload []byte) (*message.Response, error) {
+	// Authentication - MongoDB Specifications
+	// https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
+	// CMD = { saslContinue: 1, conversationId: conversationId, payload: BinData(...) }
+	// RESP = { conversationId: <number>, code: <code>, done: <boolean>, payload: <payload> }
+
 	res := message.NewResponse()
 	finalMsgElements := map[string]any{
 		ConversationId: conversationID,
