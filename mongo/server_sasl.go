@@ -74,7 +74,7 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 
 	// Response to the client
 
-	conversationID := server.SASLConversationCounter.Inc()
+	conversationID := server.ConversationCounter().Inc()
 	resMsg, err := sasl.NewServerFirstResponse(conversationID, mechRes.Bytes())
 	if err != nil {
 		return nil, err
