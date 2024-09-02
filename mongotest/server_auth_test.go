@@ -21,24 +21,18 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/sasl"
 )
 
-type sasleResponse struct {
-	ConversationID int    `bson:"conversationId"`
-	Code           int    `bson:"code"`
-	Done           bool   `bson:"done"`
-	Payload        []byte `bson:"payload"`
-}
-
 func TestSASLResponses(t *testing.T) {
 	t.Run("first", func(t *testing.T) {
 		tests := []struct {
 			mech string
 			c1   string
+			s1   string
 			c2   string
 		}{
 			{
 				"SCRAM-SHA-256",
 				"n,,n=test,r=Tle5kok6ColhgwXvl72Syw9whtQXCV3K",
-				// Tle5kok6ColhgwXvl72Syw9whtQXCV3KCNh9jrFMXbvK21UV,s=YlBCelc3V2xPR0hpN21Rag==,i=4096"
+				"r=Tle5kok6ColhgwXvl72Syw9whtQXCV3KCNh9jrFMXbvK21UV,s=YlBCelc3V2xPR0hpN21Rag==,i=4096",
 				"c=biws,r=Tle5kok6ColhgwXvl72Syw9whtQXCV3KCNh9jrFMXbvK21UV,p=4txwzovBCq0pFM4J3OA2iG9WBw+ClylRRRqcRwZSEiQ=",
 			},
 		}
@@ -66,7 +60,18 @@ func TestSASLResponses(t *testing.T) {
 					return
 				}
 
-				_, err = ctx.Next(sasl.SASLPayload(test.c1))
+				f1, err := ctx.Next(sasl.SASLPayload(test.c1))
+				if err != nil {
+					t.Error(err)
+					return
+				}
+
+				if f1.String() != test.s1 {
+					t.Errorf("Unexpected response : %s != %s", f1.String(), test.s1)
+					return
+				}
+
+				_, err = ctx.Next(sasl.SASLPayload(test.c2))
 				if err != nil {
 					t.Error(err)
 					return
