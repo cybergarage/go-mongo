@@ -60,14 +60,14 @@ func TestSASLResponses(t *testing.T) {
 					return
 				}
 
-				f1, err := ctx.Next(sasl.SASLPayload(test.c1))
+				s1, err := ctx.Next(sasl.SASLPayload(test.c1))
 				if err != nil {
 					t.Error(err)
 					return
 				}
 
-				if f1.String() != test.s1 {
-					t.Errorf("Unexpected response : %s != %s", f1.String(), test.s1)
+				if s1.String() != test.s1 {
+					t.Errorf("Unexpected response : %s != %s", s1.String(), test.s1)
 					return
 				}
 
