@@ -17,21 +17,66 @@ package mongotest
 import (
 	"testing"
 
+	"github.com/cybergarage/go-mongo/mongo/sasl"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 	scramtest "github.com/cybergarage/go-sasl/sasltest/scram"
 	xgoscram "github.com/xdg-go/scram"
+	mongoauth "go.mongodb.org/mongo-driver/x/mongo/driver/auth"
 )
 
 func SCRAMServerTest(t *testing.T) {
 	t.Helper()
 
-	sha1Client, err := xgoscram.SHA1.NewClient(scramtest.Username, scramtest.Password, "")
+	_ = mongoauth.Cred{
+		Username: scramtest.Username,
+		Password: scramtest.Password,
+		Source:   "admin",
+	}
+
+	// newScramSHA1Authenticator := func(cred *mongoauth.Cred) (mongoauth.Authenticator, error) {
+	// 	passdigest := mongoPasswordDigest(cred.Username, cred.Password)
+	// 	client, err := xgoscram.SHA1.NewClientUnprepped(cred.Username, passdigest, "")
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	client.WithMinIterations(4096)
+	// 	return &mongoauth.ScramAuthenticator{
+	// 		mechanism: "SCRAM-SHA-1",
+	// 		source:    cred.Source,
+	// 		client:    client,
+	// 	}, nil
+	// }
+
+	// newScramSHA256Authenticator := func(cred *mongoauth.Cred) (mongoauth.Authenticator, error) {
+	// 	passprep, err := stringprep.SASLprep.Prepare(cred.Password)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	client, err := xgoscram.SHA256.NewClientUnprepped(cred.Username, passprep, "")
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	client.WithMinIterations(4096)
+	// 	return &mongoauth.ScramAuthenticator{
+	// 		mechanism: "SCRAM-SHA-256",
+	// 		source:    cred.Source,
+	// 		client:    client,
+	// 	}, nil
+	// }
+
+	passdigest, err := sasl.MongoPasswordDigest(scramtest.Username, scramtest.Password)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	sha256Client, err := xgoscram.SHA256.NewClient(scramtest.Username, scramtest.Password, "")
+	sha1Client, err := xgoscram.SHA1.NewClientUnprepped(scramtest.Username, passdigest, "")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	sha256Client, err := xgoscram.SHA256.NewClientUnprepped(scramtest.Username, passdigest, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -43,12 +88,12 @@ func SCRAMServerTest(t *testing.T) {
 		scram.HashFunc
 	}{
 		{
-			name:     "SCRAM-SHA1",
+			name:     "SCRAM-SHA-1",
 			client:   sha1Client,
 			HashFunc: scram.HashSHA1(),
 		},
 		{
-			name:     "SCRAM-SHA256",
+			name:     "SCRAM-SHA-256",
 			client:   sha256Client,
 			HashFunc: scram.HashSHA256(),
 		},
@@ -56,15 +101,15 @@ func SCRAMServerTest(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			server, err := scramtest.NewServer()
+			server := NewServer()
+
+			// Mechanism
+
+			mech, err := server.Mechanism(test.name)
 			if err != nil {
 				t.Error(err)
 				return
 			}
-			serverOpts := []scram.ServerOption{
-				scram.WithServerHashFunc(test.HashFunc),
-			}
-			server.SetOptions(serverOpts...)
 
 			// Client first message
 
@@ -79,13 +124,17 @@ func SCRAMServerTest(t *testing.T) {
 
 			// Server first message
 
-			msg, err := scram.NewMessageFromWithHeader(clientMsg)
+			opts := []sasl.SASLOption{
+				server.Authenticators(),
+			}
+
+			ctx, err := mech.Start(opts...)
 			if err != nil {
 				t.Error(err)
 				return
 			}
 
-			serverMsg, err := server.FirstMessageFrom(msg)
+			serverMsg, err := ctx.Next(sasl.SASLPayload(clientMsg))
 			if err != nil {
 				t.Error(err)
 				return
@@ -105,13 +154,7 @@ func SCRAMServerTest(t *testing.T) {
 
 			// Server final message
 
-			msg, err = scram.NewMessageFrom(clientMsg)
-			if err != nil {
-				t.Error(err)
-				return
-			}
-
-			serverMsg, err = server.FinalMessageFrom(msg)
+			serverMsg, err = ctx.Next(sasl.SASLPayload(clientMsg))
 			if err != nil {
 				t.Error(err)
 				return
