@@ -1,4 +1,4 @@
-// Copyright (C) 2022 The go-mongo Authors All rights reserved.
+// Copyright (C) 2024 The go-mongo Authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,68 +15,123 @@
 package mongotest
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/cybergarage/go-mongo/mongo/sasl"
+	"github.com/cybergarage/go-sasl/sasl/scram"
+	scramtest "github.com/cybergarage/go-sasl/sasltest/scram"
+	xgoscram "github.com/xdg-go/scram"
 )
 
-func TestSASLResponses(t *testing.T) {
-	t.Run("first", func(t *testing.T) {
-		tests := []struct {
-			mech string
-			c1   string
-			s1   string
-			c2   string
-		}{
-			{
-				"SCRAM-SHA-256",
-				"n,,n=test,r=Tle5kok6ColhgwXvl72Syw9whtQXCV3K",
-				"r=Tle5kok6ColhgwXvl72Syw9whtQXCV3KCNh9jrFMXbvK21UV,s=YlBCelc3V2xPR0hpN21Rag==,i=4096",
-				"c=biws,r=Tle5kok6ColhgwXvl72Syw9whtQXCV3KCNh9jrFMXbvK21UV,p=4txwzovBCq0pFM4J3OA2iG9WBw+ClylRRRqcRwZSEiQ=",
-			},
-		}
+func SCRAMServerTest(t *testing.T) {
+	t.Helper()
 
-		server := NewServer()
+	sha1Client, err := xgoscram.SHA1.NewClient(scramtest.Username, scramtest.Password, "")
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
-		for _, test := range tests {
-			t.Run(fmt.Sprintf("%s %s", test.mech, test.c1), func(t *testing.T) {
-				mech, err := server.Mechanism(test.mech)
-				if err != nil {
-					t.Error(err)
-					return
-				}
+	sha256Client, err := xgoscram.SHA256.NewClient(scramtest.Username, scramtest.Password, "")
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
-				opts := []sasl.SASLOption{
-					server.Authenticators(),
-					sasl.SASLRandomSequence("CNh9jrFMXbvK21UV"),
-					sasl.SASLIterationCount(4096),
-					sasl.SASLSalt("YlBCelc3V2xPR0hpN21Rag=="),
-				}
+	tests := []struct {
+		name   string
+		client *xgoscram.Client
+		scram.HashFunc
+	}{
+		{
+			name:     "SCRAM-SHA1",
+			client:   sha1Client,
+			HashFunc: scram.HashSHA1(),
+		},
+		{
+			name:     "SCRAM-SHA256",
+			client:   sha256Client,
+			HashFunc: scram.HashSHA256(),
+		},
+	}
 
-				ctx, err := mech.Start(opts...)
-				if err != nil {
-					t.Error(err)
-					return
-				}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			server, err := scramtest.NewServer()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			serverOpts := []scram.ServerOption{
+				scram.WithServerHashFunc(test.HashFunc),
+			}
+			server.SetOptions(serverOpts...)
 
-				s1, err := ctx.Next(sasl.SASLPayload(test.c1))
-				if err != nil {
-					t.Error(err)
-					return
-				}
+			// Client first message
 
-				if s1.String() != test.s1 {
-					t.Errorf("Unexpected response : %s != %s", s1.String(), test.s1)
-					return
-				}
+			conv := test.client.NewConversation()
+			clientMsg, err := conv.Step("")
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-				_, err = ctx.Next(sasl.SASLPayload(test.c2))
-				if err != nil {
-					t.Error(err)
-					return
-				}
-			})
-		}
+			t.Logf("[c1] %s", clientMsg)
+
+			// Server first message
+
+			msg, err := scram.NewMessageFromWithHeader(clientMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			serverMsg, err := server.FirstMessageFrom(msg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			t.Logf("[s1] %s", serverMsg.String())
+
+			// Client final message
+
+			clientMsg, err = conv.Step(serverMsg.String())
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			t.Logf("[c2] %s", clientMsg)
+
+			// Server final message
+
+			msg, err = scram.NewMessageFrom(clientMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			serverMsg, err = server.FinalMessageFrom(msg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			t.Logf("[s2] %s", serverMsg.String())
+
+			// Client validation
+
+			_, err = conv.Step(serverMsg.String())
+			if err != nil {
+				t.Error(err)
+				return
+			}
+		})
+	}
+}
+
+func TestAuthServer(t *testing.T) {
+	t.Run("SCRAM", func(t *testing.T) {
+		SCRAMServerTest(t)
 	})
 }
