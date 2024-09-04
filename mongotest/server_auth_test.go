@@ -19,19 +19,17 @@ import (
 
 	"github.com/cybergarage/go-mongo/mongo/sasl"
 	"github.com/cybergarage/go-sasl/sasl/scram"
-	scramtest "github.com/cybergarage/go-sasl/sasltest/scram"
 	xgoscram "github.com/xdg-go/scram"
-	mongoauth "go.mongodb.org/mongo-driver/x/mongo/driver/auth"
 )
 
-func SCRAMServerTest(t *testing.T) {
+func TestSCRAMServer(t *testing.T) {
 	t.Helper()
 
-	_ = mongoauth.Cred{
-		Username: scramtest.Username,
-		Password: scramtest.Password,
-		Source:   "admin",
-	}
+	// _ = mongoauth.Cred{
+	// 	Username: TestUsername,
+	// 	Password: TestPassword,
+	// 	Source:   "admin",
+	// }
 
 	// newScramSHA1Authenticator := func(cred *mongoauth.Cred) (mongoauth.Authenticator, error) {
 	// 	passdigest := mongoPasswordDigest(cred.Username, cred.Password)
@@ -64,19 +62,19 @@ func SCRAMServerTest(t *testing.T) {
 	// 	}, nil
 	// }
 
-	passdigest, err := sasl.MongoPasswordDigest(scramtest.Username, scramtest.Password)
+	passdigest, err := sasl.MongoPasswordDigest(TestUsername, TestPassword)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	sha1Client, err := xgoscram.SHA1.NewClientUnprepped(scramtest.Username, passdigest, "")
+	sha1Client, err := xgoscram.SHA1.NewClientUnprepped(TestUsername, passdigest, "")
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	sha256Client, err := xgoscram.SHA256.NewClientUnprepped(scramtest.Username, passdigest, "")
+	sha256Client, err := xgoscram.SHA256.NewClientUnprepped(TestUsername, passdigest, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -173,8 +171,8 @@ func SCRAMServerTest(t *testing.T) {
 	}
 }
 
-func TestAuthServer(t *testing.T) {
+func TestAuthMechanisms(t *testing.T) {
 	t.Run("SCRAM", func(t *testing.T) {
-		SCRAMServerTest(t)
+		TestSCRAMServer(t)
 	})
 }
