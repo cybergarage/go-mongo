@@ -15,6 +15,8 @@
 package sasl
 
 import (
+	"fmt"
+
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/sasl/scram"
 )
@@ -83,4 +85,20 @@ func NewServerErrorResponse(conversationID int32, err error) (*message.Response,
 	}
 	resMsg.SetStatus(true)
 	return resMsg, nil
+}
+
+// NewServerErrorlResponse creates a new server error response.
+func NewServerErrorlResponse(conversationID int32, err error) (*message.Response, error) {
+	res := message.NewResponse()
+	errMsgElements := map[string]any{
+		ConversationId: conversationID,
+		Payload:        fmt.Sprintf("e=%s", err),
+		Done:           false,
+	}
+	resMsg, err := message.NewResponseWithElements(errMsgElements)
+	if err != nil {
+		return nil, err
+	}
+	resMsg.SetStatus(false)
+	return res, nil
 }
