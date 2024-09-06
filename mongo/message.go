@@ -16,6 +16,7 @@ package mongo
 
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
+	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
 )
 
@@ -48,6 +49,9 @@ type OpFlag = protocol.Flag
 
 // OpMessage represents a message of MongoDB wire protocol.
 type OpMessage = protocol.Message
+
+// MessageResponse represents a message response.
+type MessageResponse = message.Response
 
 ////////////////////////////////////////
 // OpMessageHandler

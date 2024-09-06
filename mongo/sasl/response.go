@@ -16,6 +16,7 @@ package sasl
 
 import (
 	"github.com/cybergarage/go-mongo/mongo/message"
+	"github.com/cybergarage/go-mongo/mongo/sasl/scram"
 )
 
 // MongoDB Handshake
@@ -61,6 +62,22 @@ func NewServerFinalResponse(conversationID int32, payload []byte) (*message.Resp
 		ConversationId: conversationID,
 		Payload:        payload,
 		Done:           true,
+	}
+	resMsg, err := message.NewResponseWithElements(finalMsgElements)
+	if err != nil {
+		return nil, err
+	}
+	resMsg.SetStatus(true)
+	return res, nil
+}
+
+// NewServerErrorResponse creates a new server error response.
+func NewServerErrorResponse(conversationID int32, err error) (*message.Response, error) {
+	res := message.NewResponse()
+	finalMsgElements := map[string]any{
+		ConversationId: conversationID,
+		Payload:        scram.NewMessageWithError(err).Bytes,
+		Done:           false,
 	}
 	resMsg, err := message.NewResponseWithElements(finalMsgElements)
 	if err != nil {
