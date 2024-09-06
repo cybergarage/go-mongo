@@ -79,7 +79,13 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 	// Response to the client
 
 	conversationID := server.ConversationCounter().Inc()
-	resMsg, err := sasl.NewServerFirstResponse(conversationID, mechRes.Bytes())
+
+	var resMsg *MessageResponse
+	if mechRes != nil && err == nil {
+		resMsg, err = sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
+	} else {
+		resMsg, err = sasl.NewServerErrorResponse(conversationID, err)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -144,20 +150,24 @@ func (server *Server) SASLContinue(conn *Conn, cmd *Command) (bson.Document, err
 		if !scram.IsStandardError(err) {
 			return nil, err
 		}
-		mechRes = scram.NewMessageWithError(err)
 	}
 
-	resMsg, err := sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
+	var resMsg *MessageResponse
+	if mechRes != nil && err == nil {
+		resMsg, err = sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
+	} else {
+		resMsg, err = sasl.NewServerErrorResponse(conversationID, err)
+	}
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := resMsg.BSONBytes()
+	resDoc, err := resMsg.BSONBytes()
 	if err != nil {
 		return nil, err
 	}
 
 	conn.SetSASLContext(nil)
 
-	return res, nil
+	return resDoc, nil
 }
