@@ -17,6 +17,7 @@ package mongo
 import (
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/sasl"
+	"github.com/cybergarage/go-mongo/mongo/sasl/scram"
 )
 
 // MongoDB Handshake
@@ -69,7 +70,10 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 
 	mechRes, err := ctx.Next(sasl.SASLPayload(reqPayload))
 	if err != nil {
-		return nil, err
+		if !scram.IsStandardError(err) {
+			return nil, err
+		}
+		mechRes = scram.NewMessageWithError(err)
 	}
 
 	// Response to the client
@@ -137,7 +141,10 @@ func (server *Server) SASLContinue(conn *Conn, cmd *Command) (bson.Document, err
 
 	mechRes, err := ctx.Next(sasl.SASLPayload(reqPayload))
 	if err != nil {
-		return nil, err
+		if !scram.IsStandardError(err) {
+			return nil, err
+		}
+		mechRes = scram.NewMessageWithError(err)
 	}
 
 	resMsg, err := sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
