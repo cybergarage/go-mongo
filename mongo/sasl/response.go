@@ -57,7 +57,6 @@ func NewServerFinalResponse(conversationID int32, payload []byte) (*message.Resp
 	// CMD = { saslContinue: 1, conversationId: conversationId, payload: BinData(...) }
 	// RESP = { conversationId: <number>, code: <code>, done: <boolean>, payload: <payload> }
 
-	res := message.NewResponse()
 	finalMsgElements := map[string]any{
 		ConversationId: conversationID,
 		Payload:        payload,
@@ -68,12 +67,11 @@ func NewServerFinalResponse(conversationID int32, payload []byte) (*message.Resp
 		return nil, err
 	}
 	resMsg.SetStatus(true)
-	return res, nil
+	return resMsg, nil
 }
 
 // NewServerErrorResponse creates a new server error response.
 func NewServerErrorResponse(conversationID int32, err error) (*message.Response, error) {
-	res := message.NewResponse()
 	errMsg := map[string]any{
 		ConversationId: conversationID,
 		Payload:        scram.NewMessageWithError(err).Bytes(),
@@ -84,5 +82,5 @@ func NewServerErrorResponse(conversationID int32, err error) (*message.Response,
 		return nil, err
 	}
 	resMsg.SetStatus(true)
-	return res, nil
+	return resMsg, nil
 }
