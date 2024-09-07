@@ -74,12 +74,12 @@ func NewServerFinalResponse(conversationID int32, payload []byte) (*message.Resp
 // NewServerErrorResponse creates a new server error response.
 func NewServerErrorResponse(conversationID int32, err error) (*message.Response, error) {
 	res := message.NewResponse()
-	finalMsgElements := map[string]any{
+	errMsg := map[string]any{
 		ConversationId: conversationID,
-		Payload:        scram.NewMessageWithError(err).Bytes,
+		Payload:        scram.NewMessageWithError(err).Bytes(),
 		Done:           false,
 	}
-	resMsg, err := message.NewResponseWithElements(finalMsgElements)
+	resMsg, err := message.NewResponseWithElements(errMsg)
 	if err != nil {
 		return nil, err
 	}
