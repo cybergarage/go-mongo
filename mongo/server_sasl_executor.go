@@ -83,7 +83,7 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 
 	var resMsg *MessageResponse
 	if err == nil {
-		resMsg, err = sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
+		resMsg, err = sasl.NewServerFirstResponse(conversationID, mechRes.Bytes())
 	} else {
 		resMsg, err = sasl.NewServerErrorResponse(conversationID, err)
 	}
