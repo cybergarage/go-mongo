@@ -79,9 +79,10 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 	// Response to the client
 
 	conversationID := server.ConversationCounter().Inc()
+	ctx.SetValue(sasl.ConversationId, conversationID)
 
 	var resMsg *MessageResponse
-	if mechRes != nil && err == nil {
+	if err == nil {
 		resMsg, err = sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
 	} else {
 		resMsg, err = sasl.NewServerErrorResponse(conversationID, err)
@@ -95,7 +96,6 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 		return nil, err
 	}
 
-	ctx.SetValue(sasl.ConversationId, conversationID)
 	conn.SetSASLContext(ctx)
 
 	return resDoc, nil
@@ -153,7 +153,7 @@ func (server *Server) SASLContinue(conn *Conn, cmd *Command) (bson.Document, err
 	}
 
 	var resMsg *MessageResponse
-	if mechRes != nil && err == nil {
+	if err == nil {
 		resMsg, err = sasl.NewServerFinalResponse(conversationID, mechRes.Bytes())
 	} else {
 		resMsg, err = sasl.NewServerErrorResponse(conversationID, err)
