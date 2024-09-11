@@ -49,6 +49,12 @@ type SASLPayload = sasl.Payload
 // Authenticators represents a list of credential authenticators.
 type SASLAuthenticators = cred.Authenticators
 
+// SASLAuthenticatorOption represents a credential authenticator option.
+type SASLAuthenticatorOption = cred.AuthenticatorOption
+
+// SASLCredential represents a credential.
+type SASLCredential = cred.Credential
+
 // HashFunc represents a hash function.
 type SASLRandomSequence = sasl.RandomSequence
 
