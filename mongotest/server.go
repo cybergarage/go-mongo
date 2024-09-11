@@ -33,17 +33,26 @@ func NewServer() *Server {
 	return server
 }
 
-func (server *Server) HasCredential(username string) (*cred.Credential, bool) {
+func (server *Server) HasCredential(username string, opts ...sasl.SASLAuthenticatorOption) (*sasl.SASLCredential, bool) {
 	if username != TestUsername {
 		return nil, false
 	}
-	hashedPassword, err := sasl.MongoPasswordDigest(TestUsername, TestPassword)
-	if err != nil {
-		return nil, false
+	passwod := TestPassword
+	for _, opt := range opts {
+		switch t := opt.(type) {
+		case sasl.SASLMechanism:
+			if t.Type().String() == "SCRAM-SHA-1" {
+				var err error
+				passwod, err = sasl.MongoPasswordDigest(TestUsername, TestPassword)
+				if err != nil {
+					return nil, false
+				}
+			}
+		}
 	}
 	cred := cred.NewCredential(
-		cred.WithUsername(TestUsername),
-		cred.WithPassword(hashedPassword),
+		cred.WithUsername(username),
+		cred.WithPassword(passwod),
 	)
 	return cred, true
 }
