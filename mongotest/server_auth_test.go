@@ -22,59 +22,16 @@ import (
 	xgoscram "github.com/xdg-go/scram"
 )
 
-func TestSCRAMServer(t *testing.T) {
+func SCRAMServerTest(t *testing.T) {
 	t.Helper()
 
-	// _ = mongoauth.Cred{
-	// 	Username: TestUsername,
-	// 	Password: TestPassword,
-	// 	Source:   "admin",
-	// }
-
-	// newScramSHA1Authenticator := func(cred *mongoauth.Cred) (mongoauth.Authenticator, error) {
-	// 	passdigest := mongoPasswordDigest(cred.Username, cred.Password)
-	// 	client, err := xgoscram.SHA1.NewClientUnprepped(cred.Username, passdigest, "")
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	client.WithMinIterations(4096)
-	// 	return &mongoauth.ScramAuthenticator{
-	// 		mechanism: "SCRAM-SHA-1",
-	// 		source:    cred.Source,
-	// 		client:    client,
-	// 	}, nil
-	// }
-
-	// newScramSHA256Authenticator := func(cred *mongoauth.Cred) (mongoauth.Authenticator, error) {
-	// 	passprep, err := stringprep.SASLprep.Prepare(cred.Password)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	client, err := xgoscram.SHA256.NewClientUnprepped(cred.Username, passprep, "")
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	client.WithMinIterations(4096)
-	// 	return &mongoauth.ScramAuthenticator{
-	// 		mechanism: "SCRAM-SHA-256",
-	// 		source:    cred.Source,
-	// 		client:    client,
-	// 	}, nil
-	// }
-
-	passdigest, err := sasl.MongoPasswordDigest(TestUsername, TestPassword)
+	sha1Client, err := xgoscram.SHA1.NewClientUnprepped(TestUsername, TestPassword, "")
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	sha1Client, err := xgoscram.SHA1.NewClientUnprepped(TestUsername, passdigest, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	sha256Client, err := xgoscram.SHA256.NewClientUnprepped(TestUsername, passdigest, "")
+	sha256Client, err := xgoscram.SHA256.NewClientUnprepped(TestUsername, TestPassword, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -173,6 +130,6 @@ func TestSCRAMServer(t *testing.T) {
 
 func TestAuthMechanisms(t *testing.T) {
 	t.Run("SCRAM", func(t *testing.T) {
-		TestSCRAMServer(t)
+		SCRAMServerTest(t)
 	})
 }
