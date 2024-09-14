@@ -54,13 +54,18 @@ func AppendDocument(dst []byte, doc bson.Document) []byte {
 
 // ReadInt32 reads a int32 value from src.
 func ReadInt32(src []byte) (int32, []byte, bool) {
-	return bsoncore.ReadInt32(src)
+	if len(src) < 4 {
+		return 0, src, false
+	}
+	return (int32(src[0]) | int32(src[1])<<8 | int32(src[2])<<16 | int32(src[3])<<24), src[4:], true
 }
 
 // ReadUint32 reads an uint32 value from src.
 func ReadUint32(src []byte) (uint32, []byte, bool) {
-	val, rem, ok := ReadInt32(src)
-	return uint32(val), rem, ok
+	if len(src) < 4 {
+		return 0, src, false
+	}
+	return (uint32(src[0]) | uint32(src[1])<<8 | uint32(src[2])<<16 | uint32(src[3])<<24), src[4:], true
 }
 
 // ReadInt64 reads a int64 value from src.
