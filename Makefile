@@ -110,7 +110,7 @@ vet: format
 lint: vet
 	golangci-lint run ${ALL_SRCS}
 
-test: lint
+test:
 	go test -v -cover -p=1 ${ALL_PKGS}
 
 install:
