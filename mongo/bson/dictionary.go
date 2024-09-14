@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/cybergarage/go-safecast/safecast"
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 )
 
@@ -181,8 +182,13 @@ func (dict *Dictionary) BSONBytes() (Document, error) {
 		}
 	}
 
-	documentLength := 4 + len(elementBytes) + 1
-	documentBytes := AppendInt32(make([]byte, 0), int32(documentLength))
+	var documentLength int32
+	err = safecast.ToInt32((4 + len(elementBytes) + 1), &documentLength)
+	if err != nil {
+		return nil, err
+	}
+
+	documentBytes := AppendInt32(make([]byte, 0), documentLength)
 	documentBytes = append(documentBytes, elementBytes...)
 	documentBytes = append(documentBytes, 0x00)
 
