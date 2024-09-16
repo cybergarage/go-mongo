@@ -112,7 +112,7 @@ lint: vet
 	golangci-lint run ${ALL_SRCS}
 
 test: test
-	go test -v -cover -p=1 ${ALL_PKGS}
+	go test -v -p=1 -cover -coverprofile=coverage.txt ${ALL_PKGS}
 
 install:
 	go install -v -gcflags=${GCFLAGS} ${BINARIES}
