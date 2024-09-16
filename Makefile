@@ -92,6 +92,7 @@ BINARIES=\
 	${BIN_BINARIES}
 
 .PHONY: version clean format vet lint
+.IGNORE: test
 
 all: test
 
@@ -110,7 +111,7 @@ vet: format
 lint: vet
 	golangci-lint run ${ALL_SRCS}
 
-test:
+test: test
 	go test -v -cover -p=1 ${ALL_PKGS}
 
 install:
