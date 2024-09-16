@@ -19,3 +19,5 @@ __debug_bin
 .DS_Store
 
 jstests
+
+coverage.txt
