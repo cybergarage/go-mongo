@@ -3,6 +3,7 @@
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/cybergarage/go-mongo)
 [![test](https://github.com/cybergarage/go-mongo/actions/workflows/make.yml/badge.svg)](https://github.com/cybergarage/go-mongo/actions/workflows/make.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/cybergarage/go-mongo.svg)](https://pkg.go.dev/github.com/cybergarage/go-mongo)
+[![codecov](https://codecov.io/gh/cybergarage/go-mongo/graph/badge.svg?token=KTU8MELXYB)](https://codecov.io/gh/cybergarage/go-mongo)
 
 The go-mongo is a database framework for implementing a [MongoDB](https://www.mongodb.com)-compatible server using Go easily.
 
