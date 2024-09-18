@@ -5,14 +5,18 @@
 - Add createIndex interface
 - Add authrization interfaces
 
-## v1.2.1 (2024-09-xx)
+## v1.2.2 (2024-09-xx)
 - Fixed gosec warnings
 
-## v1.2.0 (2024-09-18)
-- Updated SASL authentication interfaces
-- Updated protocol.Message and message.Query interface
+## v1.2.1 (2024-09-18)
+- Supported SCRAM-SHA-1 and SCRAM-SHA-256 authentication
 - Supoorted helloOk protocol negotiation
 - Added a wire protocol utility (wirehexdump)
+- Fixed gosec warnings
+
+## v1.2.0 (2024-08-22)
+- Updated protocol.Message and message.Query interface
+- Updated SASL authentication interfaces
 
 ## v1.1.4 (2024-06-29)
 - Added connection manager
