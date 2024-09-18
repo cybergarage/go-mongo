@@ -8,7 +8,7 @@
 ## v1.2.1 (2024-09-xx)
 - Fixed gosec warnings
 
-## v1.2.0 (2024-09-14)
+## v1.2.0 (2024-09-18)
 - Updated SASL authentication interfaces
 - Updated protocol.Message and message.Query interface
 - Supoorted helloOk protocol negotiation
