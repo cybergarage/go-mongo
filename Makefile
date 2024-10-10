@@ -98,11 +98,12 @@ all: test
 
 version:
 	@pushd ${MODULE_SRC_DIR} && ./version.gen > version.go && popd
+	-git commit ${MODULE_SRC_DIR}/version.go -m "Update version"
 
 ${TEST_HELPER} : ${TEST_FILE_DIR}/${TEST_HELPER_NAME}.pl $(wildcard ${TEST_FILE_DIR}/*.qst)
 	perl $< > $@
 
-format: ${TEST_HELPER} 
+format: ${TEST_HELPER}  version
 	gofmt -s -w ${ALL_ROOTS}
 
 vet: format
