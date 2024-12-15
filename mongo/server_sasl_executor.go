@@ -60,7 +60,7 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 	// Start the SASL context
 
 	opts := []sasl.SASLOption{
-		server.Authenticators(),
+		server.CredentialStore(),
 	}
 
 	ctx, err := mech.Start(opts...)
