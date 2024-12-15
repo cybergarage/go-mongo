@@ -46,9 +46,6 @@ type SASLEmail = sasl.Email
 // Payload represents a payload.
 type SASLPayload = sasl.Payload
 
-// Authenticators represents a list of credential authenticators.
-type SASLAuthenticators = cred.Authenticators
-
 // SASLCredential represents a credential.
 type SASLCredential = cred.Credential
 
