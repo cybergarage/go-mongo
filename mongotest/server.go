@@ -29,14 +29,15 @@ func NewServer() *Server {
 	server := &Server{
 		Server: server.NewServer(),
 	}
-	server.AddAuthenticator(server)
+	server.SetCredentialStore(server)
 	return server
 }
 
-func (server *Server) HasCredential(q *sasl.SASLQuery) (*sasl.SASLCredential, bool) {
+// LookupCredential looks up a credential by the query.
+func (server *Server) LookupCredential(q cred.Query) (cred.Credential, error) {
 	username := q.Username()
 	if username != TestUsername {
-		return nil, false
+		return nil, cred.ErrNoCredential
 	}
 	passwod := TestPassword
 	mech := q.Mechanism()
@@ -44,12 +45,12 @@ func (server *Server) HasCredential(q *sasl.SASLQuery) (*sasl.SASLCredential, bo
 		var err error
 		passwod, err = sasl.MongoPasswordDigest(TestUsername, TestPassword)
 		if err != nil {
-			return nil, false
+			return nil, cred.ErrNoCredential
 		}
 	}
 	cred := cred.NewCredential(
 		cred.WithCredentialUsername(username),
 		cred.WithCredentialPassword(passwod),
 	)
-	return cred, true
+	return cred, nil
 }
