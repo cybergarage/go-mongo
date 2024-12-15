@@ -79,9 +79,7 @@ func SCRAMServerTest(t *testing.T) {
 
 			// Server first message
 
-			opts := []sasl.SASLOption{
-				server.CredentialStore(),
-			}
+			opts := []sasl.SASLOption{}
 
 			ctx, err := mech.Start(opts...)
 			if err != nil {
