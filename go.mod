@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/cybergarage/go-logger v1.3.5
 	github.com/cybergarage/go-safecast v1.2.5
-	github.com/cybergarage/go-sasl v1.2.2-0.20241216132536-d8a2e6e96e64
+	github.com/cybergarage/go-sasl v1.2.2-0.20241216145238-dc73cd71d1c6
 	github.com/cybergarage/go-sqltest v1.4.1
 	github.com/cybergarage/go-tracing v1.1.3
 	github.com/google/uuid v1.6.0
