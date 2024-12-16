@@ -20,7 +20,7 @@ import (
 
 // Server is a SASL server.
 type Server struct {
-	*sasl.Server
+	sasl.Server
 	conversationCounter *Counter
 }
 
