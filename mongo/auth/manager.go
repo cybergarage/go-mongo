@@ -16,15 +16,23 @@ package auth
 
 import (
 	"github.com/cybergarage/go-authenticator/auth"
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
 )
 
 type Manager struct {
 	auth.Manager
+	conversationCounter *sasl.Counter
 }
 
 // NewManager returns a new Manager.
 func NewManager() *Manager {
 	return &Manager{
-		Manager: auth.NewManager(),
+		Manager:             auth.NewManager(),
+		conversationCounter: sasl.NewCounter(),
 	}
+}
+
+// ConversationCounter returns a conversation counter.
+func (mgr *Manager) ConversationCounter() *sasl.Counter {
+	return mgr.conversationCounter
 }

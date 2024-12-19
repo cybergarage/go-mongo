@@ -23,7 +23,6 @@ import (
 
 	"github.com/cybergarage/go-logger/log"
 	"github.com/cybergarage/go-mongo/mongo/auth"
-	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
@@ -51,7 +50,6 @@ type Server struct {
 	*BaseMessageHandler
 	*BaseCommandExecutor
 	*auth.Manager
-	conversationCounter *sasl.Counter
 }
 
 // NewServer returns a new server instance.
@@ -71,7 +69,6 @@ func NewServer() *Server {
 		BaseMessageHandler:   NewBaseMessageHandler(),
 		BaseCommandExecutor:  NewBaseCommandExecutor(),
 		Manager:              auth.NewManager(),
-		conversationCounter:  sasl.NewCounter(),
 	}
 
 	server.SetMessageHandler(server)
@@ -122,11 +119,6 @@ func (server *Server) SetMessageHandler(h OpMessageHandler) {
 // Version should return supported MongoDB version string.
 func (server *Server) Version() string {
 	return server.Config.Version()
-}
-
-// ConversationCounter returns a conversation counter.
-func (server *Server) ConversationCounter() *sasl.Counter {
-	return server.conversationCounter
 }
 
 // Start starts the server.
