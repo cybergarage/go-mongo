@@ -21,11 +21,11 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/cybergarage/go-authenticator/auth"
 	"github.com/cybergarage/go-logger/log"
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
-	"github.com/cybergarage/go-mongo/mongo/sasl"
 	"github.com/cybergarage/go-tracing/tracer"
 )
 
@@ -49,7 +49,7 @@ type Server struct {
 	lastMessageRequestID int32
 	*BaseMessageHandler
 	*BaseCommandExecutor
-	*sasl.Server
+	auth.Manager
 }
 
 // NewServer returns a new server instance.
@@ -68,7 +68,7 @@ func NewServer() *Server {
 		lastMessageRequestID: 0,
 		BaseMessageHandler:   NewBaseMessageHandler(),
 		BaseCommandExecutor:  NewBaseCommandExecutor(),
-		Server:               sasl.NewServer(),
+		Manager:              auth.NewManager(),
 	}
 
 	server.SetMessageHandler(server)
@@ -114,6 +114,11 @@ func (server *Server) SetMessageListener(l MessageListener) {
 // SetMessageHandler sets a message handler.
 func (server *Server) SetMessageHandler(h OpMessageHandler) {
 	server.MessageHandler = h
+}
+
+// Version should return supported MongoDB version string.
+func (server *Server) Version() string {
+	return server.Config.Version()
 }
 
 // Start starts the server.

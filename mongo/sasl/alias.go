@@ -16,7 +16,7 @@ package sasl
 
 import (
 	"github.com/cybergarage/go-sasl/sasl"
-	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 )
 
 // SASLMechanism represents a SASL mechanism.
@@ -47,10 +47,10 @@ type SASLEmail = sasl.Email
 type SASLPayload = sasl.Payload
 
 // SASLCredential represents a credential.
-type SASLCredential = cred.Credential
+type SASLCredential = auth.Credential
 
 // SASLQuery represents a query.
-type SASLQuery = cred.Query
+type SASLQuery = auth.Query
 
 // HashFunc represents a hash function.
 type SASLRandomSequence = sasl.RandomSequence
