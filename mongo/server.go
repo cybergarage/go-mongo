@@ -217,6 +217,11 @@ func (server *Server) serve() error {
 			if err := tlsConn.Handshake(); err != nil {
 				return err
 			}
+			ok, err := server.Manager.VerifyCertificate(tlsConn)
+			if !ok {
+				log.Error(err)
+				return err
+			}
 			tlsStateObj := tlsConn.ConnectionState()
 			tlsState = &tlsStateObj
 			conn = tlsConn

@@ -17,6 +17,7 @@ package mongotest
 import (
 	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
 	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
+	"github.com/cybergarage/go-mongo/mongo/auth/tls"
 	"github.com/cybergarage/go-sasl/sasl/auth"
 )
 
@@ -29,8 +30,14 @@ func NewServer() *Server {
 	server := &Server{
 		Server: server.NewServer(),
 	}
+	server.SetCertificateAuthenticator(server)
 	server.SetCredentialStore(server)
 	return server
+}
+
+// VerifyCertificate verifies the certificate.
+func (server *Server) VerifyCertificate(conn tls.Conn) (bool, error) {
+	return true, nil
 }
 
 // LookupCredential looks up a credential by the query.
