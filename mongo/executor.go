@@ -15,9 +15,9 @@
 package mongo
 
 import (
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
-	"github.com/cybergarage/go-mongo/mongo/sasl"
 )
 
 // Query represents a query of MongoDB database command.

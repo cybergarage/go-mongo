@@ -17,7 +17,7 @@ package mongotest
 import (
 	"testing"
 
-	"github.com/cybergarage/go-mongo/mongo/sasl"
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 	xgoscram "github.com/xdg-go/scram"
 )
