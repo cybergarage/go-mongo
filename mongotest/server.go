@@ -17,7 +17,7 @@ package mongotest
 import (
 	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
 	"github.com/cybergarage/go-mongo/mongo/sasl"
-	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 )
 
 type Server struct {
@@ -34,10 +34,10 @@ func NewServer() *Server {
 }
 
 // LookupCredential looks up a credential by the query.
-func (server *Server) LookupCredential(q cred.Query) (cred.Credential, bool, error) {
+func (server *Server) LookupCredential(q auth.Query) (auth.Credential, bool, error) {
 	username := q.Username()
 	if username != TestUsername {
-		return nil, false, cred.ErrNoCredential
+		return nil, false, auth.ErrNoCredential
 	}
 	passwod := TestPassword
 	mech := q.Mechanism()
@@ -45,12 +45,12 @@ func (server *Server) LookupCredential(q cred.Query) (cred.Credential, bool, err
 		var err error
 		passwod, err = sasl.MongoPasswordDigest(TestUsername, TestPassword)
 		if err != nil {
-			return nil, false, cred.ErrNoCredential
+			return nil, false, auth.ErrNoCredential
 		}
 	}
-	cred := cred.NewCredential(
-		cred.WithCredentialUsername(username),
-		cred.WithCredentialPassword(passwod),
+	cred := auth.NewCredential(
+		auth.WithCredentialUsername(username),
+		auth.WithCredentialPassword(passwod),
 	)
 	return cred, true, nil
 }
