@@ -23,10 +23,10 @@ import (
 
 	"github.com/cybergarage/go-logger/log"
 	"github.com/cybergarage/go-mongo/mongo/auth"
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
-	"github.com/cybergarage/go-mongo/mongo/sasl"
 	"github.com/cybergarage/go-tracing/tracer"
 )
 

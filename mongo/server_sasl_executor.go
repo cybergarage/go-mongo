@@ -15,9 +15,9 @@
 package mongo
 
 import (
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl/scram"
 	"github.com/cybergarage/go-mongo/mongo/bson"
-	"github.com/cybergarage/go-mongo/mongo/sasl"
-	"github.com/cybergarage/go-mongo/mongo/sasl/scram"
 )
 
 // MongoDB Handshake

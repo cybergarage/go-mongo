@@ -16,7 +16,7 @@ package mongotest
 
 import (
 	"github.com/cybergarage/go-mongo/examples/go-mongod/server"
-	"github.com/cybergarage/go-mongo/mongo/sasl"
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
 	"github.com/cybergarage/go-sasl/sasl/auth"
 )
 

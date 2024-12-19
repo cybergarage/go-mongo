@@ -17,8 +17,8 @@ package sasl
 import (
 	"fmt"
 
+	"github.com/cybergarage/go-mongo/mongo/auth/sasl/scram"
 	"github.com/cybergarage/go-mongo/mongo/message"
-	"github.com/cybergarage/go-mongo/mongo/sasl/scram"
 )
 
 // MongoDB Handshake
