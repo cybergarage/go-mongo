@@ -3,9 +3,10 @@ module github.com/cybergarage/go-mongo
 go 1.22
 
 require (
+	github.com/cybergarage/go-authenticator v0.0.0-20241218152904-8b8f6961b4da
 	github.com/cybergarage/go-logger v1.3.5
 	github.com/cybergarage/go-safecast v1.2.5
-	github.com/cybergarage/go-sasl v1.2.2-0.20241216145238-dc73cd71d1c6
+	github.com/cybergarage/go-sasl v1.2.2-0.20241218142740-579770f18b11
 	github.com/cybergarage/go-sqltest v1.4.1
 	github.com/cybergarage/go-tracing v1.1.3
 	github.com/google/uuid v1.6.0
