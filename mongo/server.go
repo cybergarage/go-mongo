@@ -21,8 +21,8 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/cybergarage/go-authenticator/auth"
 	"github.com/cybergarage/go-logger/log"
+	"github.com/cybergarage/go-mongo/mongo/auth"
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"github.com/cybergarage/go-mongo/mongo/message"
 	"github.com/cybergarage/go-mongo/mongo/protocol"
@@ -50,7 +50,7 @@ type Server struct {
 	lastMessageRequestID int32
 	*BaseMessageHandler
 	*BaseCommandExecutor
-	auth.Manager
+	*auth.Manager
 	conversationCounter *sasl.Counter
 }
 
