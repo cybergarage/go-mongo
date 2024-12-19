@@ -1,21 +1,21 @@
 # Changelog
 
 ## v1.3.x (2023-xx-xx)
-- Update executor interfaces for major MongoDB commands
-- Add createIndex interface
-- Add authrization interfaces
+- Updated executor interfaces for major MongoDB commands
+- Added createIndex interface
 
-## v1.2.2 (2024-09-xx)
+## v1.2.2 (2024-12-xx)
+- Supported certificate authentication for TLS connection
 - Fixed gosec warnings
 
 ## v1.2.1 (2024-09-18)
 - Supported SCRAM-SHA-1 and SCRAM-SHA-256 authentication
-- Supoorted helloOk protocol negotiation
+- Supported helloOk protocol negotiation
 - Added a wire protocol utility (wirehexdump)
 - Fixed gosec warnings
 
 ## v1.2.0 (2024-08-22)
-- Updated protocol.Message and message.Query interface
+- Updated protocol.Message and message.Query interfaces
 - Updated SASL authentication interfaces
 
 ## v1.1.4 (2024-06-29)
@@ -28,10 +28,10 @@
 - Updated mongo shell client
 
 ## v1.1.1 (2024-05-21)
-- Updated embeded MongoDB tests
+- Updated embedded MongoDB tests
 
 ## v1.1.0 (2024-05-20)
-- Support TLS connection
+- Supported TLS connection
 - Updated go-tracing package
 
 ## v1.0.2 (2023-05-04)
@@ -44,14 +44,14 @@
 
 ## v1.0.0 (2023-05-04)
 - Fixed executor interfaces for basic MongoDB commands
-- Updated logger functions to output more detail messages
+- Updated logger functions to output more detailed messages
 - Added tracing interface
 
 ## v0.9.5 (2023-04-23)
 - Updated embed test interface
 
 ## v0.9.4 (2023-04-08)
-- Added senario test framework
+- Added scenario test framework
 - Added mongosh-based client for testing
 - Updated wire protocol parser to support the protocols used by mongosh
 
@@ -64,8 +64,8 @@
 - Updated mongo-driver from v1.10.0 to v1.11.2
 
 ## v0.9.1 (2023-02-23)
-- Upgrade to go 1.20
+- Upgraded to go 1.20
 - Fixed compiler warnings
 
 ## v0.9.0 (2019-08-15)
-- Initial public release  
+- Initial public release
