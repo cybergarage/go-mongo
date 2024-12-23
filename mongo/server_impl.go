@@ -32,7 +32,7 @@ import (
 type server struct {
 	*config
 	*ConnManager
-	*TLSConf
+
 	tlsConfig *tls.Config
 	tracer.Tracer
 	messageListener      MessageListener
@@ -49,7 +49,6 @@ func NewServer() Server {
 	server := &server{
 		config:               newDefaultConfig(),
 		ConnManager:          NewConnManager(),
-		TLSConf:              NewTLSConf(),
 		tlsConfig:            nil,
 		Tracer:               tracer.NullTracer,
 		messageListener:      nil,

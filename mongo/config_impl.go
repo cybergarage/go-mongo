@@ -14,10 +14,14 @@
 
 package mongo
 
-import "github.com/cybergarage/go-mongo/mongo/message"
+import (
+	"github.com/cybergarage/go-authenticator/auth"
+	"github.com/cybergarage/go-mongo/mongo/message"
+)
 
 // Config stores server configuration parammeters.
 type config struct {
+	auth.CertConfig
 	Addr                         string
 	Port                         int
 	isMaster                     bool
@@ -41,6 +45,7 @@ func NewDefaultConfig() Config {
 // newDefaultConfig returns a default configuration instance.
 func newDefaultConfig() *config {
 	config := &config{
+		CertConfig:                   auth.NewCertConfig(),
 		Addr:                         "",
 		Port:                         DefaultPort,
 		maxBsonObjectSize:            message.DefaultMaxBsonObjectSize,
