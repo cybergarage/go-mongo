@@ -14,97 +14,21 @@
 
 package mongo
 
-import "github.com/cybergarage/go-mongo/mongo/message"
+import (
+	"github.com/cybergarage/go-mongo/mongo/message"
+)
 
 // Config stores server configuration parammeters.
-type Config struct {
-	isMaster                     bool
-	maxBsonObjectSize            int32
-	maxMessageSizeBytes          int32
-	maxWriteBatchSize            int32
-	logicalSessionTimeoutMinutes int32
-	minWireVersion               int32
-	maxWireVersion               int32
-	readOnly                     bool
-	compressions                 []string
-	version                      string
-	securityAuthorizationEnabled bool
-}
+type Config interface {
+	message.Config
 
-// NewDefaultConfig returns a default configuration instance.
-func NewDefaultConfig() *Config {
-	config := &Config{
-		maxBsonObjectSize:            message.DefaultMaxBsonObjectSize,
-		maxMessageSizeBytes:          message.DefaultMaxMessageSizeBytes,
-		maxWriteBatchSize:            message.DefaultMaxWriteBatchSize,
-		logicalSessionTimeoutMinutes: message.DefaultLogicalSessionTimeoutMinutes,
-		minWireVersion:               message.DefaultMinWireVersion,
-		maxWireVersion:               message.DefaultMaxWireVersion,
-		readOnly:                     false,
-		version:                      message.DefaultCompatibleVersion,
-		isMaster:                     true,
-		compressions:                 nil,
-		securityAuthorizationEnabled: false,
-	}
-	return config
-}
+	// SetAddress sets a listen address.
+	SetAddress(addr string)
+	// GetAddress returns a listen address.
+	GetAddress() string
 
-// IsMaster should return true when the instance is running as master, otherwise false.
-func (config *Config) IsMaster() bool {
-	return config.isMaster
-}
-
-// MaxBsonObjectSize should return a max limitation value of BSON object size.
-func (config *Config) MaxBsonObjectSize() int32 {
-	return config.maxBsonObjectSize
-}
-
-// MaxMessageSizeBytes should return a max limitation value of message size.
-func (config *Config) MaxMessageSizeBytes() int32 {
-	return config.maxMessageSizeBytes
-}
-
-// MaxWriteBatchSize should return a max limitation value of write batch size.
-func (config *Config) MaxWriteBatchSize() int32 {
-	return config.maxWriteBatchSize
-}
-
-// LogicalSessionTimeoutMinutes should return a settion timeout value.
-func (config *Config) LogicalSessionTimeoutMinutes() int32 {
-	return config.logicalSessionTimeoutMinutes
-}
-
-// MinWireVersion should return a min supported version.
-func (config *Config) MinWireVersion() int32 {
-	return config.minWireVersion
-}
-
-// MaxWireVersion should return a max supported version.
-func (config *Config) MaxWireVersion() int32 {
-	return config.maxWireVersion
-}
-
-// IsReadOnly should return true when the instance does not support write operations.
-func (config *Config) IsReadOnly() bool {
-	return config.readOnly
-}
-
-// Compressions should return supported compress strings.
-func (config *Config) Compressions() []string {
-	return config.compressions
-}
-
-// Version should return supported MongoDB version string.
-func (config *Config) Version() string {
-	return config.version
-}
-
-// SetAuthrizationEnabled sets the authorization flag.
-func (config *Config) SetAuthrizationEnabled(authorized bool) {
-	config.securityAuthorizationEnabled = authorized
-}
-
-// IsAuthrizationEnabled returns true when the authorization is enabled.
-func (config *Config) IsAuthrizationEnabled() bool {
-	return config.securityAuthorizationEnabled
+	// SetPort sets a listen port.
+	SetPort(port int)
+	// GetPort returns a listent port.
+	GetPort() int
 }
