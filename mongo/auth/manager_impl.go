@@ -19,8 +19,20 @@ import (
 	"github.com/cybergarage/go-mongo/mongo/auth/sasl"
 )
 
-// Manager represents an authenticator manager.
-type Manager interface {
+type manager struct {
 	auth.Manager
-	ConversationCounter() *sasl.Counter
+	conversationCounter *sasl.Counter
+}
+
+// NewManager returns a new Manager.
+func NewManager() Manager {
+	return &manager{
+		Manager:             auth.NewManager(),
+		conversationCounter: sasl.NewCounter(),
+	}
+}
+
+// ConversationCounter returns a conversation counter.
+func (mgr *manager) ConversationCounter() *sasl.Counter {
+	return mgr.conversationCounter
 }
