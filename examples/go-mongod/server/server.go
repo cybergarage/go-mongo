@@ -26,7 +26,7 @@ import (
 //////////////////////////////////////////////////
 
 type Server struct {
-	*mongo.Server
+	mongo.Server
 	documents []bson.Document
 }
 
