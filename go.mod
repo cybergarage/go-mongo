@@ -3,7 +3,7 @@ module github.com/cybergarage/go-mongo
 go 1.22
 
 require (
-	github.com/cybergarage/go-authenticator v0.0.1-0.20241223115708-78e38cfe0850
+	github.com/cybergarage/go-authenticator v0.0.1-0.20241223142450-7077ddb4bcd7
 	github.com/cybergarage/go-logger v1.3.5
 	github.com/cybergarage/go-safecast v1.2.5
 	github.com/cybergarage/go-sasl v1.2.2-0.20241218142740-579770f18b11
