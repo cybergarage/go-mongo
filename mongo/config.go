@@ -15,11 +15,13 @@
 package mongo
 
 import (
+	"github.com/cybergarage/go-authenticator/auth"
 	"github.com/cybergarage/go-mongo/mongo/message"
 )
 
 // Config stores server configuration parammeters.
 type Config interface {
+	auth.CertConfig
 	message.Config
 
 	// SetAuthrizationEnabled sets the authorization flag.

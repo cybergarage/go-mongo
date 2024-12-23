@@ -25,6 +25,7 @@ type MessageListener interface {
 	protocol.MessageListener
 }
 
+// Server represents a server interface.
 type Server interface {
 	Config
 	auth.Manager
