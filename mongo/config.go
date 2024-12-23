@@ -22,6 +22,11 @@ import (
 type Config interface {
 	message.Config
 
+	// SetAuthrizationEnabled sets the authorization flag.
+	SetAuthrizationEnabled(authorized bool)
+	// IsAuthrizationEnabled returns true when the authorization is enabled.
+	IsAuthrizationEnabled() bool
+
 	// SetAddress sets a listen address.
 	SetAddress(addr string)
 	// GetAddress returns a listen address.

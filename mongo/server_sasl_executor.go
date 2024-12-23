@@ -26,12 +26,12 @@ import (
 // https://github.com/mongodb/specifications/blob/master/source/auth/auth.md
 
 // SASLSupportedMechs returns the supported SASL mechanisms.
-func (server *Server) SASLSupportedMechs(*Conn, string) ([]sasl.SASLMechanism, error) {
+func (server *server) SASLSupportedMechs(*Conn, string) ([]sasl.SASLMechanism, error) {
 	return server.Mechanisms(), nil
 }
 
 // SASLStart handles SASLStart command.
-func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error) {
+func (server *server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error) {
 	var reqMech string
 	var reqPayload []byte
 	var ok bool
@@ -100,7 +100,7 @@ func (server *Server) SASLStart(conn *Conn, cmd *Command) (bson.Document, error)
 }
 
 // SASLContinue handles SASLContinue command.
-func (server *Server) SASLContinue(conn *Conn, cmd *Command) (bson.Document, error) {
+func (server *server) SASLContinue(conn *Conn, cmd *Command) (bson.Document, error) {
 	ctx := conn.SASLContext()
 	if ctx == nil {
 		return nil, NewErrorCommand(cmd)
