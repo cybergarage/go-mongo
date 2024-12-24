@@ -22,8 +22,8 @@ import (
 // Config stores server configuration parammeters.
 type config struct {
 	tls.CertConfig
-	Addr                         string
-	Port                         int
+	addr                         string
+	port                         int
 	tlsEnabled                   bool
 	isMaster                     bool
 	maxBsonObjectSize            int32
@@ -47,8 +47,8 @@ func NewDefaultConfig() Config {
 func newDefaultConfig() *config {
 	config := &config{
 		CertConfig:                   tls.NewCertConfig(),
-		Addr:                         "",
-		Port:                         DefaultPort,
+		addr:                         "",
+		port:                         DefaultPort,
 		tlsEnabled:                   false,
 		maxBsonObjectSize:            message.DefaultMaxBsonObjectSize,
 		maxMessageSizeBytes:          message.DefaultMaxMessageSizeBytes,
@@ -67,22 +67,22 @@ func newDefaultConfig() *config {
 
 // SetAddress sets a listen address.
 func (config *config) SetAddress(addr string) {
-	config.Addr = addr
+	config.addr = addr
 }
 
-// GetAddress returns a listen address.
-func (config *config) GetAddress() string {
-	return config.Addr
+// Address returns a listen address.
+func (config *config) Address() string {
+	return config.addr
 }
 
 // SetPort sets a listen port.
 func (config *config) SetPort(port int) {
-	config.Port = port
+	config.port = port
 }
 
-// GetPort returns a listent port.
-func (config *config) GetPort() int {
-	return config.Port
+// Port returns a listent port.
+func (config *config) Port() int {
+	return config.port
 }
 
 // SetTLSEnabled sets a TLS enabled flag.

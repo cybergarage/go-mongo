@@ -27,22 +27,22 @@ import (
 
 // Client is an instance for Graphite protocols.
 type Client struct {
-	Host       string
-	Port       int
-	Database   string
-	Collection string
-	Timeout    time.Duration
+	host       string
+	port       int
+	database   string
+	collection string
+	timeout    time.Duration
 	conn       *mongo.Client
 }
 
 // NewClient returns a client instance.
 func NewClient() *Client {
 	client := &Client{
-		Host:       DefaultHost,
-		Port:       DefaultPort,
-		Database:   "",
-		Collection: "",
-		Timeout:    (time.Second * DefaultTimeoutSecond),
+		host:       DefaultHost,
+		port:       DefaultPort,
+		database:   "",
+		collection: "",
+		timeout:    (time.Second * DefaultTimeoutSecond),
 		conn:       nil,
 	}
 
@@ -51,58 +51,58 @@ func NewClient() *Client {
 
 // SetHost sets a destination host.
 func (client *Client) SetHost(host string) {
-	client.Host = host
+	client.host = host
 }
 
-// GetHost returns a destination host.
-func (client *Client) GetHost() string {
-	return client.Host
+// Host returns a destination host.
+func (client *Client) Host() string {
+	return client.host
 }
 
 // SetPort sets a destination port.
 func (client *Client) SetPort(port int) {
-	client.Port = port
+	client.port = port
 }
 
-// GetPort returns a destination port.
-func (client *Client) GetPort() int {
-	return client.Port
+// Port returns a destination port.
+func (client *Client) Port() int {
+	return client.port
 }
 
 // SetDatabase sets a destination database.
 func (client *Client) SetDatabase(db string) {
-	client.Database = db
+	client.database = db
 }
 
 // GetDatabase returns a destination database.
 func (client *Client) GetDatabase() string {
-	return client.Database
+	return client.database
 }
 
 // SetCollection sets a destination collection.
 func (client *Client) SetCollection(col string) {
-	client.Database = col
+	client.database = col
 }
 
 // GetCollection returns a destination collection.
 func (client *Client) GetCollection() string {
-	return client.Collection
+	return client.collection
 }
 
 // SetTimeout sets a timeout for the request.
 func (client *Client) SetTimeout(d time.Duration) {
-	client.Timeout = d
+	client.timeout = d
 }
 
 // GetTimeout return  the timeout for the request.
 func (client *Client) GetTimeout() time.Duration {
-	return client.Timeout
+	return client.timeout
 }
 
 // Connect connects the specified destination MongoDB server.
 func (client *Client) Connect() error {
 	var err error
-	uri := fmt.Sprintf("mongodb://%s", net.JoinHostPort(client.Host, strconv.Itoa(client.Port)))
+	uri := fmt.Sprintf("mongodb://%s", net.JoinHostPort(client.host, strconv.Itoa(client.port)))
 	clientOptions := options.Client().ApplyURI(uri)
 	client.conn, err = mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
@@ -127,12 +127,12 @@ func (client *Client) Close() error {
 // InsertOne posts the specified document to the destination collection.
 func (client *Client) InsertOne(doc interface{}) error {
 	if client.conn == nil {
-		return fmt.Errorf(errorLostConnection, client.Host, client.Port)
+		return fmt.Errorf(errorLostConnection, client.host, client.port)
 	}
 
-	col := client.conn.Database(client.Database).Collection(client.Collection)
+	col := client.conn.Database(client.database).Collection(client.collection)
 	if col == nil {
-		return fmt.Errorf(errorCollectionNotFound, client.Database, client.Collection)
+		return fmt.Errorf(errorCollectionNotFound, client.database, client.collection)
 	}
 
 	_, err := col.InsertOne(context.TODO(), doc)

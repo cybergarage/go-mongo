@@ -111,7 +111,7 @@ func (server *server) Start() error {
 
 	go server.serve()
 
-	addr := net.JoinHostPort(server.Addr, strconv.Itoa(server.Port))
+	addr := net.JoinHostPort(server.Address(), strconv.Itoa(server.Port()))
 	log.Infof("%s/%s (%s) started", PackageName, Version, addr)
 
 	return nil
@@ -127,7 +127,7 @@ func (server *server) Stop() error {
 		return err
 	}
 
-	addr := net.JoinHostPort(server.Addr, strconv.Itoa(server.Port))
+	addr := net.JoinHostPort(server.Address(), strconv.Itoa(server.Port()))
 	log.Infof("%s/%s (%s) terminated", PackageName, Version, addr)
 
 	return nil
@@ -144,7 +144,7 @@ func (server *server) Restart() error {
 // open opens a listen socket.
 func (server *server) open() error {
 	var err error
-	addr := net.JoinHostPort(server.Addr, strconv.Itoa(server.Port))
+	addr := net.JoinHostPort(server.Address(), strconv.Itoa(server.Port()))
 	server.tcpListener, err = net.Listen("tcp", addr)
 	if err != nil {
 		return err
