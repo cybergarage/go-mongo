@@ -74,8 +74,8 @@ func (client *Client) SetDatabase(db string) {
 	client.database = db
 }
 
-// GetDatabase returns a destination database.
-func (client *Client) GetDatabase() string {
+// Database returns a destination database.
+func (client *Client) Database() string {
 	return client.database
 }
 
@@ -84,8 +84,8 @@ func (client *Client) SetCollection(col string) {
 	client.database = col
 }
 
-// GetCollection returns a destination collection.
-func (client *Client) GetCollection() string {
+// Collection returns a destination collection.
+func (client *Client) Collection() string {
 	return client.collection
 }
 
@@ -94,8 +94,8 @@ func (client *Client) SetTimeout(d time.Duration) {
 	client.timeout = d
 }
 
-// GetTimeout return  the timeout for the request.
-func (client *Client) GetTimeout() time.Duration {
+// Timeout return  the timeout for the request.
+func (client *Client) Timeout() time.Duration {
 	return client.timeout
 }
 
