@@ -15,15 +15,16 @@
 package mongo
 
 import (
-	"github.com/cybergarage/go-authenticator/auth"
+	"github.com/cybergarage/go-authenticator/auth/tls"
 	"github.com/cybergarage/go-mongo/mongo/message"
 )
 
 // Config stores server configuration parammeters.
 type config struct {
-	auth.CertConfig
+	tls.CertConfig
 	Addr                         string
 	Port                         int
+	tlsEnabled                   bool
 	isMaster                     bool
 	maxBsonObjectSize            int32
 	maxMessageSizeBytes          int32
@@ -45,9 +46,10 @@ func NewDefaultConfig() Config {
 // newDefaultConfig returns a default configuration instance.
 func newDefaultConfig() *config {
 	config := &config{
-		CertConfig:                   auth.NewCertConfig(),
+		CertConfig:                   tls.NewCertConfig(),
 		Addr:                         "",
 		Port:                         DefaultPort,
+		tlsEnabled:                   false,
 		maxBsonObjectSize:            message.DefaultMaxBsonObjectSize,
 		maxMessageSizeBytes:          message.DefaultMaxMessageSizeBytes,
 		maxWriteBatchSize:            message.DefaultMaxWriteBatchSize,
@@ -81,6 +83,16 @@ func (config *config) SetPort(port int) {
 // GetPort returns a listent port.
 func (config *config) GetPort() int {
 	return config.Port
+}
+
+// SetTLSEnabled sets a TLS enabled flag.
+func (config *config) SetTLSEnabled(enabled bool) {
+	config.tlsEnabled = enabled
+}
+
+// IsEnabled returns true if the TLS is enabled.
+func (config *config) IsTLSEnabled() bool {
+	return config.tlsEnabled
 }
 
 // IsMaster should return true when the instance is running as master, otherwise false.
