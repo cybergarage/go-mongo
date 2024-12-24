@@ -15,13 +15,13 @@
 package mongo
 
 import (
-	"github.com/cybergarage/go-authenticator/auth"
+	"github.com/cybergarage/go-authenticator/auth/tls"
 	"github.com/cybergarage/go-mongo/mongo/message"
 )
 
 // Config stores server configuration parammeters.
 type Config interface {
-	auth.CertConfig
+	tls.CertConfig
 	message.Config
 
 	// SetAuthrizationEnabled sets the authorization flag.
@@ -33,6 +33,11 @@ type Config interface {
 	SetAddress(addr string)
 	// GetAddress returns a listen address.
 	GetAddress() string
+
+	// SetTLSEnabled sets a TLS enabled flag.
+	SetTLSEnabled(enabled bool)
+	// IsEnabled returns true if the TLS is enabled.
+	IsTLSEnabled() bool
 
 	// SetPort sets a listen port.
 	SetPort(port int)
