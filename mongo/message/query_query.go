@@ -27,7 +27,7 @@ func NewQueryWithQuery(msg *protocol.Query) (*Query, error) {
 
 // ParseQuery parses the specified OP_MSG.
 func (q *Query) ParseQuery(msg *protocol.Query) error {
-	query := msg.GetQuery()
+	query := msg.Document()
 	if query == nil {
 		return nil
 	}
