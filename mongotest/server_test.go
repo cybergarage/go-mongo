@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/cybergarage/go-logger/log"
+	"github.com/cybergarage/go-mongo/mongo/auth"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -72,7 +73,16 @@ func TestTLSServer(t *testing.T) {
 	server.SetServerCert(TestServerCert)
 	server.SetRootCerts(TestCACert)
 
-	err := server.Start()
+	ca, err := auth.NewCertificateAuthenticator(
+		auth.WithCommonNameRegexp("localhost"),
+	)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	server.SetCertificateAuthenticator(ca)
+
+	err = server.Start()
 	if err != nil {
 		t.Error(err)
 		return
