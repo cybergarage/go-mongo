@@ -71,8 +71,8 @@ func NewQueryWithHeaderAndBody(header *Header, body []byte) (*Query, error) {
 	return op, nil
 }
 
-// GetCollectionName returns the query collection name.
-func (op *Query) GetCollectionName() string {
+// CollectionName returns the query collection name.
+func (op *Query) CollectionName() string {
 	return op.FullCollectionName
 }
 
@@ -81,8 +81,8 @@ func (op *Query) IsCollection(name string) bool {
 	return name == op.FullCollectionName
 }
 
-// GetQuery returns the query document.
-func (op *Query) GetQuery() bson.Document {
+// Document returns the query document.
+func (op *Query) Document() bson.Document {
 	return op.Query
 }
 

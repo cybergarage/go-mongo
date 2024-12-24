@@ -76,7 +76,7 @@ func NewCommandWithDocument(doc bson.Document) (*Command, error) {
 
 // NewCommandWithQuery returns a new command instance with the specified BSON document.
 func NewCommandWithQuery(q *protocol.Query) (*Command, error) {
-	cmd, err := NewCommandWithDocument(q.GetQuery())
+	cmd, err := NewCommandWithDocument(q.Document())
 	if err != nil {
 		return nil, err
 	}
