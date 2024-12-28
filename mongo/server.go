@@ -29,7 +29,9 @@ type MessageListener interface {
 type Server interface {
 	Config
 	auth.Manager
-	tracer.Tracer
+
+	// SetTracer sets a tracer.
+	SetTracer(tracer.Tracer)
 
 	// Config returns a server configuration.
 	Config() Config
