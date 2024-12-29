@@ -34,17 +34,17 @@ type KillCursors struct {
 func NewKillCursorsWithHeaderAndBody(header *Header, body []byte) (*KillCursors, error) {
 	zero, offsetBody, ok := ReadInt32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newErrMessageRequest(OpDelete, body)
 	}
 
 	numberOfCursorIDs, offsetBody, ok := ReadInt32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpKillCursors, body)
+		return nil, newErrMessageRequest(OpKillCursors, body)
 	}
 
 	cursorIDs, _, ok := ReadCursorIDs(offsetBody, numberOfCursorIDs)
 	if !ok {
-		return nil, newMessageRequestError(OpKillCursors, body)
+		return nil, newErrMessageRequest(OpKillCursors, body)
 	}
 
 	op := &KillCursors{

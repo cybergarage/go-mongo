@@ -36,27 +36,27 @@ type Update struct {
 func NewUpdateWithHeaderAndBody(header *Header, body []byte) (*Update, error) {
 	zero, offsetBody, ok := ReadInt32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newErrMessageRequest(OpDelete, body)
 	}
 
 	collectionName, offsetBody, ok := ReadCString(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpUpdate, body)
+		return nil, newErrMessageRequest(OpUpdate, body)
 	}
 
 	flags, offsetBody, ok := ReadUint32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpUpdate, body)
+		return nil, newErrMessageRequest(OpUpdate, body)
 	}
 
 	selector, offsetBody, ok := ReadDocument(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpUpdate, body)
+		return nil, newErrMessageRequest(OpUpdate, body)
 	}
 
 	update, _, ok := ReadDocument(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpUpdate, body)
+		return nil, newErrMessageRequest(OpUpdate, body)
 	}
 
 	op := &Update{

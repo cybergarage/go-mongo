@@ -35,22 +35,22 @@ type Delete struct {
 func NewDeleteWithHeaderAndBody(header *Header, body []byte) (*Delete, error) {
 	zero, offsetBody, ok := ReadInt32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newErrMessageRequest(OpDelete, body)
 	}
 
 	collectionName, offsetBody, ok := ReadCString(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newErrMessageRequest(OpDelete, body)
 	}
 
 	flags, offsetBody, ok := ReadUint32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newErrMessageRequest(OpDelete, body)
 	}
 
 	selector, _, ok := ReadDocument(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newErrMessageRequest(OpDelete, body)
 	}
 
 	op := &Delete{

@@ -35,22 +35,22 @@ type GetMore struct {
 func NewGetMoreWithHeaderAndBody(header *Header, body []byte) (*GetMore, error) {
 	zero, offsetBody, ok := ReadInt32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpDelete, body)
+		return nil, newErrMessageRequest(OpDelete, body)
 	}
 
 	collectionName, offsetBody, ok := ReadCString(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpGetMore, body)
+		return nil, newErrMessageRequest(OpGetMore, body)
 	}
 
 	numberToReturn, offsetBody, ok := ReadInt32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpGetMore, body)
+		return nil, newErrMessageRequest(OpGetMore, body)
 	}
 
 	cursorID, _, ok := ReadInt64(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpGetMore, body)
+		return nil, newErrMessageRequest(OpGetMore, body)
 	}
 
 	op := &GetMore{

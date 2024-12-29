@@ -34,17 +34,17 @@ type Insert struct {
 func NewInsertWithHeaderAndBody(header *Header, body []byte) (*Insert, error) {
 	flags, offsetBody, ok := ReadUint32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpInsert, body)
+		return nil, newErrMessageRequest(OpInsert, body)
 	}
 
 	collectionName, offsetBody, ok := ReadCString(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpInsert, body)
+		return nil, newErrMessageRequest(OpInsert, body)
 	}
 
 	document, _, ok := ReadDocument(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpInsert, body)
+		return nil, newErrMessageRequest(OpInsert, body)
 	}
 
 	op := &Insert{
