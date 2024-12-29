@@ -36,27 +36,27 @@ type Query struct {
 func NewQueryWithHeaderAndBody(header *Header, body []byte) (*Query, error) {
 	flags, offsetBody, ok := ReadUint32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpQuery, body)
+		return nil, newErrMessageRequest(OpQuery, body)
 	}
 
 	collectionName, offsetBody, ok := ReadCString(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpQuery, body)
+		return nil, newErrMessageRequest(OpQuery, body)
 	}
 
 	numberToSkip, offsetBody, ok := ReadInt32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpQuery, body)
+		return nil, newErrMessageRequest(OpQuery, body)
 	}
 
 	numberToReturn, offsetBody, ok := ReadInt32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpQuery, body)
+		return nil, newErrMessageRequest(OpQuery, body)
 	}
 
 	query, _, ok := ReadDocument(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpInsert, body)
+		return nil, newErrMessageRequest(OpInsert, body)
 	}
 
 	op := &Query{

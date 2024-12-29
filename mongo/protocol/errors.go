@@ -14,14 +14,23 @@
 
 package protocol
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrNotSupported = errors.New("not supported")
+var ErrInvalid = errors.New("invalid")
 
 const (
 	errorInvalidMessageHeader = "invalid message header : %s"
-	errorInvalidMessageOpCode = "OpCode (%d) is not supported"
 	errorOpMsgNoSection       = "section is not found"
 )
 
-func newMessageRequestError(op OpCode, body []byte) error {
-	return fmt.Errorf("")
+func newErrOpCodeNotSupported(op OpCode) error {
+	return fmt.Errorf("OpCode (%d)  %w", op, ErrNotSupported)
+}
+
+func newErrMessageRequest(op OpCode, body []byte) error {
+	return fmt.Errorf("OpCode (%d)  %w : %v", op, ErrInvalid, body)
 }

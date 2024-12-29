@@ -15,8 +15,6 @@
 package protocol
 
 import (
-	"fmt"
-
 	"github.com/cybergarage/go-mongo/mongo/bson"
 )
 
@@ -77,7 +75,7 @@ func NewMessageWithHeaderAndBytes(header *Header, body []byte) (Message, error) 
 		return NewReplyWithHeaderAndBody(header, body)
 	default:
 	}
-	return nil, fmt.Errorf(errorInvalidMessageOpCode, header.opCode)
+	return nil, newErrOpCodeNotSupported(header.opCode)
 }
 
 // NewMessageWithBytes returns a parsed message of the specified bytes.

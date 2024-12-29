@@ -73,7 +73,7 @@ func NewMsgWithBody(body bson.Document) *Msg {
 func NewMsgWithHeaderAndBody(header *Header, body []byte) (*Msg, error) {
 	flagBits, offsetBody, ok := ReadUint32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpMsg, body)
+		return nil, newErrMessageRequest(OpMsg, body)
 	}
 
 	var docBody bson.Document
@@ -91,14 +91,14 @@ func NewMsgWithHeaderAndBody(header *Header, body []byte) (*Msg, error) {
 		case sectionTypeBody:
 			docBody, offsetBody, ok = ReadDocument(offsetBody)
 			if !ok {
-				return nil, newMessageRequestError(OpMsg, body)
+				return nil, newErrMessageRequest(OpMsg, body)
 			}
 		case sectionTypeDocumentSequence:
 			var docID string
 			var docs []bson.Document
 			docID, docs, offsetBody, ok = ReadDocumentSequence(offsetBody)
 			if !ok {
-				return nil, newMessageRequestError(OpMsg, body)
+				return nil, newErrMessageRequest(OpMsg, body)
 			}
 			documentIDs = append(documentIDs, docID)
 			documents = append(documents, docs...)
@@ -110,7 +110,7 @@ func NewMsgWithHeaderAndBody(header *Header, body []byte) (*Msg, error) {
 	if (MsgFlag(flagBits) & checksumPresent) != 0 {
 		checksum, _, ok = ReadUint32(offsetBody)
 		if !ok {
-			return nil, newMessageRequestError(OpMsg, body)
+			return nil, newErrMessageRequest(OpMsg, body)
 		}
 		// TODO : Check the CRC-32C checksum
 	}

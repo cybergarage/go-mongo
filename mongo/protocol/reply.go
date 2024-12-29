@@ -80,27 +80,27 @@ func NewReplyWithDocument(doc bson.Document) *Reply {
 func NewReplyWithHeaderAndBody(header *Header, body []byte) (*Reply, error) {
 	responseFlags, offsetBody, ok := ReadInt32(body)
 	if !ok {
-		return nil, newMessageRequestError(OpReply, body)
+		return nil, newErrMessageRequest(OpReply, body)
 	}
 
 	cursorID, offsetBody, ok := ReadInt64(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpReply, body)
+		return nil, newErrMessageRequest(OpReply, body)
 	}
 
 	startingFrom, offsetBody, ok := ReadInt32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpReply, body)
+		return nil, newErrMessageRequest(OpReply, body)
 	}
 
 	numberReturned, offsetBody, ok := ReadInt32(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpReply, body)
+		return nil, newErrMessageRequest(OpReply, body)
 	}
 
 	documents, _, ok := ReadDocuments(offsetBody)
 	if !ok {
-		return nil, newMessageRequestError(OpReply, body)
+		return nil, newErrMessageRequest(OpReply, body)
 	}
 
 	op := &Reply{
