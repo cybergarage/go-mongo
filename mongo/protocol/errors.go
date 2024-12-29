@@ -22,15 +22,14 @@ import (
 var ErrNotSupported = errors.New("not supported")
 var ErrInvalid = errors.New("invalid")
 
-const (
-	errorInvalidMessageHeader = "invalid message header : %s"
-	errorOpMsgNoSection       = "section is not found"
-)
-
 func newErrOpCodeNotSupported(op OpCode) error {
 	return fmt.Errorf("OpCode (%d)  %w", op, ErrNotSupported)
 }
 
 func newErrMessageRequest(op OpCode, body []byte) error {
 	return fmt.Errorf("OpCode (%d)  %w : %v", op, ErrInvalid, body)
+}
+
+func newErrMessageHeader(s string) error {
+	return fmt.Errorf("%w message header : %s", ErrInvalid, s)
 }
