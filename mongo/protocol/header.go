@@ -98,13 +98,13 @@ func (header *Header) OpCode() OpCode {
 // ParseBytes parses the specified bytes.
 func (header *Header) ParseBytes(msg []byte) error {
 	if len(msg) < HeaderSize {
-		return fmt.Errorf(errorInvalidMessageHeader, hex.EncodeToString(msg))
+		return newErrMessageHeader(hex.EncodeToString(msg))
 	}
 
 	var ok bool
 	header.messageLength, header.requestID, header.responseTo, header.opCode, _, ok = ReadHeader(msg)
 	if !ok {
-		return fmt.Errorf(errorInvalidMessageHeader, hex.EncodeToString(msg[:4]))
+		return newErrMessageHeader(hex.EncodeToString(msg[:4]))
 	}
 
 	return nil
