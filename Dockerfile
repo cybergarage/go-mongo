@@ -1,4 +1,5 @@
-FROM golang:1.20-alpine
+FROM alpine:3.21
+RUN apk update && apk add git go
 
 USER root
 
