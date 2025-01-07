@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM alpine:latest
 RUN apk update && apk add git go
 
 USER root
