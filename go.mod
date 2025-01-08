@@ -5,10 +5,10 @@ go 1.22.0
 toolchain go1.23.3
 
 require (
-	github.com/cybergarage/go-authenticator v1.0.1
+	github.com/cybergarage/go-authenticator v1.0.2
 	github.com/cybergarage/go-logger v1.3.8
 	github.com/cybergarage/go-safecast v1.2.5
-	github.com/cybergarage/go-sasl v1.2.2
+	github.com/cybergarage/go-sasl v1.2.3
 	github.com/cybergarage/go-sqltest v1.4.1
 	github.com/cybergarage/go-tracing v1.1.4
 	github.com/google/uuid v1.6.0
