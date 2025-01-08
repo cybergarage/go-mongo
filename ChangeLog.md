@@ -4,7 +4,7 @@
 - Updated executor interfaces for major MongoDB commands
 - Added createIndex interface
 
-## v1.2.3 (2024-12-xx)
+## v1.2.3 (2025-xx-xx)
 - Update error messages
 
 ## v1.2.2 (2024-12-28)
