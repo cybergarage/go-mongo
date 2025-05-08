@@ -286,26 +286,26 @@ func (server *server) readMessage(conn net.Conn) (protocol.Message, error) {
 		if nRead <= 0 {
 			return nil, err
 		}
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 		return nil, err
 	}
 
 	header, err := protocol.NewHeaderWithBytes(headerBytes)
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 		return nil, err
 	}
 
 	bodyBytes := make([]byte, header.BodySize())
 	_, err = conn.Read(bodyBytes)
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 		return nil, err
 	}
 
 	msg, err := protocol.NewMessageWithHeaderAndBytes(header, bodyBytes)
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 		return nil, err
 	}
 

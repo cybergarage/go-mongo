@@ -42,7 +42,7 @@ func TestEmbedSuite(t *testing.T) {
 	client := shell.NewClient()
 	err = client.Open()
 	if err != nil {
-		t.Skipf(err.Error())
+		t.Skip(err.Error())
 		return
 	}
 
@@ -87,7 +87,7 @@ func TestTLSEmbedSuite(t *testing.T) {
 
 	err = client.Open()
 	if err != nil {
-		t.Skipf(err.Error())
+		t.Skip(err.Error())
 		return
 	}
 
