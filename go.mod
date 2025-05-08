@@ -8,7 +8,7 @@ require (
 	github.com/cybergarage/go-safecast v1.2.7
 	github.com/cybergarage/go-sasl v1.2.4
 	github.com/cybergarage/go-sqltest v1.4.1
-	github.com/cybergarage/go-tracing v1.1.4
+	github.com/cybergarage/go-tracing v1.1.5
 	github.com/google/uuid v1.6.0
 	github.com/xdg-go/scram v1.1.2
 	go.mongodb.org/mongo-driver v1.11.2
