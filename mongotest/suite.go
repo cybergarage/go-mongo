@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/cybergarage/go-sqltest/sqltest/util"
+	"github.com/cybergarage/go-mongo/mongotest/util"
 )
 
 const (
