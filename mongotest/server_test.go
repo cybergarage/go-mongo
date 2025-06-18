@@ -25,7 +25,7 @@ import (
 )
 
 func TestServer(t *testing.T) {
-	log.SetStdoutDebugEnbled(true)
+	log.EnableStdoutDebug(true)
 
 	server := NewServer()
 	err := server.Start()
@@ -64,7 +64,7 @@ func TestServer(t *testing.T) {
 }
 
 func TestTLSServer(t *testing.T) {
-	log.SetStdoutDebugEnbled(true)
+	log.EnableStdoutDebug(true)
 
 	server := NewServer()
 
@@ -119,7 +119,7 @@ func TestSASLServer(t *testing.T) {
 	// Authentication - MongoDB Manual v7.0
 	// https://www.mongodb.com/docs/manual/core/authentication/
 
-	log.SetStdoutDebugEnbled(true)
+	log.EnableStdoutDebug(true)
 
 	server := NewServer()
 

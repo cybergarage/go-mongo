@@ -22,7 +22,7 @@ import (
 )
 
 func TestEmbedSuite(t *testing.T) {
-	log.SetStdoutDebugEnbled(true)
+	log.EnableStdoutDebug(true)
 
 	server := NewServer()
 	err := server.Start()
@@ -57,7 +57,7 @@ func TestEmbedSuite(t *testing.T) {
 }
 
 func TestTLSEmbedSuite(t *testing.T) {
-	log.SetStdoutDebugEnbled(true)
+	log.EnableStdoutDebug(true)
 
 	server := NewServer()
 
