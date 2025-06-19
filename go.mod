@@ -3,10 +3,10 @@ module github.com/cybergarage/go-mongo
 go 1.24
 
 require (
-	github.com/cybergarage/go-authenticator v1.0.4
+	github.com/cybergarage/go-authenticator v1.0.5
 	github.com/cybergarage/go-logger v1.3.11
 	github.com/cybergarage/go-safecast v1.3.3
-	github.com/cybergarage/go-sasl v1.2.5
+	github.com/cybergarage/go-sasl v1.2.6
 	github.com/cybergarage/go-tracing v1.1.5
 	github.com/google/uuid v1.6.0
 	github.com/xdg-go/scram v1.1.2
