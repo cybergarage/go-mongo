@@ -41,6 +41,8 @@ MODULE_PKGS=\
 EXAMPLES_ROOT=examples
 EXAMPLES_PKG_ROOT=${GIT_ROOT}${MODULE_NAME}/${EXAMPLES_ROOT}
 EXAMPLES_DEAMON_BIN=go-mongod
+EXAMPLES_DOCKER_TAG=cybergarage/${EXAMPLES_DEAMON_BIN}:${PKG_VER}
+EXAMPLES_DOCKER_TAG_LATEST=cybergarage/${EXAMPLES_DEAMON_BIN}:latest
 EXAMPLES_DEAMON_ROOT=${EXAMPLES_PKG_ROOT}/${EXAMPLES_DEAMON_BIN}
 EXAMPLES_SRC_DIR=${EXAMPLES_ROOT}/${EXAMPLES_DEAMON_BIN}
 EXAMPLES_SRCS=\
@@ -127,15 +129,14 @@ run: build
 	./${EXAMPLES_DEAMON_BIN}
 
 image: test
-	docker image build -t${EXAMPLES_DOCKER_TAG} .
-	docker push ${EXAMPLES_DOCKER_TAG}
-
-image-push: image
-	docker image build -t${EXAMPLES_DOCKER_TAG_LATEST}
+	docker image build -t${EXAMPLES_DOCKER_TAG} -t${EXAMPLES_DOCKER_TAG_LATEST} .
 	docker push ${EXAMPLES_DOCKER_TAG_LATEST}
 
-rund: image
-	docker container run -it --rm -p 27017:27017 ${EXAMPLES_DOCKER_TAG}
+image-push: image
+	docker push ${EXAMPLES_DOCKER_TAG}
+
+rund:
+	docker container run -it --rm -p 27017:27017 ${EXAMPLES_DOCKER_TAG_LATEST}
 
 mongod:
 	docker container run -it --rm -p 27017:27017 mongo:4.4.19
