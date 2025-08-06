@@ -24,8 +24,7 @@ import (
 // See : MongoDB Wire Protocol
 // https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/
 type Insert struct {
-	*Header // A standard wire protocol header
-
+	*Header                          // A standard wire protocol header
 	Flags              Flag          // bit vector. see below
 	FullCollectionName string        // "dbname.collectionname"
 	Document           bson.Document // one or more documents to insert into the collection

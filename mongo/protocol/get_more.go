@@ -24,8 +24,7 @@ import (
 // See : MongoDB Wire Protocol
 // https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/
 type GetMore struct {
-	*Header // A standard wire protocol header
-
+	*Header                   // A standard wire protocol header
 	ZERO               int32  // 0 - reserved for future use
 	FullCollectionName string // "dbname.collectionname"
 	NumberToReturn     int32  // number of documents to return

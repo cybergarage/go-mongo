@@ -24,8 +24,7 @@ import (
 // See : MongoDB Wire Protocol
 // https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/
 type Query struct {
-	*Header // A standard wire protocol header
-
+	*Header                          // A standard wire protocol header
 	Flags              Flag          // bit vector. see below
 	FullCollectionName string        // "dbname.collectionname"
 	NumberToSkip       int32         // number of documents to skip

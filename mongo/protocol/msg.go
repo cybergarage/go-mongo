@@ -39,8 +39,7 @@ type SectionType = wiremessage.SectionType
 // See : MongoDB Wire Protocol
 // https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/
 type Msg struct {
-	*Header // A standard wire protocol header
-
+	*Header                   // A standard wire protocol header
 	FlagBits    MsgFlag       // message flags
 	body        bson.Document // Body
 	documentIDs []string

@@ -40,8 +40,7 @@ type ReplyFlag = wiremessage.ReplyFlag
 // See : MongoDB Wire Protocol
 // https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/
 type Reply struct {
-	*Header // A standard wire protocol header
-
+	*Header                        // A standard wire protocol header
 	ReplyFlags     ReplyFlag       // bit vector - see details below
 	CursorID       int64           // cursor id if client needs to do get more's
 	StartingFrom   int32           // where in the cursor this reply is starting

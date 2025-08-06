@@ -24,8 +24,7 @@ import (
 // See : MongoDB Wire Protocol
 // https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/
 type KillCursors struct {
-	*Header // A standard wire protocol header
-
+	*Header                   // A standard wire protocol header
 	ZERO              int32   // 0 - reserved for future use
 	NumberOfCursorIDs int32   // number of documents to return
 	CursorIDs         []int64 // cursorID from the OP_REPLY
