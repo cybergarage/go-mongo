@@ -93,7 +93,7 @@ func (handler *BaseMessageHandler) OpQuery(conn *Conn, msg *OpQuery) (bson.Docum
 		return bsonRes, nil
 	}
 
-	return handler.CommandExecutor.ExecuteCommand(conn, cmd)
+	return handler.ExecuteCommand(conn, cmd)
 }
 
 // OpGetMore handles GET_MORE of MongoDB wire protocol.
@@ -153,7 +153,7 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 		}
 		conn.StartSpan(cmd.String())
 		defer conn.FinishSpan()
-		resDoc, err := handler.CommandExecutor.ExecuteCommand(conn, cmd)
+		resDoc, err := handler.ExecuteCommand(conn, cmd)
 		if err != nil {
 			return nil, err
 		}
@@ -172,20 +172,20 @@ func (handler *BaseMessageHandler) OpMsg(conn *Conn, msg *OpMsg) (bson.Document,
 func (handler *BaseMessageHandler) executeQuery(conn *Conn, q *message.Query, res *message.Response) error {
 	switch q.Type() {
 	case message.Insert:
-		n, err := handler.MessageExecutor.Insert(conn, q)
+		n, err := handler.Insert(conn, q)
 		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Delete:
-		n, err := handler.MessageExecutor.Delete(conn, q)
+		n, err := handler.Delete(conn, q)
 		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 	case message.Update:
-		n, err := handler.MessageExecutor.Update(conn, q)
+		n, err := handler.Update(conn, q)
 		res.SetErrorStatus(err)
 		res.SetNumberOfAffectedDocuments(n)
 		res.SetNumberOfModifiedDocuments(n)
 	case message.Find:
-		docs, err := handler.MessageExecutor.Find(conn, q)
+		docs, err := handler.Find(conn, q)
 		res.SetErrorStatus(err)
 		res.SetCursorDocuments(q.FullCollectionName(), docs)
 	default:

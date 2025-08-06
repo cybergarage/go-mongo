@@ -171,10 +171,8 @@ func (server *server) serve() error {
 	defer server.close()
 
 	l := server.tcpListener
-	for {
-		if l == nil {
-			break
-		}
+	for l != nil {
+
 		conn, err := l.Accept()
 		if err != nil {
 			return err
@@ -186,7 +184,7 @@ func (server *server) serve() error {
 			if err := tlsConn.Handshake(); err != nil {
 				return err
 			}
-			ok, err := server.Manager.VerifyCertificate(tlsConn)
+			ok, err := server.VerifyCertificate(tlsConn)
 			if !ok {
 				log.Error(err)
 				return err
@@ -217,7 +215,7 @@ func (server *server) receive(conn net.Conn, tlsState *tls.ConnectionState) erro
 	}()
 
 	for err == nil {
-		loopSpan := server.Tracer.StartSpan(PackageName)
+		loopSpan := server.StartSpan(PackageName)
 		handlerConn.SetSpanContext(loopSpan)
 
 		loopSpan.StartSpan("parse")
