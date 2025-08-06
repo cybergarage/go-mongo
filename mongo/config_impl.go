@@ -22,6 +22,7 @@ import (
 // Config stores server configuration parammeters.
 type config struct {
 	tls.CertConfig
+
 	addr                         string
 	port                         int
 	tlsEnabled                   bool

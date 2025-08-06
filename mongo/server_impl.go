@@ -171,10 +171,7 @@ func (server *server) serve() error {
 	defer server.close()
 
 	l := server.tcpListener
-	for {
-		if l == nil {
-			break
-		}
+	for l != nil {
 		conn, err := l.Accept()
 		if err != nil {
 			return err

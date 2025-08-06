@@ -81,7 +81,7 @@ func ReadCString(src []byte) (string, []byte, bool) {
 // ReadCursorIDs reads numIDs cursor IDs from src.
 func ReadCursorIDs(src []byte, numIDs int32) ([]int64, []byte, bool) {
 	cursorIDs := []int64{}
-	for i := 0; i < int(numIDs); i++ {
+	for range numIDs {
 		id, src, ok := ReadInt64(src)
 		if !ok {
 			return cursorIDs, src, false
