@@ -77,7 +77,7 @@ func AppendNullElement(dst []byte, key string) []byte {
 }
 
 // AppendInterfaceElement will append an interface element using key to dst and return the extended buffer.
-func AppendInterfaceElement(dst []byte, key string, ivalue interface{}) ([]byte, error) {
+func AppendInterfaceElement(dst []byte, key string, ivalue any) ([]byte, error) {
 	switch value := ivalue.(type) {
 	case bool:
 		return bsoncore.AppendBooleanElement(dst, key, value), nil

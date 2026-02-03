@@ -16,6 +16,7 @@ package protocol
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cybergarage/go-mongo/mongo/bson"
 )
@@ -71,14 +72,15 @@ func (op *KillCursors) Size() int32 {
 
 // String returns the string description.
 func (op *KillCursors) String() string {
-	str := fmt.Sprintf("%s %d ",
+	var str strings.Builder
+	str.WriteString(fmt.Sprintf("%s %d ",
 		op.Header.String(),
 		op.NumberOfCursorIDs,
-	)
+	))
 
 	for _, cursorID := range op.CursorIDs {
-		str += fmt.Sprintf("%X ", cursorID)
+		str.WriteString(fmt.Sprintf("%X ", cursorID))
 	}
 
-	return str
+	return str.String()
 }

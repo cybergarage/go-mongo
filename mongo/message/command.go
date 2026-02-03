@@ -128,12 +128,12 @@ func (cmd *Command) IsType(typeString string) bool {
 
 // String returns the string description.
 func (cmd *Command) String() string {
-	str := ""
+	var str strings.Builder
 	for n, element := range cmd.Elements {
 		if n != 0 {
-			str += " "
+			str.WriteString(" ")
 		}
-		str += element.Key()
+		str.WriteString(element.Key())
 	}
-	return str
+	return str.String()
 }

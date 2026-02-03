@@ -32,7 +32,7 @@ const (
 
 // NewDefaultBuildInfoResponse returns a default response instance.
 func NewDefaultBuildInfoResponse() (*Response, error) {
-	defaultElements := map[string]interface{}{
+	defaultElements := map[string]any{
 		maxBsonObjectSize: int32(DefaultMaxBsonObjectSize),
 	}
 
@@ -63,8 +63,8 @@ func (res *Response) SetVersion(ver string) {
 	res.SetStringElement(version, ver)
 	// versionArray
 	vers := make([]any, 0)
-	verStrs := strings.Split(ver, ".")
-	for _, verStr := range verStrs {
+	verStrs := strings.SplitSeq(ver, ".")
+	for verStr := range verStrs {
 		verInt, err := strconv.ParseInt(verStr, 10, 32)
 		if err != nil {
 			continue

@@ -125,7 +125,7 @@ func (client *Client) Close() error {
 }
 
 // InsertOne posts the specified document to the destination collection.
-func (client *Client) InsertOne(doc interface{}) error {
+func (client *Client) InsertOne(doc any) error {
 	if client.conn == nil {
 		return fmt.Errorf(errorLostConnection, client.host, client.port)
 	}

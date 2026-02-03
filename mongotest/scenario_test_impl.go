@@ -17,6 +17,7 @@ package mongotest
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/cybergarage/go-logger/log"
 )
@@ -99,16 +100,17 @@ func (tst *ScenarioTest) Run() error {
 	}
 
 	errTraceMsg := func(n int) string {
-		errTraceMsg := tst.Name() + "\n"
+		var errTraceMsg strings.Builder
+		errTraceMsg.WriteString(tst.Name() + "\n")
 		for i := 0; i <= n; i++ {
 			prefix := goodQueryPrefix
 			if i == n {
 				prefix = errorQueryPrefix
 			}
-			errTraceMsg += fmt.Sprintf(prefix, i, scenario.Queries[i])
-			errTraceMsg += "\n"
+			errTraceMsg.WriteString(fmt.Sprintf(prefix, i, scenario.Queries[i]))
+			errTraceMsg.WriteString("\n")
 		}
-		return errTraceMsg
+		return errTraceMsg.String()
 	}
 
 	isEqualQueryResponses := func(queryRes, expectedRes any) bool {
@@ -116,7 +118,7 @@ func (tst *ScenarioTest) Run() error {
 			return true
 		}
 
-		isEqualQueryMapResponses := func(queryMap, expectedMap map[string]interface{}) bool {
+		isEqualQueryMapResponses := func(queryMap, expectedMap map[string]any) bool {
 			for key, queryValue := range queryMap {
 				switch key {
 				case "_id", "insertedId":
@@ -134,7 +136,7 @@ func (tst *ScenarioTest) Run() error {
 			return true
 		}
 
-		isEqualQueryArrayResponses := func(queryArray, expectedArray []map[string]interface{}) bool {
+		isEqualQueryArrayResponses := func(queryArray, expectedArray []map[string]any) bool {
 			if len(queryArray) != len(expectedArray) {
 				return false
 			}
@@ -147,18 +149,18 @@ func (tst *ScenarioTest) Run() error {
 			return true
 		}
 
-		queryMap, ok := queryRes.(map[string]interface{})
+		queryMap, ok := queryRes.(map[string]any)
 		if ok {
-			expectedMap, ok := expectedRes.(map[string]interface{})
+			expectedMap, ok := expectedRes.(map[string]any)
 			if !ok {
 				return false
 			}
 			return isEqualQueryMapResponses(queryMap, expectedMap)
 		}
 
-		queryArray, ok := queryRes.([]map[string]interface{})
+		queryArray, ok := queryRes.([]map[string]any)
 		if ok {
-			expectedArray, ok := expectedRes.([]map[string]interface{})
+			expectedArray, ok := expectedRes.([]map[string]any)
 			if !ok {
 				return false
 			}

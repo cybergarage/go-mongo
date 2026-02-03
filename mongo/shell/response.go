@@ -54,12 +54,12 @@ func UnmarshalResponse(res string, to any) (any, error) {
 // DecodeResponse decodes a shell response string to a JSON response.
 func DecodeResponse(res string) (any, error) {
 	jsonStr := ResponseToJSONString(res)
-	var vmap map[string]interface{}
+	var vmap map[string]any
 	err := bson.UnmarshalExtJSON([]byte(jsonStr), true, &vmap)
 	if err == nil {
 		return vmap, nil
 	}
-	var vamap []map[string]interface{}
+	var vamap []map[string]any
 	err = bson.UnmarshalExtJSON([]byte(jsonStr), true, &vamap)
 	if err != nil {
 		return nil, err

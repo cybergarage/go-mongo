@@ -41,7 +41,7 @@ const (
 
 // NewDefaultIsMasterResponse returns a default response instance.
 func NewDefaultIsMasterResponse() (*Response, error) {
-	defaultElements := map[string]interface{}{
+	defaultElements := map[string]any{
 		IsMaster:                     true,
 		maxBsonObjectSize:            int32(DefaultMaxBsonObjectSize),
 		maxMessageSizeBytes:          int32(DefaultMaxMessageSizeBytes),
@@ -64,7 +64,7 @@ func NewDefaultIsMasterResponse() (*Response, error) {
 
 // NewIsMasterResponseWithConfig returns a response instance with the specified configuration.
 func NewIsMasterResponseWithConfig(config ServerConfig) (*Response, error) {
-	defaultElements := map[string]interface{}{
+	defaultElements := map[string]any{
 		IsMaster:                     config.IsMaster(),
 		maxBsonObjectSize:            config.MaxBsonObjectSize(),
 		maxMessageSizeBytes:          config.MaxMessageSizeBytes(),

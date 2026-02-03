@@ -22,7 +22,7 @@ const (
 
 // NewDefaultLastErrorResponse returns a default response instance.
 func NewDefaultLastErrorResponse() (*Response, error) {
-	defaultElements := map[string]interface{}{
+	defaultElements := map[string]any{
 		"err":        nil,
 		"n":          int32(0),
 		syncMillis:   int32(0),

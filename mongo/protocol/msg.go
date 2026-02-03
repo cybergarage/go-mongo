@@ -16,6 +16,7 @@ package protocol
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cybergarage/go-mongo/mongo/bson"
 	"go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage"
@@ -192,21 +193,22 @@ func (op *Msg) Bytes() []byte {
 
 // String returns the string description.
 func (op *Msg) String() string {
-	str := fmt.Sprintf("%s %X ",
+	var str strings.Builder
+	str.WriteString(fmt.Sprintf("%s %X ",
 		op.Header.String(),
 		op.FlagBits,
-	)
+	))
 
 	if op.body != nil {
-		str += fmt.Sprintf("%s ", op.body.String())
+		str.WriteString(fmt.Sprintf("%s ", op.body.String()))
 	}
 	for n, doc := range op.documents {
-		str += fmt.Sprintf("%s : %s ", op.documentIDs[n], doc.String())
+		str.WriteString(fmt.Sprintf("%s : %s ", op.documentIDs[n], doc.String()))
 	}
 
 	if (op.FlagBits & checksumPresent) != 0 {
-		str += fmt.Sprintf("%X", op.Checksum)
+		str.WriteString(fmt.Sprintf("%X", op.Checksum))
 	}
 
-	return str
+	return str.String()
 }
