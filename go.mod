@@ -1,13 +1,13 @@
 module github.com/cybergarage/go-mongo
 
-go 1.25
+go 1.25.0
 
 require (
 	github.com/cybergarage/go-authenticator v1.0.5
-	github.com/cybergarage/go-logger v1.3.11
+	github.com/cybergarage/go-logger v1.3.12
 	github.com/cybergarage/go-safecast v1.3.3
 	github.com/cybergarage/go-sasl v1.2.6
-	github.com/cybergarage/go-tracing v1.1.5
+	github.com/cybergarage/go-tracing v1.1.7
 	github.com/google/uuid v1.6.0
 	github.com/xdg-go/scram v1.1.2
 	go.mongodb.org/mongo-driver v1.11.2
