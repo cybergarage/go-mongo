@@ -25,22 +25,11 @@ func TestEmbedSuite(t *testing.T) {
 	log.EnableStdoutDebug(true)
 
 	server := NewServer()
-	err := server.Start()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	defer func() {
-		err := server.Stop()
-		if err != nil {
-			t.Error(err)
-			return
-		}
-	}()
+	startTestServer(t, server)
 
 	client := shell.NewClient()
-	err = client.Open()
+	client.SetPort(server.Port())
+	err := client.Open()
 	if err != nil {
 		t.Skip(err.Error())
 		return
@@ -66,26 +55,15 @@ func TestTLSEmbedSuite(t *testing.T) {
 	server.SetServerCert(TestServerCert)
 	server.SetRootCerts(TestCACert)
 
-	err := server.Start()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	defer func() {
-		err := server.Stop()
-		if err != nil {
-			t.Error(err)
-			return
-		}
-	}()
+	startTestServer(t, server)
 
 	client := shell.NewClient()
+	client.SetPort(server.Port())
 	client.SetTLSEnabled(true)
 	client.SetTLSCertificateKeyFile(TestClientCertFile)
 	client.SetTLSCAFile(TestClientCAFile)
 
-	err = client.Open()
+	err := client.Open()
 	if err != nil {
 		t.Skip(err.Error())
 		return

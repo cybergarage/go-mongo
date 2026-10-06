@@ -28,18 +28,18 @@ const (
 	ycsbDefaultWorkload = "workloada"
 )
 
-func YCSBTest(t *testing.T) {
+func YCSBTest(t *testing.T, urls ...string) {
 	t.Helper()
 
 	workloads := []string{"workloada"}
 	for _, workload := range workloads {
 		t.Run(workload, func(t *testing.T) {
-			ExecYCSBWorkload(t, workload)
+			ExecYCSBWorkload(t, workload, urls...)
 		})
 	}
 }
 
-func ExecYCSBWorkload(t *testing.T, workload string) {
+func ExecYCSBWorkload(t *testing.T, workload string, urls ...string) {
 	t.Helper()
 
 	ycsbPath, ok := os.LookupEnv(ycsbPathEnv)
@@ -67,6 +67,10 @@ func ExecYCSBWorkload(t *testing.T, workload string) {
 		"-s",
 		"-P",
 		workloadFile,
+	}
+
+	for _, url := range urls {
+		ycsbArgs = append(ycsbArgs, "-p", "mongodb.url="+url)
 	}
 
 	ycsbWorkloadCmds := []string{

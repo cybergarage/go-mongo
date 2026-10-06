@@ -18,7 +18,6 @@ linters:
     # written out adds a directive to almost every literal without finding a
     # defect.
     - exhaustruct
-    - exhaustruct_v5
     - forbidigo
     - funlen
     - gochecknoglobals
