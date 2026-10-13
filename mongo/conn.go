@@ -28,7 +28,8 @@ import (
 // Conn represents a connection of Wire protocol.
 type Conn struct {
 	net.Conn
-	isClosed bool
+	closeOnce sync.Once
+	closeErr  error
 	sync.Map
 	ts time.Time
 	tracer.Context
@@ -41,7 +42,6 @@ type Conn struct {
 func newConnWith(conn net.Conn, tlsState *tls.ConnectionState) *Conn {
 	return &Conn{
 		Conn:        conn,
-		isClosed:    false,
 		Map:         sync.Map{},
 		ts:          time.Now(),
 		Context:     nil,
@@ -54,14 +54,10 @@ func newConnWith(conn net.Conn, tlsState *tls.ConnectionState) *Conn {
 
 // Close closes the connection.
 func (conn *Conn) Close() error {
-	if conn.isClosed {
-		return nil
-	}
-	if err := conn.Conn.Close(); err != nil {
-		return err
-	}
-	conn.isClosed = true
-	return nil
+	conn.closeOnce.Do(func() {
+		conn.closeErr = conn.Conn.Close()
+	})
+	return conn.closeErr
 }
 
 // SetSpanContext sets the span context to the connection.

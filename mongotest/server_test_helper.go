@@ -24,8 +24,32 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var testDBURL = "mongodb://localhost:27017/"
-var testTLSDBURL = "mongodb://localhost:27017/?ssl=true"
+func startTestServer(t *testing.T, server *Server) {
+	t.Helper()
+	server.SetAddress("localhost")
+	server.SetPort(0)
+	if err := server.Start(); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := server.Stop(); err != nil {
+			t.Error(err)
+		}
+	})
+}
+
+func testServerURL(server *Server) string {
+	return fmt.Sprintf("mongodb://localhost:%d/", server.Port())
+}
+
+func cleanupClient(t *testing.T, client *mongo.Client) {
+	t.Helper()
+	t.Cleanup(func() {
+		if err := client.Disconnect(context.Background()); err != nil {
+			t.Error(err)
+		}
+	})
+}
 
 type Trainer struct {
 	Name string
@@ -248,13 +272,14 @@ func TestDBAuth(t *testing.T, server *Server) {
 		Password:   "test",
 	}
 
-	clientOptions := options.Client().ApplyURI(testDBURL).SetAuth(credential)
+	clientOptions := options.Client().ApplyURI(testServerURL(server)).SetAuth(credential)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		t.Skip(err)
 		return
 	}
 
+	cleanupClient(t, client)
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
 		t.Skip(err)

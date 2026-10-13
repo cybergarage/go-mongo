@@ -16,10 +16,12 @@ package mongo
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"math"
 	"net"
 	"strconv"
+	"sync"
 
 	"github.com/cybergarage/go-logger/log"
 	"github.com/cybergarage/go-mongo/mongo/auth"
@@ -30,6 +32,10 @@ import (
 )
 
 type server struct {
+	connectionWorkers sync.WaitGroup
+	lifecycleMutex    sync.Mutex
+	serveDone         chan struct{}
+	requestIDMutex    sync.Mutex
 	*config
 	*ConnManager
 
@@ -92,6 +98,11 @@ func (server *server) SetMessageHandler(h OpMessageHandler) {
 
 // Start starts the server.
 func (server *server) Start() error {
+	server.lifecycleMutex.Lock()
+	defer server.lifecycleMutex.Unlock()
+	if server.tcpListener != nil {
+		return errors.New("server already started")
+	}
 	if err := server.ConnManager.Start(); err != nil {
 		return err
 	}
@@ -109,7 +120,11 @@ func (server *server) Start() error {
 		return err
 	}
 
-	go server.serve()
+	server.serveDone = make(chan struct{})
+	go func(l net.Listener, done chan struct{}) {
+		defer close(done)
+		server.serve(l)
+	}(server.tcpListener, server.serveDone)
 
 	addr := net.JoinHostPort(server.Address(), strconv.Itoa(server.Port()))
 	log.Infof("%s/%s (%s) started", PackageName, Version, addr)
@@ -119,11 +134,18 @@ func (server *server) Start() error {
 
 // Stop stops the server.
 func (server *server) Stop() error {
-	if err := server.ConnManager.Stop(); err != nil {
-		return err
-	}
+	server.lifecycleMutex.Lock()
+	defer server.lifecycleMutex.Unlock()
 
-	if err := server.close(); err != nil {
+	// Release the listening socket even if a connection fails to close.
+	listenErr := server.close()
+	if server.serveDone != nil {
+		<-server.serveDone
+		server.serveDone = nil
+	}
+	connErr := server.ConnManager.Stop()
+	server.connectionWorkers.Wait()
+	if err := errors.Join(listenErr, connErr); err != nil {
 		return err
 	}
 
@@ -149,6 +171,13 @@ func (server *server) open() error {
 	if err != nil {
 		return err
 	}
+	if server.Port() == 0 {
+		addr, ok := server.tcpListener.Addr().(*net.TCPAddr)
+		if !ok {
+			return errors.New("listener has no TCP address")
+		}
+		server.SetPort(addr.Port)
+	}
 	return nil
 }
 
@@ -156,7 +185,7 @@ func (server *server) open() error {
 func (server *server) close() error {
 	if server.tcpListener != nil {
 		err := server.tcpListener.Close()
-		if err != nil {
+		if err != nil && !errors.Is(err, net.ErrClosed) {
 			return err
 		}
 	}
@@ -167,51 +196,54 @@ func (server *server) close() error {
 }
 
 // serve handles client requests.
-func (server *server) serve() error {
-	defer server.close()
-
-	l := server.tcpListener
+func (server *server) serve(l net.Listener) error {
+	defer l.Close()
 	for l != nil {
 		conn, err := l.Accept()
 		if err != nil {
 			return err
 		}
 
-		var tlsState *tls.ConnectionState
 		if server.IsTLSEnabled() {
-			tlsConn := tls.Server(conn, server.tlsConfig)
-			if err := tlsConn.Handshake(); err != nil {
-				return err
-			}
-			ok, err := server.Manager.VerifyCertificate(tlsConn)
-			if !ok {
-				log.Error(err)
-				return err
-			}
-			tlsStateObj := tlsConn.ConnectionState()
-			tlsState = &tlsStateObj
-			conn = tlsConn
+			conn = tls.Server(conn, server.tlsConfig)
 		}
-
-		go server.receive(conn, tlsState)
+		handlerConn := newConnWith(conn, nil)
+		server.AddConn(handlerConn)
+		server.connectionWorkers.Go(func() {
+			defer server.RemoveConn(handlerConn)
+			defer handlerConn.Close()
+			server.receive(handlerConn)
+		})
 	}
 
 	return nil
 }
 
 // receive handles client messages.
-func (server *server) receive(conn net.Conn, tlsState *tls.ConnectionState) error {
+func (server *server) receive(handlerConn *Conn) error {
 	var err error
 	var reqMsg, resMsg protocol.Message
+	conn := handlerConn.Conn
 
 	log.Debugf("%s/%s (%s) accepted", PackageName, Version, conn.RemoteAddr().String())
 
-	handlerConn := newConnWith(conn, tlsState)
-	server.AddConn(handlerConn)
-	defer func() {
-		handlerConn.Close()
-		server.RemoveConn(handlerConn)
-	}()
+	if server.IsTLSEnabled() {
+		tlsConn, ok := conn.(*tls.Conn)
+		if !ok {
+			return errors.New("TLS connection required")
+		}
+		if err := tlsConn.Handshake(); err != nil {
+			return err
+		}
+		ok, err := server.Manager.VerifyCertificate(tlsConn)
+		if !ok {
+			log.Error(err)
+			return err
+		}
+		tlsState := tlsConn.ConnectionState()
+		handlerConn.tlsState = &tlsState
+		conn = tlsConn
+	}
 
 	for err == nil {
 		loopSpan := server.Tracer.StartSpan(PackageName)
@@ -256,6 +288,8 @@ func (server *server) receive(conn net.Conn, tlsState *tls.ConnectionState) erro
 
 // nextMessageRequestID returns a next message request identifier.
 func (server *server) nextMessageRequestID() int32 {
+	server.requestIDMutex.Lock()
+	defer server.requestIDMutex.Unlock()
 	server.lastMessageRequestID++
 	if math.MaxInt32 == server.lastMessageRequestID {
 		server.lastMessageRequestID = 0
